@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 
@@ -25,16 +25,6 @@ const TONES = [
 ];
 
 const FREE_LIMIT = 10;
-const STORAGE_KEY = "ss_gen_count";
-
-function getCount() {
-  return parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
-}
-function incrementCount() {
-  const n = getCount() + 1;
-  localStorage.setItem(STORAGE_KEY, n);
-  return n;
-}
 
 function Logo() {
   return (
@@ -79,13 +69,6 @@ function CopyButton({ text }) {
 export default function Generator() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-
-useEffect(() => {
-  supabase.auth.getSession().then(({ data }) => {
-    if (!data.session) navigate("/auth");
-    else setUser(data.session.user);
-  });
-}, []);
   const [product, setProduct] = useState("");
   const [features, setFeatures] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState(["amazon", "wildberries", "kaspi"]);
@@ -94,7 +77,33 @@ useEffect(() => {
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const [activePlatform, setActivePlatform] = useState(null);
-  const [count, setCount] = useState(getCount());
+  const [count, setCount] = useState(0);
+
+  // Auth check + load counter from Supabase
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (!data.session) {
+        navigate("/auth");
+        return;
+      }
+      const u = data.session.user;
+      setUser(u);
+
+      // Load generations_used from profiles table
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("generations_used")
+        .eq("id", u.id)
+        .single();
+
+      if (profile) setCount(profile.generations_used || 0);
+    });
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   const togglePlatform = (id) => {
     setSelectedPlatforms(prev =>
@@ -119,10 +128,15 @@ useEffect(() => {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Generation failed");
 
-      const newCount = incrementCount();
+      // Increment counter in Supabase
+      const newCount = count + 1;
+      await supabase
+        .from("profiles")
+        .update({ generations_used: newCount })
+        .eq("id", user.id);
+
       setCount(newCount);
       setResults(data.results);
       setActivePlatform(selectedPlatforms[0]);
@@ -155,11 +169,19 @@ useEffect(() => {
         <div style={{ maxWidth: 1100, margin: "0 auto", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div onClick={() => navigate("/")}><Logo /></div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {user && (
+              <span style={{ fontSize: 13, color: "#4A4768", fontWeight: 500 }}>
+                {user.email}
+              </span>
+            )}
             <div style={{ fontSize: 13, color: remaining <= 3 ? "#F87171" : "#6D628F", fontWeight: 500 }}>
               {remaining} free {remaining === 1 ? "generation" : "generations"} left
             </div>
             <button style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 13, boxShadow: `0 2px 12px ${V1}30` }}>
               Upgrade
+            </button>
+            <button onClick={logout} style={{ padding: "8px 16px", borderRadius: 8, border: `1px solid ${V1}20`, background: "transparent", color: "#6D628F", fontWeight: 600, fontSize: 13 }}>
+              Log out
             </button>
           </div>
         </div>
@@ -183,27 +205,21 @@ useEffect(() => {
               value={product}
               onChange={e => setProduct(e.target.value)}
               placeholder="e.g. Bamboo Wireless Charging Pad"
-              style={{
-                width: "100%", padding: "11px 14px", borderRadius: 10,
-                background: CARD, border: `1px solid ${V1}15`,
-                color: "#E8E5F5", fontSize: 14,
-              }}
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14 }}
             />
           </div>
 
           {/* Features */}
           <div>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 8, textTransform: "uppercase" }}>Key features <span style={{ color: "#4A4768", fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>(optional)</span></label>
+            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 8, textTransform: "uppercase" }}>
+              Key features <span style={{ color: "#4A4768", fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+            </label>
             <textarea
               value={features}
               onChange={e => setFeatures(e.target.value)}
-              placeholder="Material: bamboo&#10;Charging: 15W Qi&#10;Compatible: iPhone, Samsung&#10;Color: natural"
+              placeholder={"Material: bamboo\nCharging: 15W Qi\nCompatible: iPhone, Samsung\nColor: natural"}
               rows={5}
-              style={{
-                width: "100%", padding: "11px 14px", borderRadius: 10,
-                background: CARD, border: `1px solid ${V1}15`,
-                color: "#E8E5F5", fontSize: 14, resize: "vertical", lineHeight: 1.6,
-              }}
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14, resize: "vertical", lineHeight: 1.6 }}
             />
           </div>
 
@@ -222,7 +238,8 @@ useEffect(() => {
                     transition: "all 0.2s",
                   }}>
                     <div style={{
-                      width: 18, height: 18, borderRadius: 5, border: `2px solid ${selected ? p.color : "#4A4768"}`,
+                      width: 18, height: 18, borderRadius: 5,
+                      border: `2px solid ${selected ? p.color : "#4A4768"}`,
                       background: selected ? p.color : "transparent", flexShrink: 0,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       transition: "all 0.2s",
@@ -315,7 +332,8 @@ useEffect(() => {
                   const active = activePlatform === id;
                   return (
                     <button key={id} onClick={() => setActivePlatform(id)} style={{
-                      padding: "14px 20px", border: "none", borderBottom: active ? `2px solid ${p.color}` : "2px solid transparent",
+                      padding: "14px 20px", border: "none",
+                      borderBottom: active ? `2px solid ${p.color}` : "2px solid transparent",
                       background: active ? `${p.color}08` : "transparent",
                       color: active ? p.color : "#6D628F", fontWeight: 600, fontSize: 13,
                       whiteSpace: "nowrap", flexShrink: 0,
