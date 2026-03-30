@@ -5,8 +5,10 @@ import { supabase } from "./supabase";
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
 const V3 = "#A78BFA";
-const DK = "#0A0814";
-const CARD = "#110E1D";
+const DK = "#12102A";   // slightly lighter dark
+const CARD = "#1C1830";
+const LT = "#F7F5FF";   // light right panel
+const LT2 = "#EEEAFF";  // slightly deeper for borders on light
 
 const PLATFORMS = [
   { id: "amazon",      name: "Amazon",      color: "#FF9900", flag: "🇺🇸" },
@@ -24,7 +26,7 @@ const TONES = [
   { id: "casual",       label: "Casual" },
 ];
 
-const FREE_LIMIT = 10; // fallback
+const FREE_LIMIT = 10;
 
 function Logo() {
   return (
@@ -56,10 +58,10 @@ function CopyButton({ text }) {
   };
   return (
     <button onClick={copy} style={{
-      padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}25`,
-      background: copied ? `${V1}20` : "transparent",
-      color: copied ? V3 : "#6D628F", fontSize: 12, fontWeight: 600,
-      fontFamily: "var(--font-body)", cursor: "pointer", transition: "all 0.2s",
+      padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}30`,
+      background: copied ? `${V1}15` : "#fff",
+      color: copied ? V2 : "#6D628F", fontSize: 12, fontWeight: 600,
+      transition: "all 0.2s",
     }}>
       {copied ? "✓ Copied" : "Copy"}
     </button>
@@ -80,23 +82,16 @@ export default function Generator() {
   const [count, setCount] = useState(0);
   const [limit, setLimit] = useState(10);
 
-  // Auth check + load counter from Supabase
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
-      if (!data.session) {
-        navigate("/auth");
-        return;
-      }
+      if (!data.session) { navigate("/auth"); return; }
       const u = data.session.user;
       setUser(u);
-
-      // Load generations_used from profiles table
       const { data: profile } = await supabase
         .from("profiles")
-        .select("generations_used")
+        .select("generations_used, generations_limit")
         .eq("id", u.id)
         .single();
-
       if (profile) {
         setCount(profile.generations_used || 0);
         setLimit(profile.generations_limit || 10);
@@ -130,17 +125,11 @@ export default function Generator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ product, features, platforms: selectedPlatforms, tone }),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generation failed");
 
-      // Increment counter in Supabase
       const newCount = count + 1;
-      await supabase
-        .from("profiles")
-        .update({ generations_used: newCount })
-        .eq("id", user.id);
-
+      await supabase.from("profiles").update({ generations_used: newCount }).eq("id", user.id);
       setCount(newCount);
       setResults(data.results);
       setActivePlatform(selectedPlatforms[0]);
@@ -161,37 +150,35 @@ export default function Generator() {
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=DM+Sans:wght@300;400;500;700&display=swap');
         :root { --font-display:'Bricolage Grotesque',sans-serif; --font-body:'DM Sans',sans-serif; }
         * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { margin:0; padding:0; background:${DK}; }
         textarea, input { outline:none; font-family:var(--font-body); }
-        textarea:focus, input:focus { border-color: ${V1}60 !important; }
-        button { cursor:pointer; font-family:var(--font-body); transition: transform 0.18s, opacity 0.18s; }
-        button:hover { opacity: 0.88; }
-        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:${V1}30; border-radius:3px; }
+        textarea:focus, input:focus { border-color:${V1}70 !important; }
+        button { cursor:pointer; font-family:var(--font-body); transition:transform 0.18s,opacity 0.18s; }
+        button:hover { opacity:0.88; transform:translateY(-1px); }
+        @keyframes pulse { 0%,100%{opacity:0.2;}50%{opacity:0.5;} }
+        ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:${V1}25;border-radius:3px;}
       `}</style>
 
-      {/* NAV */}
-      <nav style={{ padding: "0 32px", borderBottom: `1px solid ${V1}0A`, position: "sticky", top: 0, background: `${DK}F0`, backdropFilter: "blur(20px)", zIndex: 50 }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      {/* NAV — dark */}
+      <nav style={{ padding: "0 32px", borderBottom: `1px solid ${V1}12`, position: "sticky", top: 0, background: `${DK}F5`, backdropFilter: "blur(20px)", zIndex: 50 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div onClick={() => navigate("/")}><Logo /></div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            {user && (
-              <span style={{ fontSize: 13, color: "#4A4768", fontWeight: 500 }}>
-                {user.email}
-              </span>
-            )}
-            <div style={{ fontSize: 13, color: remaining <= 3 ? "#F87171" : "#6D628F", fontWeight: 500 }}>
-              {remaining} free {remaining === 1 ? "generation" : "generations"} left
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {user && <span style={{ fontSize: 13, color: "#9B96B8", fontWeight: 500 }}>{user.email}</span>}
+            <div style={{ fontSize: 13, color: remaining <= 3 ? "#F87171" : "#6D628F", fontWeight: 600 }}>
+              {remaining} / {limit} left
             </div>
             <button
-            onClick={async () => {
-              const res = await fetch("/api/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plan: "growth", email: user?.email }),
-              });
-              const data = await res.json();
-              if (data.url) window.location.href = data.url;
-            }}
-            style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 13, boxShadow: `0 2px 12px ${V1}30` }}
+              onClick={async () => {
+                const res = await fetch("/api/checkout", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ plan: "growth", email: user?.email }),
+                });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+              }}
+              style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 13, boxShadow: `0 2px 12px ${V1}30` }}
             >
               Upgrade
             </button>
@@ -202,20 +189,21 @@ export default function Generator() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 32px", display: "grid", gridTemplateColumns: "380px 1fr", gap: 32, alignItems: "start" }}>
+      {/* SPLIT LAYOUT */}
+      <div style={{ display: "grid", gridTemplateColumns: "400px 1fr", minHeight: "calc(100vh - 60px)" }}>
 
-        {/* LEFT — Input panel */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {/* LEFT — dark input panel */}
+        <div style={{ background: DK, padding: "36px 32px", borderRight: `1px solid ${V1}10`, display: "flex", flexDirection: "column", gap: 20, overflowY: "auto" }}>
           <div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", marginBottom: 6 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", marginBottom: 5 }}>
               Generate listing
             </h1>
-            <p style={{ fontSize: 14, color: "#6D628F" }}>Describe your product, pick platforms, get copy.</p>
+            <p style={{ fontSize: 13, color: "#9B96B8" }}>Describe your product, pick platforms, get copy.</p>
           </div>
 
           {/* Product name */}
           <div>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 8, textTransform: "uppercase" }}>Product name *</label>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Product name *</label>
             <input
               value={product}
               onChange={e => setProduct(e.target.value)}
@@ -226,43 +214,43 @@ export default function Generator() {
 
           {/* Features */}
           <div>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 8, textTransform: "uppercase" }}>
-              Key features <span style={{ color: "#4A4768", fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>
+              Key features <span style={{ color: "#3D3A52", fontWeight: 500, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>(optional)</span>
             </label>
             <textarea
               value={features}
               onChange={e => setFeatures(e.target.value)}
               placeholder={"Material: bamboo\nCharging: 15W Qi\nCompatible: iPhone, Samsung\nColor: natural"}
-              rows={5}
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14, resize: "vertical", lineHeight: 1.6 }}
+              rows={4}
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 13, resize: "vertical", lineHeight: 1.6 }}
             />
           </div>
 
           {/* Platforms */}
           <div>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Platforms</label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Platforms</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {PLATFORMS.map(p => {
                 const selected = selectedPlatforms.includes(p.id);
                 return (
                   <div key={p.id} onClick={() => togglePlatform(p.id)} style={{
-                    display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
-                    borderRadius: 10, cursor: "pointer",
-                    background: selected ? `${p.color}10` : `${V1}04`,
-                    border: `1px solid ${selected ? p.color + "30" : V1 + "0A"}`,
-                    transition: "all 0.2s",
+                    display: "flex", alignItems: "center", gap: 11, padding: "9px 13px",
+                    borderRadius: 9, cursor: "pointer",
+                    background: selected ? `${p.color}0E` : `${V1}04`,
+                    border: `1px solid ${selected ? p.color + "28" : V1 + "0A"}`,
+                    transition: "all 0.18s",
                   }}>
                     <div style={{
-                      width: 18, height: 18, borderRadius: 5,
-                      border: `2px solid ${selected ? p.color : "#4A4768"}`,
+                      width: 17, height: 17, borderRadius: 5,
+                      border: `2px solid ${selected ? p.color : "#3D3A52"}`,
                       background: selected ? p.color : "transparent", flexShrink: 0,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      transition: "all 0.2s",
+                      transition: "all 0.18s",
                     }}>
-                      {selected && <span style={{ color: "#fff", fontSize: 11, fontWeight: 800 }}>✓</span>}
+                      {selected && <span style={{ color: "#fff", fontSize: 10, fontWeight: 800 }}>✓</span>}
                     </div>
                     <span style={{ fontSize: 13 }}>{p.flag}</span>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: selected ? p.color : "#9B96B8", flex: 1 }}>{p.name}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: selected ? p.color : "#9B96B8", flex: 1 }}>{p.name}</span>
                   </div>
                 );
               })}
@@ -271,15 +259,15 @@ export default function Generator() {
 
           {/* Tone */}
           <div>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Tone</label>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Tone</label>
+            <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
               {TONES.map(t => (
                 <button key={t.id} onClick={() => setTone(t.id)} style={{
-                  padding: "7px 16px", borderRadius: 100, border: "none",
+                  padding: "7px 15px", borderRadius: 100, border: "none",
                   background: tone === t.id ? `linear-gradient(135deg, ${V1}, ${V2})` : `${V1}08`,
                   color: tone === t.id ? "#fff" : "#6D628F",
                   fontSize: 13, fontWeight: 600,
-                  boxShadow: tone === t.id ? `0 2px 12px ${V1}30` : "none",
+                  boxShadow: tone === t.id ? `0 2px 10px ${V1}30` : "none",
                 }}>
                   {t.label}
                 </button>
@@ -300,58 +288,60 @@ export default function Generator() {
             disabled={loading}
             style={{
               width: "100%", padding: "14px", borderRadius: 12, border: "none",
-              background: loading ? `${V1}40` : `linear-gradient(135deg, ${V1}, ${V2})`,
+              background: loading ? `${V1}35` : `linear-gradient(135deg, ${V1}, ${V2})`,
               color: "#fff", fontWeight: 700, fontSize: 15,
-              boxShadow: loading ? "none" : `0 4px 24px ${V1}35`,
+              boxShadow: loading ? "none" : `0 4px 22px ${V1}35`,
+              marginTop: "auto",
             }}
           >
             {loading ? "✦ Generating..." : "✦ Generate listings"}
           </button>
         </div>
 
-        {/* RIGHT — Output */}
-        <div style={{ position: "sticky", top: 80 }}>
+        {/* RIGHT — light output panel */}
+        <div style={{ background: LT, padding: "36px 40px", overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
           {!results && !loading && (
             <div style={{
-              background: CARD, borderRadius: 20, padding: "60px 40px",
-              border: `1px solid ${V1}0A`, textAlign: "center",
-              minHeight: 400, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12,
+              flex: 1, minHeight: "calc(100vh - 132px)",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14,
+              textAlign: "center",
             }}>
-              <div style={{ fontSize: 48, marginBottom: 8 }}>✦</div>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#F5F3FF" }}>Your listings will appear here</h3>
-              <p style={{ color: "#4A4768", fontSize: 14, maxWidth: 280, lineHeight: 1.65 }}>Fill in the product details on the left and click Generate</p>
+              <div style={{ width: 64, height: 64, borderRadius: 20, background: `${V1}12`, border: `1px solid ${V1}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, color: V1 }}>✦</div>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#1A1530" }}>Your listings will appear here</h3>
+              <p style={{ color: "#9B96B8", fontSize: 14, maxWidth: 260, lineHeight: 1.65 }}>Fill in the product details on the left and click Generate</p>
             </div>
           )}
 
           {loading && (
             <div style={{
-              background: CARD, borderRadius: 20, padding: "60px 40px",
-              border: `1px solid ${V1}0A`, textAlign: "center",
-              minHeight: 400, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16,
+              flex: 1, minHeight: "calc(100vh - 132px)",
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20,
             }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 340 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 360 }}>
                 {[90, 75, 60, 45, 80, 55].map((w, i) => (
-                  <div key={i} style={{ height: 10, width: `${w}%`, borderRadius: 5, background: `${V1}15`, animation: `pulse 1.4s ease-in-out ${i * 0.1}s infinite` }} />
+                  <div key={i} style={{ height: 10, width: `${w}%`, borderRadius: 5, background: `${V1}18`, animation: `pulse 1.4s ease-in-out ${i * 0.1}s infinite` }} />
                 ))}
               </div>
-              <p style={{ color: "#6D628F", fontSize: 13 }}>✦ Writing your listings...</p>
+              <p style={{ color: "#9B96B8", fontSize: 13 }}>✦ Writing your listings...</p>
             </div>
           )}
 
           {results && (
-            <div style={{ background: CARD, borderRadius: 20, border: `1px solid ${V1}0A`, overflow: "hidden" }}>
+            <div>
               {/* Platform tabs */}
-              <div style={{ display: "flex", borderBottom: `1px solid ${V1}0A`, overflowX: "auto" }}>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 24 }}>
                 {selectedPlatforms.map(id => {
                   const p = PLATFORMS.find(pl => pl.id === id);
                   const active = activePlatform === id;
                   return (
                     <button key={id} onClick={() => setActivePlatform(id)} style={{
-                      padding: "14px 20px", border: "none",
-                      borderBottom: active ? `2px solid ${p.color}` : "2px solid transparent",
-                      background: active ? `${p.color}08` : "transparent",
-                      color: active ? p.color : "#6D628F", fontWeight: 600, fontSize: 13,
-                      whiteSpace: "nowrap", flexShrink: 0,
+                      padding: "8px 18px", borderRadius: 100, border: "none",
+                      background: active ? p.color : "#fff",
+                      color: active ? "#fff" : "#6B647A",
+                      fontWeight: 600, fontSize: 13,
+                      boxShadow: active ? `0 2px 12px ${p.color}35` : "0 1px 4px rgba(0,0,0,0.08)",
+                      transition: "all 0.2s",
                     }}>
                       {p.flag} {p.name}
                     </button>
@@ -359,36 +349,33 @@ export default function Generator() {
                 })}
               </div>
 
-              {/* Result content */}
+              {/* Result */}
               {activeResult && activePlat && (
-                <div style={{ padding: 28 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: activePlat.color, textTransform: "uppercase" }}>
+                <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${LT2}`, overflow: "hidden", boxShadow: "0 2px 16px rgba(139,92,246,0.06)" }}>
+                  <div style={{ padding: "16px 20px", borderBottom: `1px solid ${LT2}`, display: "flex", justifyContent: "space-between", alignItems: "center", background: `${activePlat.color}06` }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.09em", color: activePlat.color, textTransform: "uppercase" }}>
                       {activePlat.name} · {activePlat.flag}
                     </div>
                     <CopyButton text={activeResult} />
                   </div>
                   <div style={{
-                    fontFamily: "var(--font-body)", fontSize: 14, color: "#D6D3E8",
-                    lineHeight: 1.75, whiteSpace: "pre-wrap",
-                    padding: "20px", background: `${DK}80`, borderRadius: 12,
-                    border: `1px solid ${V1}08`, minHeight: 200,
+                    padding: "24px", fontFamily: "var(--font-body)", fontSize: 14,
+                    color: "#2A2340", lineHeight: 1.8, whiteSpace: "pre-wrap",
+                    minHeight: 200,
                   }}>
                     {activeResult}
                   </div>
+                  <div style={{ padding: "12px 20px", borderTop: `1px solid ${LT2}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 12, color: "#B0AACC" }}>{selectedPlatforms.length} platforms generated</span>
+                    <button onClick={generate} style={{
+                      padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}20`,
+                      background: "transparent", color: V2, fontSize: 12, fontWeight: 600,
+                    }}>
+                      ↻ Regenerate
+                    </button>
+                  </div>
                 </div>
               )}
-
-              {/* Footer */}
-              <div style={{ padding: "14px 28px", borderTop: `1px solid ${V1}08`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, color: "#4A4768" }}>{selectedPlatforms.length} platforms generated</span>
-                <button onClick={generate} style={{
-                  padding: "7px 16px", borderRadius: 8, border: `1px solid ${V1}20`,
-                  background: "transparent", color: V3, fontSize: 12, fontWeight: 600,
-                }}>
-                  ↻ Regenerate
-                </button>
-              </div>
             </div>
           )}
         </div>

@@ -5,8 +5,8 @@ import { supabase } from "./supabase";
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
 const V3 = "#A78BFA";
-const DK = "#0A0814";
-const CARD = "#110E1D";
+const CARD = "#1C1830";
+const LT = "#F0ECFF";   // light lavender background
 
 function Logo() {
   return (
@@ -21,7 +21,7 @@ function Logo() {
         <path d="M60 18 L62 14 L64 18 L68 20 L64 22 L62 26 L60 22 L56 20 Z" fill="#A78BFA" opacity="0.85"/>
       </svg>
       <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-0.02em" }}>
-        <span style={{ color: "#F5F3FF" }}>Sell</span><span style={{ color: V1 }}>Scribe</span>
+        <span style={{ color: "#1A1330" }}>Sell</span><span style={{ color: V1 }}>Scribe</span>
       </span>
     </div>
   );
@@ -29,7 +29,7 @@ function Logo() {
 
 export default function Auth() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("login"); // login | signup | reset
+  const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,14 +37,10 @@ export default function Auth() {
   const [success, setSuccess] = useState("");
 
   const handleSubmit = async () => {
-    if (!email || (!password && mode !== "reset")) {
-      setError("Please fill in all fields");
-      return;
-    }
+    if (!email || (!password && mode !== "reset")) { setError("Please fill in all fields"); return; }
     setLoading(true);
     setError("");
     setSuccess("");
-
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({ email, password });
@@ -67,73 +63,68 @@ export default function Auth() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSubmit();
-  };
-
   return (
-    <div style={{ minHeight: "100vh", background: DK, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px", fontFamily: "var(--font-body)" }}>
+    <div style={{ minHeight: "100vh", background: LT, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px", fontFamily: "var(--font-body)", position: "relative", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=DM+Sans:wght@300;400;500;700&display=swap');
         :root { --font-display:'Bricolage Grotesque',sans-serif; --font-body:'DM Sans',sans-serif; }
         * { margin:0; padding:0; box-sizing:border-box; }
         input { outline:none; font-family:var(--font-body); }
-        input:focus { border-color: ${V1}80 !important; }
-        button { cursor:pointer; font-family:var(--font-body); transition: transform 0.18s, opacity 0.18s; }
-        button:hover { opacity: 0.88; transform: translateY(-1px); }
+        input:focus { border-color:${V1}70 !important; }
+        button { cursor:pointer; font-family:var(--font-body); transition:transform 0.18s,opacity 0.18s; }
+        button:hover { opacity:0.88; transform:translateY(-1px); }
       `}</style>
 
-      {/* Ambient orbs */}
-      <div style={{ position: "fixed", top: "10%", left: "5%", width: 400, height: 400, borderRadius: "50%", background: `radial-gradient(circle, ${V2}0A, transparent 70%)`, pointerEvents: "none" }} />
-      <div style={{ position: "fixed", bottom: "10%", right: "5%", width: 350, height: 350, borderRadius: "50%", background: `radial-gradient(circle, ${V1}08, transparent 70%)`, pointerEvents: "none" }} />
+      {/* Background orbs */}
+      <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${V1}15, transparent 65%)`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: 450, height: 450, borderRadius: "50%", background: `radial-gradient(circle, ${V2}10, transparent 65%)`, pointerEvents: "none" }} />
 
       {/* Logo */}
-      <div onClick={() => navigate("/")} style={{ marginBottom: 40, cursor: "pointer" }}>
+      <div onClick={() => navigate("/")} style={{ marginBottom: 36, cursor: "pointer", position: "relative" }}>
         <Logo />
       </div>
 
-      {/* Card */}
-      <div style={{ width: "100%", maxWidth: 400, background: CARD, borderRadius: 20, padding: 36, border: `1px solid ${V1}12`, position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${V2}, ${V1}, ${V3})`, borderRadius: "20px 20px 0 0" }} />
+      {/* Dark card on light bg */}
+      <div style={{ width: "100%", maxWidth: 400, background: CARD, borderRadius: 24, padding: 36, borderTop: `2px solid ${V1}`, border: `1px solid ${V1}18`, position: "relative", boxShadow: "0 24px 80px rgba(139,92,246,0.15)" }}>
 
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "#F5F3FF", marginBottom: 6, letterSpacing: "-0.02em" }}>
           {mode === "login" ? "Welcome back" : mode === "signup" ? "Create account" : "Reset password"}
         </h1>
-        <p style={{ fontSize: 14, color: "#6D628F", marginBottom: 28 }}>
+        <p style={{ fontSize: 14, color: "#9B96B8", marginBottom: 28 }}>
           {mode === "login" ? "Log in to your SellScribe account" : mode === "signup" ? "Start generating listings for free" : "We'll send you a reset link"}
         </p>
 
         {/* Email */}
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Email</label>
+        <div style={{ marginBottom: 14 }}>
+          <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Email</label>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={e => e.key === "Enter" && handleSubmit()}
             placeholder="you@example.com"
-            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14 }}
+            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }}
           />
         </div>
 
         {/* Password */}
         {mode !== "reset" && (
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#6D628F", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Password</label>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              onKeyDown={handleKeyDown}
+              onKeyDown={e => e.key === "Enter" && handleSubmit()}
               placeholder="••••••••"
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14 }}
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }}
             />
           </div>
         )}
 
-        {/* Error / Success */}
+        {/* Messages */}
         {error && (
-          <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#FCA5A5", fontSize: 13, marginBottom: 16 }}>
+          <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#FCA5A5", fontSize: 13, marginBottom: 16 }}>
             {error}
           </div>
         )}
@@ -165,7 +156,7 @@ export default function Auth() {
               <button onClick={() => { setMode("signup"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>
                 Don't have an account? Sign up
               </button>
-              <button onClick={() => { setMode("reset"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: "#4A4768", fontSize: 13 }}>
+              <button onClick={() => { setMode("reset"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: "#9B96B8", fontSize: 13 }}>
                 Forgot password?
               </button>
             </>
@@ -183,7 +174,7 @@ export default function Auth() {
         </div>
       </div>
 
-      <p style={{ marginTop: 24, color: "#3D3A52", fontSize: 12 }}>
+      <p style={{ marginTop: 24, color: "#B0AACC", fontSize: 12, position: "relative" }}>
         By continuing you agree to our Terms of Service
       </p>
     </div>
