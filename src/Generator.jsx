@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabase";
 
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
@@ -77,6 +78,14 @@ function CopyButton({ text }) {
 
 export default function Generator() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    if (!data.session) navigate("/auth");
+    else setUser(data.session.user);
+  });
+}, []);
   const [product, setProduct] = useState("");
   const [features, setFeatures] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState(["amazon", "wildberries", "kaspi"]);

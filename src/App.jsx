@@ -544,7 +544,7 @@ export default function Landing() {
                 </button>
               ))}
             </div>
-            <button onClick={() => navigate("/generate")} style={{ padding: "9px 22px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 14, fontFamily: "var(--font-body)", boxShadow: `0 2px 16px ${V1}30` }}>
+            <button onClick={() => navigate("/auth")} style={{ padding: "9px 22px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 14, fontFamily: "var(--font-body)", boxShadow: `0 2px 16px ${V1}30` }}>
               {t.navTry}
             </button>
           </div>
@@ -568,7 +568,7 @@ export default function Landing() {
               </span>
             </h1>
             <p style={{ fontSize: 18, color: "#9B96B8", lineHeight: 1.7, maxWidth: 480, marginBottom: 36 }}>{t.sub}</p>
-            <button onClick={() => navigate("/generate")} style={{ padding: "15px 40px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30, 0 0 0 1px ${V1}40` }}>
+            <button onClick={() => navigate("/auth")} style={{ padding: "15px 40px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30, 0 0 0 1px ${V1}40` }}>
               {t.cta}
             </button>
           </div>
@@ -712,7 +712,7 @@ export default function Landing() {
           <p style={{ color: "#6B647A", fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 460, margin: "0 auto 32px", position: "relative" }}>
             {t.ctaSub}
           </p>
-          <button onClick={() => navigate("/generate")} style={{ padding: "16px 44px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30`, position: "relative" }}>
+          <button onClick={() => navigate("/auth")} style={{ padding: "16px 44px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30`, position: "relative" }}>
             {t.ctaBtn}
           </button>
         </AnimDiv>
