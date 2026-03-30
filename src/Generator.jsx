@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 
-const [limit, setLimit] = useState(10);
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
 const V3 = "#A78BFA";
@@ -79,6 +78,7 @@ export default function Generator() {
   const [error, setError] = useState("");
   const [activePlatform, setActivePlatform] = useState(null);
   const [count, setCount] = useState(0);
+  const [limit, setLimit] = useState(10);
 
   // Auth check + load counter from Supabase
   useEffect(() => {
