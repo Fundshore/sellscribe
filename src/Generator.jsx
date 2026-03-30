@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 
+const [limit, setLimit] = useState(10);
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
 const V3 = "#A78BFA";
@@ -24,7 +25,7 @@ const TONES = [
   { id: "casual",       label: "Casual" },
 ];
 
-const FREE_LIMIT = 10;
+const FREE_LIMIT = 10; // fallback
 
 function Logo() {
   return (
@@ -96,7 +97,10 @@ export default function Generator() {
         .eq("id", u.id)
         .single();
 
-      if (profile) setCount(profile.generations_used || 0);
+      if (profile) {
+        setCount(profile.generations_used || 0);
+        setLimit(profile.generations_limit || 10);
+      }
     });
   }, []);
 
@@ -114,7 +118,7 @@ export default function Generator() {
   const generate = async () => {
     if (!product.trim()) { setError("Enter a product name"); return; }
     if (selectedPlatforms.length === 0) { setError("Select at least one platform"); return; }
-    if (count >= FREE_LIMIT) { setError(`Free limit reached (${FREE_LIMIT} generations). Upgrade to continue.`); return; }
+    if (count >= limit) { setError(`Free limit reached (${limit} generations). Upgrade to continue.`); return; }
 
     setLoading(true);
     setError("");
@@ -147,7 +151,7 @@ export default function Generator() {
     }
   };
 
-  const remaining = FREE_LIMIT - count;
+  const remaining = limit - count;
   const activeResult = results && activePlatform ? results[activePlatform] : null;
   const activePlat = PLATFORMS.find(p => p.id === activePlatform);
 
