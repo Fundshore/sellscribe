@@ -233,8 +233,8 @@ export default function Generator() {
                 {remaining} / {limit} {T.left}
               </span>
               {resetDate && (
-                <div style={{ fontSize: 11, color: "#4A4768", fontWeight: 500, marginTop: 1 }}>
-                  Resets {resetDate.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                <div style={{ fontSize: 11, color: "#9B96B8", fontWeight: 500, marginTop: 1 }}>
+                  {T.resetsOn} {resetDate.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "short" })}
                 </div>
               )}
             </div>
@@ -336,7 +336,7 @@ export default function Generator() {
           <div>
             <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>{T.toneLabel}</label>
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
-              {TONES.map(t => (
+              {TONES.map((t, i) => (
                 <button key={t.id} onClick={() => setTone(t.id)} style={{
                   padding: "7px 15px", borderRadius: 100, border: "none",
                   background: tone === t.id ? `linear-gradient(135deg, ${V1}, ${V2})` : `${V1}08`,
@@ -344,7 +344,7 @@ export default function Generator() {
                   fontSize: 13, fontWeight: 600,
                   boxShadow: tone === t.id ? `0 2px 10px ${V1}30` : "none",
                 }}>
-                  {t.label}
+                  {T.tones[i]}
                 </button>
               ))}
             </div>
@@ -383,8 +383,8 @@ export default function Generator() {
               textAlign: "center",
             }}>
               <div style={{ width: 64, height: 64, borderRadius: 20, background: `${V1}12`, border: `1px solid ${V1}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, color: V1 }}>✦</div>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#1A1530" }}>Your listings will appear here</h3>
-              <p style={{ color: "#9B96B8", fontSize: 14, maxWidth: 260, lineHeight: 1.65 }}>Fill in the product details on the left and click Generate</p>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#1A1530" }}>{T.emptyTitle}</h3>
+              <p style={{ color: "#9B96B8", fontSize: 14, maxWidth: 260, lineHeight: 1.65 }}>{T.emptySub}</p>
             </div>
           )}
 

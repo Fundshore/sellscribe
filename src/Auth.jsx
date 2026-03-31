@@ -27,10 +27,15 @@ const AUTH_STRINGS = {
     haveAccount: "Already have an account? Log in",
     backToLogin: "Back to login",
     forgotPwd: "Forgot password?",
-    terms: "By continuing you agree to our Terms of Service",
+    terms: "I agree to the",
+    termsLink: "Terms of Service",
+    termsNote: "By registering you agree to our",
     checkEmail: "Check your email to confirm your account, then log in.",
     resetSent: "Password reset link sent to your email.",
     fillFields: "Please fill in all fields",
+    agreeTerms: "Please agree to the Terms of Service",
+    pwdWeak: "Password must be at least 8 characters with uppercase, lowercase and a number",
+    pwdRequirements: "Min 8 characters · Uppercase · Lowercase · Number",
   },
   ru: {
     welcomeBack: "С возвращением",
@@ -49,12 +54,45 @@ const AUTH_STRINGS = {
     haveAccount: "Уже есть аккаунт? Войти",
     backToLogin: "Назад к входу",
     forgotPwd: "Забыли пароль?",
-    terms: "Продолжая, вы соглашаетесь с нашими Условиями использования",
+    terms: "Я принимаю",
+    termsLink: "Условия использования",
+    termsNote: "Регистрируясь, вы принимаете наши",
     checkEmail: "Проверьте почту для подтверждения аккаунта, затем войдите.",
     resetSent: "Ссылка для сброса пароля отправлена на вашу почту.",
     fillFields: "Пожалуйста, заполните все поля",
+    agreeTerms: "Пожалуйста, примите Условия использования",
+    pwdWeak: "Пароль должен содержать минимум 8 символов, заглавную букву, строчную и цифру",
+    pwdRequirements: "Мин. 8 символов · Заглавная · Строчная · Цифра",
   },
 };
+
+function validatePassword(pwd) {
+  if (pwd.length < 8) return false;
+  if (!/[A-Z]/.test(pwd)) return false;
+  if (!/[a-z]/.test(pwd)) return false;
+  if (!/[0-9]/.test(pwd)) return false;
+  return true;
+}
+
+function PasswordStrength({ password, lang }) {
+  if (!password) return null;
+  const checks = [
+    { label: lang === "ru" ? "8+ символов" : "8+ chars", ok: password.length >= 8 },
+    { label: lang === "ru" ? "Заглавная" : "Uppercase", ok: /[A-Z]/.test(password) },
+    { label: lang === "ru" ? "Строчная" : "Lowercase", ok: /[a-z]/.test(password) },
+    { label: lang === "ru" ? "Цифра" : "Number", ok: /[0-9]/.test(password) },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+      {checks.map(c => (
+        <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 600, color: c.ok ? "#4ADE80" : "#6D628F" }}>
+          <span>{c.ok ? "✓" : "○"}</span>
+          <span>{c.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Logo() {
   return (
@@ -83,12 +121,17 @@ export default function Auth() {
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const handleSubmit = async () => {
     if (!email || (!password && mode !== "reset")) { setError(T.fillFields); return; }
+    if (mode === "signup") {
+      if (!validatePassword(password)) { setError(T.pwdWeak); return; }
+      if (!agreedToTerms) { setError(T.agreeTerms); return; }
+    }
     setLoading(true);
     setError("");
     setSuccess("");
@@ -116,16 +159,20 @@ export default function Auth() {
 
   const switchMode = (m) => { setMode(m); setError(""); setSuccess(""); };
 
+  const signupDisabled = loading || (mode === "signup" && !agreedToTerms);
+
   return (
     <div style={{ minHeight: "100vh", background: LT, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px", fontFamily: "var(--font-body)", position: "relative", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=DM+Sans:wght@300;400;500;700&display=swap');
         :root { --font-display:'Bricolage Grotesque',sans-serif; --font-body:'DM Sans',sans-serif; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        input { outline:none; font-family:var(--font-body); }
+        input[type="text"], input[type="email"], input[type="password"] { outline:none; font-family:var(--font-body); }
         input:focus { border-color:${V1}70 !important; }
         button { cursor:pointer; font-family:var(--font-body); transition:transform 0.18s,opacity 0.18s; }
-        button:hover { opacity:0.88; transform:translateY(-1px); }
+        button:hover:not(:disabled) { opacity:0.88; transform:translateY(-1px); }
+        button:disabled { cursor:not-allowed; opacity:0.5; }
+        input[type="checkbox"] { cursor:pointer; accent-color:${V1}; }
       `}</style>
 
       <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${V1}15, transparent 65%)`, pointerEvents: "none" }} />
@@ -145,6 +192,7 @@ export default function Auth() {
       </div>
 
       <div style={{ width: "100%", maxWidth: 400, background: CARD, borderRadius: 24, padding: 36, borderTop: `2px solid ${V1}`, border: `1px solid ${V1}18`, position: "relative", boxShadow: "0 24px 80px rgba(139,92,246,0.15)" }}>
+
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "#F5F3FF", marginBottom: 6, letterSpacing: "-0.02em" }}>
           {mode === "login" ? T.welcomeBack : mode === "signup" ? T.createAccount : T.resetPwd}
         </h1>
@@ -152,25 +200,48 @@ export default function Auth() {
           {mode === "login" ? T.loginSub : mode === "signup" ? T.signupSub : T.resetSub}
         </p>
 
+        {/* Email */}
         <div style={{ marginBottom: 14 }}>
           <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>{T.emailLabel}</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="you@example.com" style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="you@example.com"
+            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
         </div>
 
+        {/* Password */}
         {mode !== "reset" && (
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: mode === "signup" ? 8 : 24 }}>
             <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>{T.pwdLabel}</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="••••••••" style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="••••••••"
+              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
+            {mode === "signup" && <PasswordStrength password={password} lang={lang} />}
           </div>
         )}
 
+        {/* Terms checkbox — signup only */}
+        {mode === "signup" && (
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 24, marginTop: 16 }}>
+            <input type="checkbox" id="terms" checked={agreedToTerms} onChange={e => setAgreedToTerms(e.target.checked)}
+              style={{ marginTop: 2, width: 16, height: 16, flexShrink: 0 }} />
+            <label htmlFor="terms" style={{ fontSize: 13, color: "#9B96B8", lineHeight: 1.5, cursor: "pointer" }}>
+              {T.terms}{" "}
+              <span onClick={() => navigate("/terms")} style={{ color: V3, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
+                {T.termsLink}
+              </span>
+            </label>
+          </div>
+        )}
+
+        {/* Messages */}
         {error && <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#FCA5A5", fontSize: 13, marginBottom: 16 }}>{error}</div>}
         {success && <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#86EFAC", fontSize: 13, marginBottom: 16 }}>{success}</div>}
 
-        <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "13px", borderRadius: 12, border: "none", background: loading ? `${V1}40` : `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 15, boxShadow: loading ? "none" : `0 4px 20px ${V1}35`, marginBottom: 20 }}>
+        {/* Submit */}
+        <button onClick={handleSubmit} disabled={signupDisabled}
+          style={{ width: "100%", padding: "13px", borderRadius: 12, border: "none", background: signupDisabled ? `${V1}35` : `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 15, boxShadow: signupDisabled ? "none" : `0 4px 20px ${V1}35`, marginBottom: 20 }}>
           {loading ? T.waiting : mode === "login" ? T.loginBtn : mode === "signup" ? T.signupBtn : T.resetBtn}
         </button>
 
+        {/* Links */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
           {mode === "login" && (
             <>
@@ -182,8 +253,6 @@ export default function Auth() {
           {mode === "reset" && <button onClick={() => switchMode("login")} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>{T.backToLogin}</button>}
         </div>
       </div>
-
-      <p style={{ marginTop: 24, color: "#B0AACC", fontSize: 12, position: "relative" }}>{T.terms}</p>
     </div>
   );
 }

@@ -164,6 +164,7 @@ const STRINGS = {
     ctaTitle: "Stop writing listings manually",
     ctaSub: "Join sellers who save hours every week with AI-powered multi-platform descriptions.",
     ctaBtn: "Generate your first listing — free",
+    popularLabel: "POPULAR",
     footerNote: "© 2026 SellScribe. Write once. Sell everywhere.",
   },
   ru: {
@@ -227,6 +228,7 @@ const STRINGS = {
     ctaTitle: "Хватит писать листинги вручную",
     ctaSub: "Присоединяйтесь к продавцам, которые экономят часы каждую неделю — с ИИ-листингами для всех платформ.",
     ctaBtn: "Создать первый листинг — бесплатно",
+    popularLabel: "ПОПУЛЯРНЫЙ",
     footerNote: "© 2026 SellScribe. Описывай один раз. Продавай везде.",
   },
 };
@@ -668,7 +670,7 @@ export default function Landing() {
                 border: pl.hl ? `2px solid ${V1}28` : `1px solid ${V1}0A`,
                 position: "relative",
               }}>
-                {pl.hl && <div style={{ position: "absolute", top: -11, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${V1}, ${V2})`, padding: "4px 16px", borderRadius: 100, fontSize: 11, fontWeight: 700, color: "#fff" }}>POPULAR</div>}
+                {pl.hl && <div style={{ position: "absolute", top: -11, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${V1}, ${V2})`, padding: "4px 16px", borderRadius: 100, fontSize: 11, fontWeight: 700, color: "#fff" }}>{t.popularLabel}</div>}
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "#F5F3FF", marginBottom: 3, fontFamily: "var(--font-display)" }}>{pl.name}</h3>
                 <p style={{ color: "#6D628F", fontSize: 13, marginBottom: 16 }}>{pl.desc}</p>
                 <div style={{ marginBottom: 20 }}>
