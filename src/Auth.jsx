@@ -1,13 +1,60 @@
 import { useState } from "react";
-import { useLang } from "./useLang";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useLang } from "./useLang";
 
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
 const V3 = "#A78BFA";
 const CARD = "#1C1830";
-const LT = "#F0ECFF";   // light lavender background
+const LT = "#F0ECFF";
+
+const AUTH_STRINGS = {
+  en: {
+    welcomeBack: "Welcome back",
+    createAccount: "Create account",
+    resetPwd: "Reset password",
+    loginSub: "Log in to your SellScribe account",
+    signupSub: "Start generating listings for free",
+    resetSub: "We'll send you a reset link",
+    emailLabel: "Email",
+    pwdLabel: "Password",
+    loginBtn: "Log in",
+    signupBtn: "Create account",
+    resetBtn: "Send reset link",
+    waiting: "Please wait...",
+    noAccount: "Don't have an account? Sign up",
+    haveAccount: "Already have an account? Log in",
+    backToLogin: "Back to login",
+    forgotPwd: "Forgot password?",
+    terms: "By continuing you agree to our Terms of Service",
+    checkEmail: "Check your email to confirm your account, then log in.",
+    resetSent: "Password reset link sent to your email.",
+    fillFields: "Please fill in all fields",
+  },
+  ru: {
+    welcomeBack: "С возвращением",
+    createAccount: "Создать аккаунт",
+    resetPwd: "Сброс пароля",
+    loginSub: "Войдите в свой аккаунт SellScribe",
+    signupSub: "Начните создавать листинги бесплатно",
+    resetSub: "Отправим ссылку для сброса пароля",
+    emailLabel: "Электронная почта",
+    pwdLabel: "Пароль",
+    loginBtn: "Войти",
+    signupBtn: "Создать аккаунт",
+    resetBtn: "Отправить ссылку",
+    waiting: "Пожалуйста, подождите...",
+    noAccount: "Нет аккаунта? Зарегистрируйтесь",
+    haveAccount: "Уже есть аккаунт? Войти",
+    backToLogin: "Назад к входу",
+    forgotPwd: "Забыли пароль?",
+    terms: "Продолжая, вы соглашаетесь с нашими Условиями использования",
+    checkEmail: "Проверьте почту для подтверждения аккаунта, затем войдите.",
+    resetSent: "Ссылка для сброса пароля отправлена на вашу почту.",
+    fillFields: "Пожалуйста, заполните все поля",
+  },
+};
 
 function Logo() {
   return (
@@ -31,42 +78,8 @@ function Logo() {
 export default function Auth() {
   const navigate = useNavigate();
   const [lang, setLang] = useLang();
-  const T = {
-    en: {
-      welcomeBack: "Welcome back", createAccount: "Create account", resetPwd: "Reset password",
-      loginSub: "Log in to your SellScribe account",
-      signupSub: "Start generating listings for free",
-      resetSub: "We\'ll send you a reset link",
-      emailLabel: T.emailLabel, pwdLabel: T.pwdLabel,
-      loginBtn: "Log in", signupBtn: "Create account", resetBtn: "Send reset link",
-      waiting: "Please wait...",
-      noAccount: "Don\'t have an account? Sign up",
-      haveAccount: T.haveAccount,
-      backToLogin: T.backToLogin,
-      forgotPwd: T.forgotPwd,
-      terms: T.terms,
-      checkEmail: T.checkEmail,
-      resetSent: T.resetSent,
-      fillFields: T.fillFields,
-    },
-    ru: {
-      welcomeBack: "С возвращением", createAccount: "Создать аккаунт", resetPwd: "Сброс пароля",
-      loginSub: "Войдите в свой аккаунт SellScribe",
-      signupSub: "Начните создавать листинги бесплатно",
-      resetSub: "Отправим ссылку для сброса пароля",
-      emailLabel: "Электронная почта", pwdLabel: "Пароль",
-      loginBtn: "Войти", signupBtn: "Создать аккаунт", resetBtn: "Отправить ссылку",
-      waiting: "Пожалуйста, подождите...",
-      noAccount: "Нет аккаунта? Зарегистрируйтесь",
-      haveAccount: "Уже есть аккаунт? Войти",
-      backToLogin: "Назад к входу",
-      forgotPwd: "Забыли пароль?",
-      terms: "Продолжая, вы соглашаетесь с нашими Условиями использования",
-      checkEmail: "Проверьте почту для подтверждения аккаунта, затем войдите.",
-      resetSent: "Ссылка для сброса пароля отправлена на вашу почту.",
-      fillFields: "Пожалуйста, заполните все поля",
-    },
-  }[lang];
+  const T = AUTH_STRINGS[lang];
+
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,7 +88,7 @@ export default function Auth() {
   const [success, setSuccess] = useState("");
 
   const handleSubmit = async () => {
-    if (!email || (!password && mode !== "reset")) { setError("Please fill in all fields"); return; }
+    if (!email || (!password && mode !== "reset")) { setError(T.fillFields); return; }
     setLoading(true);
     setError("");
     setSuccess("");
@@ -83,7 +96,7 @@ export default function Auth() {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        setSuccess("Check your email to confirm your account, then log in.");
+        setSuccess(T.checkEmail);
         setMode("login");
       } else if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -92,7 +105,7 @@ export default function Auth() {
       } else if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) throw error;
-        setSuccess("Password reset link sent to your email.");
+        setSuccess(T.resetSent);
       }
     } catch (err) {
       setError(err.message);
@@ -100,6 +113,8 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  const switchMode = (m) => { setMode(m); setError(""); setSuccess(""); };
 
   return (
     <div style={{ minHeight: "100vh", background: LT, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px", fontFamily: "var(--font-body)", position: "relative", overflow: "hidden" }}>
@@ -113,25 +128,23 @@ export default function Auth() {
         button:hover { opacity:0.88; transform:translateY(-1px); }
       `}</style>
 
-      {/* Background orbs */}
       <div style={{ position: "absolute", top: "-10%", right: "-5%", width: 500, height: 500, borderRadius: "50%", background: `radial-gradient(circle, ${V1}15, transparent 65%)`, pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "-15%", left: "-5%", width: 450, height: 450, borderRadius: "50%", background: `radial-gradient(circle, ${V2}10, transparent 65%)`, pointerEvents: "none" }} />
 
-      {/* Logo */}
-      <div onClick={() => navigate("/")} style={{ marginBottom: 36, cursor: "pointer", position: "relative" }}>
+      <div onClick={() => navigate("/")} style={{ marginBottom: 24, cursor: "pointer", position: "relative" }}>
         <Logo />
       </div>
 
       {/* Lang toggle */}
-      <div style={{ display: "flex", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 8, overflow: "hidden", marginBottom: 20, position: "relative" }}>
+      <div style={{ display: "flex", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 8, overflow: "hidden", marginBottom: 24, position: "relative" }}>
         {["en", "ru"].map(l => (
-          <button key={l} onClick={() => setLang(l)} style={{ padding: "6px 16px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 13, background: lang === l ? "rgba(139,92,246,0.2)" : "transparent", color: lang === l ? "#A78BFA" : "#9B96B8", letterSpacing: "0.04em", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
+          <button key={l} onClick={() => setLang(l)} style={{ padding: "6px 16px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 13, background: lang === l ? "rgba(139,92,246,0.2)" : "transparent", color: lang === l ? V1 : "#9B96B8", letterSpacing: "0.04em", transition: "all 0.2s" }}>
+            {l.toUpperCase()}
+          </button>
         ))}
       </div>
 
-      {/* Dark card on light bg */}
       <div style={{ width: "100%", maxWidth: 400, background: CARD, borderRadius: 24, padding: 36, borderTop: `2px solid ${V1}`, border: `1px solid ${V1}18`, position: "relative", boxShadow: "0 24px 80px rgba(139,92,246,0.15)" }}>
-
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "#F5F3FF", marginBottom: 6, letterSpacing: "-0.02em" }}>
           {mode === "login" ? T.welcomeBack : mode === "signup" ? T.createAccount : T.resetPwd}
         </h1>
@@ -139,89 +152,38 @@ export default function Auth() {
           {mode === "login" ? T.loginSub : mode === "signup" ? T.signupSub : T.resetSub}
         </p>
 
-        {/* Email */}
         <div style={{ marginBottom: 14 }}>
-          <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleSubmit()}
-            placeholder="you@example.com"
-            style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }}
-          />
+          <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>{T.emailLabel}</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="you@example.com" style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
         </div>
 
-        {/* Password */}
         {mode !== "reset" && (
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleSubmit()}
-              placeholder="••••••••"
-              style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }}
-            />
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>{T.pwdLabel}</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="••••••••" style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}18`, color: "#E8E5F5", fontSize: 14 }} />
           </div>
         )}
 
-        {/* Messages */}
-        {error && (
-          <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#FCA5A5", fontSize: 13, marginBottom: 16 }}>
-            {error}
-          </div>
-        )}
-        {success && (
-          <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#86EFAC", fontSize: 13, marginBottom: 16 }}>
-            {success}
-          </div>
-        )}
+        {error && <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", color: "#FCA5A5", fontSize: 13, marginBottom: 16 }}>{error}</div>}
+        {success && <div style={{ padding: "10px 14px", borderRadius: 10, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#86EFAC", fontSize: 13, marginBottom: 16 }}>{success}</div>}
 
-        {/* Submit */}
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            width: "100%", padding: "13px", borderRadius: 12, border: "none",
-            background: loading ? `${V1}40` : `linear-gradient(135deg, ${V1}, ${V2})`,
-            color: "#fff", fontWeight: 700, fontSize: 15,
-            boxShadow: loading ? "none" : `0 4px 20px ${V1}35`,
-            marginBottom: 20,
-          }}
-        >
+        <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "13px", borderRadius: 12, border: "none", background: loading ? `${V1}40` : `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 15, boxShadow: loading ? "none" : `0 4px 20px ${V1}35`, marginBottom: 20 }}>
           {loading ? T.waiting : mode === "login" ? T.loginBtn : mode === "signup" ? T.signupBtn : T.resetBtn}
         </button>
 
-        {/* Links */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
           {mode === "login" && (
             <>
-              <button onClick={() => { setMode("signup"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>
-                Don't have an account? Sign up
-              </button>
-              <button onClick={() => { setMode("reset"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: "#9B96B8", fontSize: 13 }}>
-                Forgot password?
-              </button>
+              <button onClick={() => switchMode("signup")} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>{T.noAccount}</button>
+              <button onClick={() => switchMode("reset")} style={{ background: "none", border: "none", color: "#6D628F", fontSize: 13 }}>{T.forgotPwd}</button>
             </>
           )}
-          {mode === "signup" && (
-            <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>
-              Already have an account? Log in
-            </button>
-          )}
-          {mode === "reset" && (
-            <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>
-              Back to login
-            </button>
-          )}
+          {mode === "signup" && <button onClick={() => switchMode("login")} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>{T.haveAccount}</button>}
+          {mode === "reset" && <button onClick={() => switchMode("login")} style={{ background: "none", border: "none", color: V3, fontSize: 13, fontWeight: 600 }}>{T.backToLogin}</button>}
         </div>
       </div>
 
-      <p style={{ marginTop: 24, color: "#B0AACC", fontSize: 12, position: "relative" }}>
-        By continuing you agree to our Terms of Service
-      </p>
+      <p style={{ marginTop: 24, color: "#B0AACC", fontSize: 12, position: "relative" }}>{T.terms}</p>
     </div>
   );
 }

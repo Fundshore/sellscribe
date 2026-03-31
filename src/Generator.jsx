@@ -250,10 +250,15 @@ export default function Generator() {
               }}
               style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 13, boxShadow: `0 2px 12px ${V1}30` }}
             >
-              Upgrade
+              {T.upgradeBtn}
             </button>
+            <div style={{ display: "flex", background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
+              {["en", "ru"].map(l => (
+                <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 12px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12, background: lang === l ? `${V1}25` : "transparent", color: lang === l ? V3 : "#6D628F", letterSpacing: "0.04em", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
+              ))}
+            </div>
             <button onClick={logout} style={{ padding: "8px 16px", borderRadius: 8, border: `1px solid ${V1}20`, background: "transparent", color: "#6D628F", fontWeight: 600, fontSize: 13 }}>
-              Log out
+              {T.logoutBtn}
             </button>
           </div>
         </div>
@@ -266,18 +271,18 @@ export default function Generator() {
         <div style={{ background: DK, padding: "36px 32px", borderRight: `1px solid ${V1}10`, display: "flex", flexDirection: "column", gap: 20, overflowY: "auto" }}>
           <div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", marginBottom: 5 }}>
-              Generate listing
+              {T.title}
             </h1>
-            <p style={{ fontSize: 13, color: "#9B96B8" }}>Describe your product, pick platforms, get copy.</p>
+            <p style={{ fontSize: 13, color: "#9B96B8" }}>{T.sub}</p>
           </div>
 
           {/* Product name */}
           <div>
-            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>Product name *</label>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>{T.prodLabel}</label>
             <input
               value={product}
               onChange={e => setProduct(e.target.value)}
-              placeholder="e.g. Bamboo Wireless Charging Pad"
+              placeholder={T.prodPlaceholder}
               style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 14 }}
             />
           </div>
@@ -285,7 +290,7 @@ export default function Generator() {
           {/* Features */}
           <div>
             <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>
-              Key features <span style={{ color: "#6D628F", fontWeight: 500, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>(optional)</span>
+              {T.featLabel} <span style={{ color: "#6D628F", fontWeight: 500, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>{T.featOpt}</span>
             </label>
             <textarea
               value={features}
@@ -298,7 +303,7 @@ export default function Generator() {
 
           {/* Platforms */}
           <div>
-            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Platforms</label>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>{T.platLabel}</label>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
               {PLATFORMS.map(p => {
                 const selected = selectedPlatforms.includes(p.id);
@@ -329,7 +334,7 @@ export default function Generator() {
 
           {/* Tone */}
           <div>
-            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>Tone</label>
+            <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 10, textTransform: "uppercase" }}>{T.toneLabel}</label>
             <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
               {TONES.map(t => (
                 <button key={t.id} onClick={() => setTone(t.id)} style={{
@@ -364,7 +369,7 @@ export default function Generator() {
               marginTop: "auto",
             }}
           >
-            {loading ? "✦ Generating..." : "✦ Generate listings"}
+            {loading ? T.genLoading : T.genBtn}
           </button>
         </div>
 
@@ -393,7 +398,7 @@ export default function Generator() {
                   <div key={i} style={{ height: 10, width: `${w}%`, borderRadius: 5, background: `${V1}18`, animation: `pulse 1.4s ease-in-out ${i * 0.1}s infinite` }} />
                 ))}
               </div>
-              <p style={{ color: "#9B96B8", fontSize: 13 }}>✦ Writing your listings...</p>
+              <p style={{ color: "#9B96B8", fontSize: 13 }}>{T.writingMsg}</p>
             </div>
           )}
 
@@ -441,7 +446,7 @@ export default function Generator() {
                       padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}20`,
                       background: "transparent", color: V2, fontSize: 12, fontWeight: 600,
                     }}>
-                      ↻ Regenerate
+                      {T.regenBtn}
                     </button>
                   </div>
                 </div>
