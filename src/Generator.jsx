@@ -81,6 +81,7 @@ export default function Generator() {
   const [activePlatform, setActivePlatform] = useState(null);
   const [count, setCount] = useState(0);
   const [limit, setLimit] = useState(10);
+  const [resetDate, setResetDate] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -89,11 +90,24 @@ export default function Generator() {
       setUser(u);
       const { data: profile } = await supabase
         .from("profiles")
-        .select("generations_used, generations_limit")
+        .select("generations_used, generations_limit, reset_date")
         .eq("id", u.id)
         .single();
       if (profile) {
-        setCount(profile.generations_used || 0);
+        const lastReset = profile.reset_date ? new Date(profile.reset_date) : new Date(0);
+        const now = new Date();
+        const monthPassed = (now - lastReset) > 30 * 24 * 60 * 60 * 1000;
+        if (monthPassed) {
+          await supabase.from("profiles").update({
+            generations_used: 0,
+            reset_date: now.toISOString(),
+          }).eq("id", u.id);
+          setCount(0);
+          setResetDate(new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000));
+        } else {
+          setCount(profile.generations_used || 0);
+          setResetDate(new Date(lastReset.getTime() + 30 * 24 * 60 * 60 * 1000));
+        }
         setLimit(profile.generations_limit || 10);
       }
     });
@@ -113,7 +127,13 @@ export default function Generator() {
   const generate = async () => {
     if (!product.trim()) { setError("Enter a product name"); return; }
     if (selectedPlatforms.length === 0) { setError("Select at least one platform"); return; }
-    if (count >= limit) { setError(`Free limit reached (${limit} generations). Upgrade to continue.`); return; }
+    if (count >= limit) {
+      const resetStr = resetDate
+        ? resetDate.toLocaleDateString("en-GB", { day: "numeric", month: "long" })
+        : "next month";
+      setError(`Monthly limit reached (${limit} generations). Resets on ${resetStr}. Upgrade for more.`);
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -165,8 +185,15 @@ export default function Generator() {
           <div onClick={() => navigate("/")}><Logo /></div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             {user && <span style={{ fontSize: 13, color: "#9B96B8", fontWeight: 500 }}>{user.email}</span>}
-            <div style={{ fontSize: 13, color: remaining <= 3 ? "#F87171" : "#6D628F", fontWeight: 600 }}>
-              {remaining} / {limit} left
+            <div style={{ fontSize: 13, fontWeight: 600, textAlign: "right" }}>
+              <span style={{ color: remaining === 0 ? "#F87171" : remaining <= 3 ? "#FB923C" : "#6D628F" }}>
+                {remaining} / {limit} left
+              </span>
+              {resetDate && (
+                <div style={{ fontSize: 11, color: "#4A4768", fontWeight: 500, marginTop: 1 }}>
+                  Resets {resetDate.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                </div>
+              )}
             </div>
             <button
               onClick={async () => {
@@ -215,7 +242,7 @@ export default function Generator() {
           {/* Features */}
           <div>
             <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", color: "#9B96B8", display: "block", marginBottom: 7, textTransform: "uppercase" }}>
-              Key features <span style={{ color: "#3D3A52", fontWeight: 500, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>(optional)</span>
+              Key features <span style={{ color: "#6D628F", fontWeight: 500, textTransform: "none", letterSpacing: 0, fontSize: 12 }}>(optional)</span>
             </label>
             <textarea
               value={features}
@@ -242,7 +269,7 @@ export default function Generator() {
                   }}>
                     <div style={{
                       width: 17, height: 17, borderRadius: 5,
-                      border: `2px solid ${selected ? p.color : "#3D3A52"}`,
+                      border: `2px solid ${selected ? p.color : "#6D628F"}`,
                       background: selected ? p.color : "transparent", flexShrink: 0,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       transition: "all 0.18s",
