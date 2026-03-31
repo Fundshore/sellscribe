@@ -728,6 +728,26 @@ export default function Landing() {
           <p style={{ color: "#7A74A0", fontSize: 13, fontWeight: 500 }}>{t.footerNote}</p>
         </div>
       </footer>
+      {/* Floating feedback button */}
+      <a
+        href="https://tally.so/r/NpYqMl"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: "fixed", bottom: 24, right: 24, zIndex: 200,
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "10px 18px", borderRadius: 100,
+          background: `linear-gradient(135deg, ${V1}, ${V2})`,
+          color: "#fff", fontWeight: 700, fontSize: 13,
+          textDecoration: "none", fontFamily: "var(--font-body)",
+          boxShadow: `0 4px 24px ${V1}40`,
+          transition: "transform 0.2s, box-shadow 0.2s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 32px ${V1}50`; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 4px 24px ${V1}40`; }}
+      >
+        💬 {lang === "ru" ? "Обратная связь" : "Feedback"}
+      </a>
     </div>
   );
 }

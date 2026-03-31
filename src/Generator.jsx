@@ -455,6 +455,23 @@ export default function Generator() {
           )}
         </div>
       </div>
+            {/* Floating feedback button */}
+      <a
+        href="https://tally.so/r/NpYqMl"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: "fixed", bottom: 24, right: 24, zIndex: 200,
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "10px 18px", borderRadius: 100,
+          background: `linear-gradient(135deg, ${V1}, ${V2})`,
+          color: "#fff", fontWeight: 700, fontSize: 13,
+          textDecoration: "none", fontFamily: "var(--font-body)",
+          boxShadow: `0 4px 24px ${V1}40`,
+        }}
+      >
+        💬 {lang === "ru" ? "Обратная связь" : "Feedback"}
+      </a>
     </div>
   );
 }
