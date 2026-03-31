@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLang } from "./useLang";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 
@@ -29,6 +30,43 @@ function Logo() {
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [lang, setLang] = useLang();
+  const T = {
+    en: {
+      welcomeBack: "Welcome back", createAccount: "Create account", resetPwd: "Reset password",
+      loginSub: "Log in to your SellScribe account",
+      signupSub: "Start generating listings for free",
+      resetSub: "We\'ll send you a reset link",
+      emailLabel: T.emailLabel, pwdLabel: T.pwdLabel,
+      loginBtn: "Log in", signupBtn: "Create account", resetBtn: "Send reset link",
+      waiting: "Please wait...",
+      noAccount: "Don\'t have an account? Sign up",
+      haveAccount: T.haveAccount,
+      backToLogin: T.backToLogin,
+      forgotPwd: T.forgotPwd,
+      terms: T.terms,
+      checkEmail: T.checkEmail,
+      resetSent: T.resetSent,
+      fillFields: T.fillFields,
+    },
+    ru: {
+      welcomeBack: "С возвращением", createAccount: "Создать аккаунт", resetPwd: "Сброс пароля",
+      loginSub: "Войдите в свой аккаунт SellScribe",
+      signupSub: "Начните создавать листинги бесплатно",
+      resetSub: "Отправим ссылку для сброса пароля",
+      emailLabel: "Электронная почта", pwdLabel: "Пароль",
+      loginBtn: "Войти", signupBtn: "Создать аккаунт", resetBtn: "Отправить ссылку",
+      waiting: "Пожалуйста, подождите...",
+      noAccount: "Нет аккаунта? Зарегистрируйтесь",
+      haveAccount: "Уже есть аккаунт? Войти",
+      backToLogin: "Назад к входу",
+      forgotPwd: "Забыли пароль?",
+      terms: "Продолжая, вы соглашаетесь с нашими Условиями использования",
+      checkEmail: "Проверьте почту для подтверждения аккаунта, затем войдите.",
+      resetSent: "Ссылка для сброса пароля отправлена на вашу почту.",
+      fillFields: "Пожалуйста, заполните все поля",
+    },
+  }[lang];
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -84,14 +122,21 @@ export default function Auth() {
         <Logo />
       </div>
 
+      {/* Lang toggle */}
+      <div style={{ display: "flex", background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)", borderRadius: 8, overflow: "hidden", marginBottom: 20, position: "relative" }}>
+        {["en", "ru"].map(l => (
+          <button key={l} onClick={() => setLang(l)} style={{ padding: "6px 16px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 13, background: lang === l ? "rgba(139,92,246,0.2)" : "transparent", color: lang === l ? "#A78BFA" : "#9B96B8", letterSpacing: "0.04em", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
+        ))}
+      </div>
+
       {/* Dark card on light bg */}
       <div style={{ width: "100%", maxWidth: 400, background: CARD, borderRadius: 24, padding: 36, borderTop: `2px solid ${V1}`, border: `1px solid ${V1}18`, position: "relative", boxShadow: "0 24px 80px rgba(139,92,246,0.15)" }}>
 
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 800, color: "#F5F3FF", marginBottom: 6, letterSpacing: "-0.02em" }}>
-          {mode === "login" ? "Welcome back" : mode === "signup" ? "Create account" : "Reset password"}
+          {mode === "login" ? T.welcomeBack : mode === "signup" ? T.createAccount : T.resetPwd}
         </h1>
         <p style={{ fontSize: 14, color: "#9B96B8", marginBottom: 28 }}>
-          {mode === "login" ? "Log in to your SellScribe account" : mode === "signup" ? "Start generating listings for free" : "We'll send you a reset link"}
+          {mode === "login" ? T.loginSub : mode === "signup" ? T.signupSub : T.resetSub}
         </p>
 
         {/* Email */}
@@ -146,7 +191,7 @@ export default function Auth() {
             marginBottom: 20,
           }}
         >
-          {loading ? "Please wait..." : mode === "login" ? "Log in" : mode === "signup" ? "Create account" : "Send reset link"}
+          {loading ? T.waiting : mode === "login" ? T.loginBtn : mode === "signup" ? T.signupBtn : T.resetBtn}
         </button>
 
         {/* Links */}

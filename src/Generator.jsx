@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useLang } from "./useLang";
 
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
@@ -27,6 +28,46 @@ const TONES = [
 ];
 
 const FREE_LIMIT = 10;
+
+const GEN_STRINGS = {
+  en: {
+    title: "Generate listing", sub: "Describe your product, pick platforms, get copy.",
+    prodLabel: "Product name *", prodPlaceholder: "e.g. Bamboo Wireless Charging Pad",
+    featLabel: "Key features", featOpt: "(optional)",
+    featPlaceholder: "Material: bamboo\nCharging: 15W Qi\nCompatible: iPhone, Samsung\nColor: natural",
+    platLabel: "Platforms", toneLabel: "Tone",
+    tones: ["Professional", "Friendly", "Luxury", "Casual"],
+    genBtn: "✦ Generate listings", genLoading: "✦ Generating...",
+    emptyTitle: "Your listings will appear here",
+    emptySub: "Fill in the product details on the left and click Generate",
+    writingMsg: "✦ Writing your listings...",
+    regenBtn: "↻ Regenerate",
+    upgradeBtn: "Upgrade", logoutBtn: "Log out",
+    left: "left", resetsOn: "Resets",
+    errProduct: "Enter a product name", errPlatform: "Select at least one platform",
+    errLimit: (limit, date) => `Monthly limit reached (${limit} generations). Resets on ${date}. Upgrade for more.`,
+    platforms: "platforms generated",
+  },
+  ru: {
+    title: "Создать листинг", sub: "Опишите товар, выберите платформы, получите текст.",
+    prodLabel: "Название товара *", prodPlaceholder: "напр. Беспроводная зарядка из бамбука",
+    featLabel: "Ключевые характеристики", featOpt: "(необязательно)",
+    featPlaceholder: "Материал: бамбук\nЗарядка: 15W Qi\nСовместимость: iPhone, Samsung\nЦвет: натуральный",
+    platLabel: "Платформы", toneLabel: "Тон",
+    tones: ["Профессиональный", "Дружелюбный", "Премиум", "Casual"],
+    genBtn: "✦ Создать листинги", genLoading: "✦ Генерация...",
+    emptyTitle: "Здесь появятся ваши листинги",
+    emptySub: "Заполните данные о товаре слева и нажмите «Создать»",
+    writingMsg: "✦ Пишем ваши листинги...",
+    regenBtn: "↻ Сгенерировать снова",
+    upgradeBtn: "Улучшить план", logoutBtn: "Выйти",
+    left: "осталось", resetsOn: "Сброс",
+    errProduct: "Введите название товара", errPlatform: "Выберите хотя бы одну платформу",
+    errLimit: (limit, date) => `Месячный лимит исчерпан (${limit} генераций). Сброс: ${date}. Улучшите план.`,
+    platforms: "платформ сгенерировано",
+  },
+};
+
 
 function Logo() {
   return (
@@ -70,6 +111,8 @@ function CopyButton({ text }) {
 
 export default function Generator() {
   const navigate = useNavigate();
+  const [lang, setLang] = useLang();
+  const T = GEN_STRINGS[lang];
   const [user, setUser] = useState(null);
   const [product, setProduct] = useState("");
   const [features, setFeatures] = useState("");
@@ -125,13 +168,13 @@ export default function Generator() {
   };
 
   const generate = async () => {
-    if (!product.trim()) { setError("Enter a product name"); return; }
-    if (selectedPlatforms.length === 0) { setError("Select at least one platform"); return; }
+    if (!product.trim()) { setError(T.errProduct); return; }
+    if (selectedPlatforms.length === 0) { setError(T.errPlatform); return; }
     if (count >= limit) {
       const resetStr = resetDate
         ? resetDate.toLocaleDateString("en-GB", { day: "numeric", month: "long" })
         : "next month";
-      setError(`Monthly limit reached (${limit} generations). Resets on ${resetStr}. Upgrade for more.`);
+      setError(T.errLimit(limit, resetStr));
       return;
     }
 
@@ -187,7 +230,7 @@ export default function Generator() {
             {user && <span style={{ fontSize: 13, color: "#9B96B8", fontWeight: 500 }}>{user.email}</span>}
             <div style={{ fontSize: 13, fontWeight: 600, textAlign: "right" }}>
               <span style={{ color: remaining === 0 ? "#F87171" : remaining <= 3 ? "#FB923C" : "#6D628F" }}>
-                {remaining} / {limit} left
+                {remaining} / {limit} {T.left}
               </span>
               {resetDate && (
                 <div style={{ fontSize: 11, color: "#4A4768", fontWeight: 500, marginTop: 1 }}>
@@ -247,7 +290,7 @@ export default function Generator() {
             <textarea
               value={features}
               onChange={e => setFeatures(e.target.value)}
-              placeholder={"Material: bamboo\nCharging: 15W Qi\nCompatible: iPhone, Samsung\nColor: natural"}
+              placeholder={T.featPlaceholder}
               rows={4}
               style={{ width: "100%", padding: "11px 14px", borderRadius: 10, background: CARD, border: `1px solid ${V1}15`, color: "#E8E5F5", fontSize: 13, resize: "vertical", lineHeight: 1.6 }}
             />
@@ -393,7 +436,7 @@ export default function Generator() {
                     {activeResult}
                   </div>
                   <div style={{ padding: "12px 20px", borderTop: `1px solid ${LT2}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 12, color: "#B0AACC" }}>{selectedPlatforms.length} platforms generated</span>
+                    <span style={{ fontSize: 12, color: "#B0AACC" }}>{selectedPlatforms.length} {T.platforms}</span>
                     <button onClick={generate} style={{
                       padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}20`,
                       background: "transparent", color: V2, fontSize: 12, fontWeight: 600,
