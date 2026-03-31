@@ -36,7 +36,7 @@ export default async function handler(req, res) {
               email: email,
             },
             product_options: {
-              redirect_url: "https://sellscribe.vercel.app/generate",
+              redirect_url: "https://sellscribe.app/generate",
             },
           },
           relationships: {
