@@ -286,8 +286,20 @@ export default function ShopifyApp() {
               {/* Content */}
               {activeResult && activePlat && (
                 <div style={{ padding: 20, flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ fontSize: 13, color: "#2A2340", lineHeight: 1.8, whiteSpace: "pre-wrap", flex: 1 }}>
-                    {activeResult}
+                  <div style={{ flex: 1 }}>
+                    {(() => {
+                      const titleMatch = activeResult.match(/^(?:TITLE|ЗАГОЛОВОК):\s*(.+)/m);
+                      const title = titleMatch ? titleMatch[1].trim() : null;
+                      const body = activeResult.replace(/^(?:TITLE|ЗАГОЛОВОК):\s*.+\n?/m, "").trim();
+                      return (
+                        <>
+                          {title && <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 5 }}>Title</div>}
+                          {title && <div style={{ fontSize: 15, fontWeight: 700, color: "#1A1330", marginBottom: 14, lineHeight: 1.4 }}>{title}</div>}
+                          {title && <div style={{ height: 1, background: "#EDE9F8", marginBottom: 14 }} />}
+                          <div style={{ fontSize: 13, color: "#2A2340", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{body}</div>
+                        </>
+                      );
+                    })()}
                   </div>
 
                   {/* Actions */}

@@ -453,12 +453,26 @@ export default function Generator() {
                     </div>
                     <CopyButton text={activeResult} />
                   </div>
-                  <div style={{
-                    padding: "24px", fontFamily: "var(--font-body)", fontSize: 14,
-                    color: "#2A2340", lineHeight: 1.8, whiteSpace: "pre-wrap",
-                    minHeight: 200,
-                  }}>
-                    {activeResult}
+                  <div style={{ padding: "24px", minHeight: 200 }}>
+                    {(() => {
+                      const titleMatch = activeResult.match(/^(?:TITLE|ЗАГОЛОВОК):\s*(.+)/m);
+                      const title = titleMatch ? titleMatch[1].trim() : null;
+                      const body = activeResult.replace(/^(?:TITLE|ЗАГОЛОВОК):\s*.+\n?/m, "").trim();
+                      return (
+                        <>
+                          {title && (
+                            <div style={{ fontSize: 13, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>Title</div>
+                          )}
+                          {title && (
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "#1A1330", marginBottom: 16, lineHeight: 1.4 }}>{title}</div>
+                          )}
+                          {title && <div style={{ height: 1, background: "#EDE9F8", marginBottom: 16 }} />}
+                          <div style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#2A2340", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
+                            {body}
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                   <div style={{ padding: "12px 20px", borderTop: `1px solid ${LT2}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontSize: 12, color: "#B0AACC" }}>{selectedPlatforms.length} {T.platforms}</span>
