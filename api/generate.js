@@ -62,8 +62,8 @@ Condition: New
   const toneDesc = TONES[tone] || TONES.professional;
 
   const platformInstructions = platforms
-    .map((p) => `\n---\n${PLATFORM_INSTRUCTIONS[p]}\n---`)
-    .join("\n");
+    .map((p) => `[PLATFORM: ${p.toUpperCase()}]\n${PLATFORM_INSTRUCTIONS[p]}\n[END: ${p.toUpperCase()}]`)
+    .join("\n\n");
 
   const prompt = `You are an expert e-commerce copywriter. Generate optimised product listings for the following platforms.
 
@@ -71,11 +71,9 @@ Product: ${product}
 ${features ? `Key features/details: ${features}` : ""}
 Overall tone: ${toneDesc}
 
-Generate a listing for EACH of these platforms. Follow the exact format specified for each platform. Do not add any extra commentary.
+Generate a listing for EACH platform below. Follow the exact format for each. Output them in the same order. Do not add commentary between listings.
 
-${platformInstructions}
-
-Generate all listings now, one after another, clearly separated.`;
+${platformInstructions}`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -100,13 +98,30 @@ Generate all listings now, one after another, clearly separated.`;
     const data = await response.json();
     const text = data.content[0].text;
 
-    // Parse output per platform
     const results = {};
-    const sections = text.split("---").filter((s) => s.trim());
+    const enPlats = platforms.filter(p => !["wildberries", "kaspi"].includes(p));
+    const ruPlats = platforms.filter(p => ["wildberries", "kaspi"].includes(p));
 
-    platforms.forEach((platform, i) => {
-      results[platform] = sections[i]?.trim() || text;
+    const sections = text.split(/(?=(?:^|\n)(?:TITLE:|ЗАГОЛОВОК:))/m).filter(s => s.trim());
+
+    let enIdx = 0;
+    let ruIdx = 0;
+
+    sections.forEach(section => {
+      const s = section.trim();
+      if (!s) return;
+      if (s.startsWith("TITLE:") && enIdx < enPlats.length) {
+        results[enPlats[enIdx]] = s;
+        enIdx++;
+      } else if (s.startsWith("ЗАГОЛОВОК:") && ruIdx < ruPlats.length) {
+        results[ruPlats[ruIdx]] = s;
+        ruIdx++;
+      }
     });
+
+    if (Object.keys(results).length === 0) {
+      results[platforms[0]] = text;
+    }
 
     return res.status(200).json({ results });
   } catch (err) {
