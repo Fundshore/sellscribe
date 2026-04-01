@@ -11,8 +11,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing code or shop" });
   }
 
-  try {
-    // Exchange code for access token
+try {
     const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -24,24 +23,29 @@ export default async function handler(req, res) {
     });
 
     const tokenData = await tokenRes.json();
+    console.log("Token response:", JSON.stringify(tokenData));
 
     if (!tokenData.access_token) {
-      return res.status(400).json({ error: "Failed to get access token" });
+      return res.status(400).json({ error: "Failed to get access token", data: tokenData });
     }
 
-    // Save shop + token to Supabase
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_KEY
     );
 
-    await supabase.from("shopify_stores").upsert({
+    const { error: dbError } = await supabase.from("shopify_stores").upsert({
       shop,
       access_token: tokenData.access_token,
       installed_at: new Date().toISOString(),
     });
 
-    // Redirect merchant to the embedded app
+    console.log("DB error:", dbError);
+
+    if (dbError) {
+      return res.status(500).json({ error: "DB error", details: dbError });
+    }
+
     res.redirect(`https://${shop}/admin/apps/${process.env.SHOPIFY_CLIENT_ID}`);
   } catch (err) {
     res.status(500).json({ error: err.message });
