@@ -108,7 +108,7 @@ const STRINGS = {
     h1a: "Write once.", h1b: "Sell everywhere.",
     sub: "Describe your product once. Get optimized listings for Amazon, Shopify, Etsy, eBay, Wildberries & Kaspi — each tailored to its marketplace.",
     cta: "Start for free →",
-    navPlatforms: "Platforms", navFeatures: "Features", navPricing: "Pricing", navTry: "Try Free",
+    navPlatforms: "Platforms", navFeatures: "Features", navPricing: "Pricing", navContact: "Contact us", navTry: "Try Free",
 
     whyTag: "WHY IT MATTERS",
     whyTitle: "Every platform speaks a different language",
@@ -172,7 +172,7 @@ const STRINGS = {
     h1a: "Опишите один раз.", h1b: "Продавайте везде.",
     sub: "Описывайте товар один раз. Получайте оптимизированные листинги для Amazon, Shopify, Etsy, eBay, Wildberries и Kaspi — каждый под свою платформу.",
     cta: "Начать бесплатно →",
-    navPlatforms: "Платформы", navFeatures: "Как работает", navPricing: "Тарифы", navTry: "Попробовать",
+    navPlatforms: "Платформы", navFeatures: "Как работает", navPricing: "Тарифы", navContact: "Связаться", navTry: "Попробовать",
 
     whyTag: "ПОЧЕМУ ЭТО ВАЖНО",
     whyTitle: "Каждая платформа говорит на своём языке",
@@ -352,7 +352,7 @@ function PlatformRulesSection({ lang }) {
           <p style={{ color: "#6B647A", fontSize: 16, maxWidth: 520, margin: "0 auto", lineHeight: 1.68 }}>{t.whySub}</p>
         </AnimDiv>
         <AnimDiv delay={0.1}>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 28 }}>
+          <div className="plat-tabs" style={{ marginBottom: 28 }}>
             {PLATFORM_RULES.map(r => (
               <button key={r.id} onClick={() => setActive(r.id)} style={{
                 display: "flex", alignItems: "center", gap: 8,
@@ -367,11 +367,10 @@ function PlatformRulesSection({ lang }) {
               </button>
             ))}
           </div>
-          <div key={active} style={{
+          <div key={active} className="plat-detail-card" style={{
             background: "#fff", borderRadius: 20, overflow: "hidden",
             border: `1px solid ${p.color}18`,
             boxShadow: `0 4px 40px ${p.color}08`,
-            display: "grid", gridTemplateColumns: "1fr 1fr",
             animation: "textReveal 0.3s ease-out",
           }}>
             <div style={{ padding: 36, borderRight: "1px solid rgba(0,0,0,0.06)" }}>
@@ -414,7 +413,7 @@ function BeforeAfterSection({ lang }) {
             {t.mathTitle}
           </h2>
         </AnimDiv>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 0, alignItems: "start" }}>
+        <div className="ba-grid" style={{ gap: 0, alignItems: "start" }}>
           <AnimDiv direction="left" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)", borderRadius: 20, overflow: "hidden" }}>
             <div style={{ padding: "16px 24px", borderBottom: "1px solid rgba(239,68,68,0.08)", display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ color: "#EF4444", fontSize: 11 }}>●</span>
@@ -438,10 +437,10 @@ function BeforeAfterSection({ lang }) {
             </div>
           </AnimDiv>
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 18px", paddingTop: 72, gap: 8 }}>
-            <div style={{ width: 1, height: 36, background: `linear-gradient(to bottom, transparent, ${V1}30)` }} />
+          <div className="ba-divider" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 18px", paddingTop: 72, gap: 8 }}>
+            <div className="ba-divider-line" style={{ width: 1, height: 36, background: `linear-gradient(to bottom, transparent, ${V1}30)` }} />
             <div style={{ width: 42, height: 42, borderRadius: "50%", background: `linear-gradient(135deg, ${V1}, ${V2})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, color: "#fff", fontFamily: "var(--font-display)", boxShadow: `0 0 24px ${V1}40` }}>vs</div>
-            <div style={{ width: 1, height: 36, background: `linear-gradient(to bottom, ${V1}30, transparent)` }} />
+            <div className="ba-divider-line" style={{ width: 1, height: 36, background: `linear-gradient(to bottom, ${V1}30, transparent)` }} />
           </div>
 
           <AnimDiv direction="right" style={{ background: `${V1}05`, border: `1px solid ${V1}12`, borderRadius: 20, overflow: "hidden" }}>
@@ -519,6 +518,71 @@ export default function Landing() {
         #root { width:100%; }
         button { cursor:pointer; transition: transform 0.18s, box-shadow 0.18s; }
         button:hover { transform: translateY(-2px); }
+
+        /* ── MOBILE NAV ── */
+        .nav-links { display:flex; gap:16px; align-items:center; }
+        .nav-link { display:block; }
+        .nav-contact { display:inline-flex; }
+        .nav-lang { display:flex; }
+        @media (max-width:900px) {
+          .nav-link { display:none; }
+          .nav-links { gap:10px; }
+        }
+        @media (max-width:540px) {
+          .nav-inner { flex-wrap:wrap !important; height:auto !important; padding:10px 0 !important; }
+          .nav-links { width:100%; justify-content:center; gap:8px; }
+          .nav-lang { display:none !important; }
+          .nav-logo-wrap { display:flex !important; }
+        }
+        .nav-logo-wrap { display:none; align-items:center; gap:10px; }
+
+        /* ── HERO ── */
+        .hero-inner { display:flex; align-items:center; justify-content:space-between; gap:60px; flex-wrap:wrap; }
+        @media (max-width:768px) {
+          .hero-inner { flex-direction:column; gap:40px; text-align:center; }
+          .hero-inner h1 { font-size:clamp(32px,8vw,48px) !important; }
+          .hero-inner p { font-size:16px !important; max-width:100% !important; }
+          .hero-inner button { width:100%; }
+        }
+
+        /* ── PLATFORM RULES (split card) ── */
+        .plat-detail-card { display:grid; grid-template-columns:1fr 1fr; }
+        @media (max-width:700px) {
+          .plat-detail-card { grid-template-columns:1fr !important; }
+          .plat-detail-right { border-top:1px solid rgba(0,0,0,0.06); border-left:none !important; }
+        }
+
+        /* ── BEFORE/AFTER ── */
+        .ba-grid { display:grid; grid-template-columns:1fr auto 1fr; }
+        @media (max-width:700px) {
+          .ba-grid { grid-template-columns:1fr !important; }
+          .ba-divider { flex-direction:row !important; padding:16px 0 !important; }
+          .ba-divider-line { width:40px !important; height:1px !important; }
+        }
+
+        /* ── HOW IT WORKS ── */
+        .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        @media (max-width:700px) {
+          .steps-grid { grid-template-columns:1fr !important; }
+          .step-card { padding:24px !important; }
+        }
+
+        /* ── PRICING ── */
+        @media (max-width:600px) {
+          .pricing-grid { grid-template-columns:1fr !important; }
+        }
+
+        /* ── PLATFORM TABS ── */
+        .plat-tabs { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+        @media (max-width:480px) {
+          .plat-tabs button { padding:6px 12px !important; font-size:13px !important; }
+        }
+
+        /* ── GENERAL PADDING ── */
+        @media (max-width:480px) {
+          section { padding-left:16px !important; padding-right:16px !important; }
+          .inner-wrap { padding:0 16px !important; }
+        }
       `}</style>
 
       {/* NAV */}
@@ -529,13 +593,23 @@ export default function Landing() {
         borderBottom: `1px solid ${navSolid ? V1 + "12" : "transparent"}`,
         transition: "all 0.4s",
       }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", height: 64, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Logo />
-          <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
-            <a href="#platforms" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPlatforms}</a>
-            <a href="#features"  style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navFeatures}</a>
-            <a href="#pricing"   style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPricing}</a>
-            <div style={{ display: "flex", background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
+        <div className="nav-inner" style={{ maxWidth: 1200, margin: "0 auto", height: 64, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ position: "relative" }}>
+            <Logo />
+            <div className="nav-logo-wrap" style={{ position: "absolute", left: "calc(100% + 10px)", top: "50%", transform: "translateY(-50%)" }}>
+              <div style={{ display: "flex", background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
+                {["en", "ru"].map(l => (
+                  <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 10px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 11, background: lang === l ? `${V1}25` : "transparent", color: lang === l ? V3 : "#6D628F", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="nav-links">
+            <a className="nav-link" href="#platforms" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPlatforms}</a>
+            <a className="nav-link" href="#features"  style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navFeatures}</a>
+            <a className="nav-link" href="#pricing"   style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPricing}</a>
+            <a className="nav-contact" href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer" style={{ padding: "8px 18px", borderRadius: 6, border: "1px solid rgba(139,92,246,0.35)", background: "rgba(139,92,246,0.08)", color: "#A78BFA", textDecoration: "none", fontSize: 14, fontWeight: 600, transition: "all 0.2s", letterSpacing: "0.01em" }}>{t.navContact}</a>
+            <div className="nav-lang" style={{ background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
               {["en", "ru"].map(l => (
                 <button key={l} onClick={() => setLang(l)} style={{
                   padding: "5px 12px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12,
@@ -558,7 +632,7 @@ export default function Landing() {
       <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: "100px 24px 60px" }}>
         <div style={{ position: "absolute", top: "15%", left: "10%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${V2}12 0%, transparent 70%)`, animation: "orbFloat 12s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: "20%", right: "8%", width: 250, height: 250, borderRadius: "50%", background: `radial-gradient(circle, ${V1}0A 0%, transparent 70%)`, animation: "orbFloat 10s ease-in-out 3s infinite", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1100, width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 60, flexWrap: "wrap", position: "relative", zIndex: 2 }}>
+        <div className="hero-inner" style={{ maxWidth: 1100, width: "100%", position: "relative", zIndex: 2 }}>
           <div style={{ flex: "1 1 480px", animation: "heroReveal 1s cubic-bezier(0.16,1,0.3,1)" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 100, background: `${V1}10`, border: `1px solid ${V1}18`, marginBottom: 28 }}>
               <span style={{ color: V3, fontSize: 14, animation: "sparkleRotate 4s linear infinite" }}>✦</span>
@@ -608,9 +682,9 @@ export default function Landing() {
               {t.howTitle}
             </h2>
           </AnimDiv>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div className="steps-grid">
             {t.steps.map((s, i) => (
-              <AnimDiv key={s.n} delay={i * 0.15} style={{
+              <AnimDiv key={s.n} delay={i * 0.15} className="step-card" style={{
                 padding: 36, borderRadius: 20,
                 background: "#fff",
                 border: `1px solid rgba(139,92,246,0.1)`,
@@ -728,26 +802,6 @@ export default function Landing() {
           <p style={{ color: "#7A74A0", fontSize: 13, fontWeight: 500 }}>{t.footerNote}</p>
         </div>
       </footer>
-      {/* Floating feedback button */}
-      <a
-        href="https://tally.so/r/NpYqMl"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          position: "fixed", bottom: 24, right: 24, zIndex: 200,
-          display: "flex", alignItems: "center", gap: 8,
-          padding: "10px 18px", borderRadius: 100,
-          background: `linear-gradient(135deg, ${V1}, ${V2})`,
-          color: "#fff", fontWeight: 700, fontSize: 13,
-          textDecoration: "none", fontFamily: "var(--font-body)",
-          boxShadow: `0 4px 24px ${V1}40`,
-          transition: "transform 0.2s, box-shadow 0.2s",
-        }}
-        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 32px ${V1}50`; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 4px 24px ${V1}40`; }}
-      >
-        💬 {lang === "ru" ? "Обратная связь" : "Feedback"}
-      </a>
     </div>
   );
 }

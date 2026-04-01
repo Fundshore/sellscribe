@@ -42,7 +42,7 @@ const GEN_STRINGS = {
     emptySub: "Fill in the product details on the left and click Generate",
     writingMsg: "✦ Writing your listings...",
     regenBtn: "↻ Regenerate",
-    upgradeBtn: "Upgrade", logoutBtn: "Log out",
+    upgradeBtn: "Upgrade", logoutBtn: "Log out", contactBtn: "Contact us",
     left: "left", resetsOn: "Resets",
     errProduct: "Enter a product name", errPlatform: "Select at least one platform",
     errLimit: (limit, date) => `Monthly limit reached (${limit} generations). Resets on ${date}. Upgrade for more.`,
@@ -60,7 +60,7 @@ const GEN_STRINGS = {
     emptySub: "Заполните данные о товаре слева и нажмите «Создать»",
     writingMsg: "✦ Пишем ваши листинги...",
     regenBtn: "↻ Сгенерировать снова",
-    upgradeBtn: "Улучшить план", logoutBtn: "Выйти",
+    upgradeBtn: "Улучшить план", logoutBtn: "Выйти", contactBtn: "Связаться",
     left: "осталось", resetsOn: "Сброс",
     errProduct: "Введите название товара", errPlatform: "Выберите хотя бы одну платформу",
     errLimit: (limit, date) => `Месячный лимит исчерпан (${limit} генераций). Сброс: ${date}. Улучшите план.`,
@@ -220,14 +220,30 @@ export default function Generator() {
         button:hover { opacity:0.88; transform:translateY(-1px); }
         @keyframes pulse { 0%,100%{opacity:0.2;}50%{opacity:0.5;} }
         ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:${V1}25;border-radius:3px;}
+        .gen-nav-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+        .gen-email { display:block; }
+        .gen-lang { display:flex; }
+        .gen-contact { display:inline-flex; }
+        .gen-layout { display:grid; grid-template-columns:400px 1fr; min-height:calc(100vh - 60px); }
+        .gen-right { background:${LT}; padding:36px 40px; overflow-y:auto; display:flex; flex-direction:column; }
+        @media (max-width:900px) {
+          .gen-layout { grid-template-columns:1fr; }
+          .gen-right { padding:24px 20px; }
+          .gen-left { padding:24px 20px !important; }
+        }
+        @media (max-width:640px) {
+          .gen-email { display:none !important; }
+          .gen-lang { display:none !important; }
+          .gen-nav-right { gap:8px; max-width:calc(100vw - 140px); }
+        }
       `}</style>
 
       {/* NAV — dark */}
       <nav style={{ padding: "0 32px", borderBottom: `1px solid ${V1}12`, position: "sticky", top: 0, background: `${DK}F5`, backdropFilter: "blur(20px)", zIndex: 50 }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", minHeight: 60, padding: "6px 0", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6 }}>
           <div onClick={() => navigate("/")}><Logo /></div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            {user && <span style={{ fontSize: 13, color: "#9B96B8", fontWeight: 500 }}>{user.email}</span>}
+          <div className="gen-nav-right">
+            {user && <span className="gen-email" style={{ fontSize: 13, color: "#9B96B8", fontWeight: 500 }}>{user.email}</span>}
             <div style={{ fontSize: 13, fontWeight: 600, textAlign: "right" }}>
               <span style={{ color: remaining === 0 ? "#F87171" : remaining <= 3 ? "#FB923C" : "#6D628F" }}>
                 {remaining} / {limit} {T.left}
@@ -252,11 +268,15 @@ export default function Generator() {
             >
               {T.upgradeBtn}
             </button>
-            <div style={{ display: "flex", background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
+            <div className="gen-lang" style={{ background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
               {["en", "ru"].map(l => (
                 <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 12px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12, background: lang === l ? `${V1}25` : "transparent", color: lang === l ? V3 : "#6D628F", letterSpacing: "0.04em", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
               ))}
             </div>
+            <a className="gen-contact" href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer"
+              style={{ padding: "8px 18px", borderRadius: 6, border: "1px solid rgba(139,92,246,0.35)", background: "rgba(139,92,246,0.08)", color: "#A78BFA", textDecoration: "none", fontSize: 13, fontWeight: 600 }}>
+              {T.contactBtn}
+            </a>
             <button onClick={logout} style={{ padding: "8px 16px", borderRadius: 8, border: `1px solid ${V1}20`, background: "transparent", color: "#6D628F", fontWeight: 600, fontSize: 13 }}>
               {T.logoutBtn}
             </button>
@@ -265,10 +285,10 @@ export default function Generator() {
       </nav>
 
       {/* SPLIT LAYOUT */}
-      <div style={{ display: "grid", gridTemplateColumns: "400px 1fr", minHeight: "calc(100vh - 60px)" }}>
+      <div className="gen-layout">
 
         {/* LEFT — dark input panel */}
-        <div style={{ background: DK, padding: "36px 32px", borderRight: `1px solid ${V1}10`, display: "flex", flexDirection: "column", gap: 20, overflowY: "auto" }}>
+        <div className="gen-left" style={{ background: DK, padding: "36px 32px", borderRight: `1px solid ${V1}10`, display: "flex", flexDirection: "column", gap: 20, overflowY: "auto" }}>
           <div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", marginBottom: 5 }}>
               {T.title}
@@ -374,7 +394,7 @@ export default function Generator() {
         </div>
 
         {/* RIGHT — light output panel */}
-        <div style={{ background: LT, padding: "36px 40px", overflowY: "auto", display: "flex", flexDirection: "column" }}>
+        <div className="gen-right">
 
           {!results && !loading && (
             <div style={{
@@ -455,23 +475,6 @@ export default function Generator() {
           )}
         </div>
       </div>
-            {/* Floating feedback button */}
-      <a
-        href="https://tally.so/r/NpYqMl"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          position: "fixed", bottom: 24, right: 24, zIndex: 200,
-          display: "flex", alignItems: "center", gap: 8,
-          padding: "10px 18px", borderRadius: 100,
-          background: `linear-gradient(135deg, ${V1}, ${V2})`,
-          color: "#fff", fontWeight: 700, fontSize: 13,
-          textDecoration: "none", fontFamily: "var(--font-body)",
-          boxShadow: `0 4px 24px ${V1}40`,
-        }}
-      >
-        💬 {lang === "ru" ? "Обратная связь" : "Feedback"}
-      </a>
     </div>
   );
 }
