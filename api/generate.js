@@ -107,14 +107,20 @@ ${platformInstructions}`;
     let enIdx = 0;
     let ruIdx = 0;
 
+    // Helper to clean service tags from output
+    const cleanSection = (s) => s
+      .replace(/\[END:\s*\w+\]/gi, "")
+      .replace(/\[PLATFORM:\s*\w+\]/gi, "")
+      .trim();
+
     sections.forEach(section => {
       const s = section.trim();
       if (!s) return;
       if (s.startsWith("TITLE:") && enIdx < enPlats.length) {
-        results[enPlats[enIdx]] = s;
+        results[enPlats[enIdx]] = cleanSection(s);
         enIdx++;
       } else if (s.startsWith("ЗАГОЛОВОК:") && ruIdx < ruPlats.length) {
-        results[ruPlats[ruIdx]] = s;
+        results[ruPlats[ruIdx]] = cleanSection(s);
         ruIdx++;
       }
     });
