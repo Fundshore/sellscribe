@@ -9,7 +9,6 @@ const DK = "#0A0814";
 const CARD = "#110E1D";
 const LT = "#F7F5FF";
 
-// ─── SVG platform icons (fix #3: realistic Kaspi + WB logos) ───────────────
 function IconWildberries({ size = 22 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40">
@@ -26,8 +25,6 @@ function IconKaspi({ size = 22 }) {
     </svg>
   );
 }
-
-// emoji fallback for platforms without custom SVG
 function EmojiIcon({ emoji, size = 22 }) {
   return <span style={{ fontSize: size, lineHeight: 1 }}>{emoji}</span>;
 }
@@ -60,55 +57,84 @@ const PLATFORM_RULES = [
     sample: "• Premium natural bamboo with anti-slip silicone base\n• Qi-certified 15W fast charge — iPhone 15, Samsung S24, AirPods\n• Ultra-slim 5mm profile, eco-packaged, zero plastic",
   },
   {
-    id: "etsy", name: "Etsy", color: "#F1641E",
-    format: { en: "Storytelling paragraphs + 13 tags", ru: "Сторителлинг-параграфы + 13 тегов" },
+    id: "shopify", name: "Shopify", color: "#96BF48",
+    format: { en: "2–3 SEO paragraphs", ru: "2–3 SEO-параграфа" },
     lang: { en: "English", ru: "Английский" },
-    limit: { en: "140 char title · 13 tags required", ru: "140 зн. заголовок · 13 тегов обязательно" },
-    tone: { en: "Artisan, warm, personal", ru: "Авторский, тёплый, личный" },
-    sample: "Every piece celebrates the natural grain of sustainably sourced bamboo. Crafted for the eco-conscious desk dweller who believes beautiful objects should also do good in the world.",
+    limit: { en: "60 char title · ~250 words body", ru: "60 зн. заголовок · ~250 слов текст" },
+    tone: { en: "Conversational, Google-optimised", ru: "Разговорный, SEO под Google" },
+    sample: "Charge smarter, not harder. This 15W Qi wireless charger combines sustainability with cutting-edge power delivery — perfect for eco-conscious professionals.",
   },
   {
-    id: "shopify", name: "Shopify", color: "#96BF48",
-    format: { en: "SEO paragraphs", ru: "SEO-параграфы" },
+    id: "etsy", name: "Etsy", color: "#F1641E",
+    format: { en: "Story + 13 tags", ru: "История + 13 тегов" },
     lang: { en: "English", ru: "Английский" },
-    limit: { en: "60 char title · 320 char meta", ru: "60 зн. заголовок · 320 зн. мета" },
-    tone: { en: "Conversion-focused, Google SEO", ru: "Конверсионный, SEO под Google" },
-    sample: "Upgrade your workspace with our sustainably crafted bamboo wireless charger. Designed for modern desks and eco-conscious lifestyles — charges all Qi-enabled devices at up to 15W.",
+    limit: { en: "140 char title", ru: "140 зн. заголовок" },
+    tone: { en: "Warm, artisan, personal", ru: "Тёплый, авторский, личный" },
+    sample: "Every grain of bamboo tells a story of slow growth and natural elegance. Handcrafted for the mindful desk dweller who believes beautiful objects should also do good.",
   },
   {
     id: "ebay", name: "eBay", color: "#E53238",
-    format: { en: "Condition + spec table", ru: "Состояние + таблица характеристик" },
+    format: { en: "Spec table + description", ru: "Таблица хар-к + описание" },
     lang: { en: "English", ru: "Английский" },
     limit: { en: "80 char title", ru: "80 зн. заголовок" },
-    tone: { en: "Factual, condition-first", ru: "Фактический, акцент на состоянии" },
-    sample: "NEW | Bamboo Wireless Charging Pad 15W Qi | Compatible: iPhone/Samsung/AirPods | Material: Natural bamboo | Dimensions: 100×100×5mm | Package: Retail box",
+    tone: { en: "Factual, condition-focused", ru: "Фактический, акцент на состоянии" },
+    sample: "Condition: New. Charging: 15W Qi wireless. Material: Natural bamboo. Compatible: iPhone 15/14, Samsung S24/S23, AirPods Pro.",
   },
   {
     id: "wildberries", name: "Wildberries", color: "#CB11AB",
-    format: { en: "Short bullets + specs", ru: "Короткие буллеты + характеристики" },
-    lang: { en: "🇷🇺 Russian (native)", ru: "🇷🇺 Русский (нативно)" },
+    format: { en: "4–5 Russian bullets", ru: "4–5 буллетов на русском" },
+    lang: { en: "Russian (native)", ru: "Русский (нативный)" },
     limit: { en: "100 char title", ru: "100 зн. заголовок" },
-    tone: { en: "Direct, feature-focused", ru: "Прямой, по функциям" },
-    sample: "• Материал: натуральный бамбук\n• Мощность зарядки: 15W (Qi)\n• Совместимость: iPhone, Samsung, AirPods\n• Противоскользящее основание · Толщина 5 мм",
+    tone: { en: "Direct, feature-focused", ru: "Прямой, по характеристикам" },
+    sample: "• Материал: натуральный бамбук\n• Мощность: 15W Qi · iPhone и Samsung\n• Противоскользящее основание\n• Экологичная упаковка",
   },
   {
     id: "kaspi", name: "Kaspi", color: "#E31E24",
-    format: { en: "Characteristics table", ru: "Таблица характеристик" },
-    lang: { en: "🇷🇺 Russian (native)", ru: "🇷🇺 Русский (нативно)" },
+    format: { en: "Description + spec table", ru: "Описание + таблица хар-к" },
+    lang: { en: "Russian (native)", ru: "Русский (нативный)" },
     limit: { en: "60 char title", ru: "60 зн. заголовок" },
-    tone: { en: "Concise, technical specs", ru: "Краткий, технические параметры" },
+    tone: { en: "Technical, precise", ru: "Технический, конкретный" },
     sample: "Беспроводная зарядка бамбуковая 15W Qi. Тип: беспроводная. Мощность: 15W. Материал: бамбук. Цвет: натуральный. Размер: 100×100 мм.",
   },
 ];
 
-// ─── Full i18n strings ──────────────────────────────────────────────────────
 const STRINGS = {
   en: {
-    badge: "AI-powered product listings",
-    h1a: "Write once.", h1b: "Sell everywhere.",
-    sub: "Describe your product once. Get optimized listings for Amazon, Shopify, Etsy, eBay, Wildberries & Kaspi — each tailored to its marketplace.",
+    badge: "✦ AI-powered marketplace toolkit",
+    h1a: "Create. Analyze.", h1b: "Dominate.",
+    sub: "From your first listing to outselling the competition — SellScribe gives you the tools to build, understand, and win across 6 marketplaces.",
     cta: "Start for free →",
     navPlatforms: "Platforms", navFeatures: "Features", navPricing: "Pricing", navContact: "Contact us", navTry: "Try Free",
+
+    cycleTag: "THE FULL CYCLE",
+    cycleTitle: "Not just a generator. A complete system.",
+    cycleSub: "Most tools stop at creating listings. SellScribe takes you from creation to market intelligence to continuous improvement — all in one place.",
+    cycle: [
+      {
+        tab: "CREATE",
+        color: V1,
+        icon: "✦",
+        title: "Generate listings that convert",
+        desc: "Describe your product once. Get platform-perfect listings for Amazon, Shopify, Etsy, eBay, Wildberries and Kaspi — each tailored to its format, tone and audience. Single or bulk upload.",
+        features: ["Single listing generation", "Bulk CSV/Excel upload", "6 platforms simultaneously", "Multiple tones", "Tech specs for Amazon & eBay", "Native Russian for WB & Kaspi"],
+      },
+      {
+        tab: "ANALYZE",
+        color: "#14B8A6",
+        icon: "◉",
+        title: "See exactly where you stand",
+        desc: "Paste competitor URLs and get a side-by-side score. See their keyword strengths, what gaps exist between you and the leaders, and which customer complaints you can turn into your advantage.",
+        features: ["You vs Competitors score /100", "Keyword gap analysis", "Missing keywords identified", "Competitor strengths mapped", "Review Intel from any platform", "Mix reviews from multiple sources"],
+      },
+      {
+        tab: "IMPROVE",
+        color: "#F59E0B",
+        icon: "↑",
+        title: "Close the gap. Pull ahead.",
+        desc: "Based on your past analyses, SellScribe generates a full action plan — what to fix in your listing and how to make your product itself better than the competition. No generic advice. Specific, data-driven moves.",
+        features: ["Improve listing based on gap analysis", "Improve product based on review intel", "Full recommendations unlocked", "Data-driven, specific actions", "Kill-or-keep honest assessment", "Available on Pro & above"],
+      },
+    ],
 
     whyTag: "WHY IT MATTERS",
     whyTitle: "Every platform speaks a different language",
@@ -117,62 +143,113 @@ const STRINGS = {
     sampleReady: "Platform-optimised · Ready to paste",
     ruleLabels: { format: "Format", lang: "Language", limit: "Limits", tone: "Tone" },
 
-    mathTag: "THE MATH IS SIMPLE",
-    mathTitle: "100 products. The difference is 250 hours.",
-    manualLabel: "MANUAL — PER PRODUCT",
-    ssLabel: "SELLSCRIBE — PER PRODUCT",
-    manualItems: [
-      { plat: "Amazon",      color: "#FF9900", time: "45 min", note: "Bullet points + keyword research" },
-      { plat: "Etsy",        color: "#F1641E", time: "30 min", note: "Storytelling tone + 13 tags" },
-      { plat: "Shopify",     color: "#96BF48", time: "25 min", note: "SEO paragraphs for Google" },
-      { plat: "Wildberries", color: "#CB11AB", time: "35 min", note: "Translate to Russian + reformat" },
-      { plat: "Kaspi",       color: "#E31E24", time: "20 min", note: "Spec table in Cyrillic" },
-    ],
-    totalManual: "Total per product", totalSS: "Total per product",
-    totalManualVal: "~2.5 hrs", totalSSVal: "~30 sec",
-    ssSteps: [
-      { label: "Paste product name", sub: "Or upload a CSV for bulk" },
-      { label: "Select platforms",   sub: "Any combination of 6" },
-      { label: "Click generate",     sub: "All formats, instantly" },
-    ],
-    outputLabel: "OUTPUT — ALL 6 PLATFORMS",
-    savingsLine: ["100 products manually =", "250 hrs", "with SellScribe =", "50 minutes"],
-
-    howTag: "HOW IT WORKS", howTitle: "Three steps. All platforms.",
-    steps: [
-      { n: "01", t: "Describe",  d: "Enter your product name and key features. Or just a name — AI infers the rest.", icon: "✎" },
-      { n: "02", t: "Select",    d: "Pick platforms: Amazon, Shopify, Etsy, eBay, Wildberries, Kaspi. Any combination.", icon: "⎚" },
-      { n: "03", t: "Generate",  d: "Get unique, SEO-optimized listings tailored to each marketplace's format and audience.", icon: "✦" },
-    ],
-
-    whySSTag: "WHY SELLSCRIBE", whySSTitle: "Built for multi-platform sellers",
-    features: [
-      { icon: "🌍", t: "6 platforms, one click",         d: "Every tool out there locks you to one marketplace. SellScribe generates for Amazon, Shopify, Etsy, eBay, Wildberries, and Kaspi simultaneously.", accent: "#FF9900" },
-      { icon: "🧠", t: "Platform-aware intelligence",    d: "Amazon shoppers want specs and bullet points. Etsy buyers want the story behind the product. Our AI adapts the selling angle — not just the format.", accent: V1 },
-      { icon: "🇷🇺", t: "Native Russian for CIS markets",d: "Wildberries and Kaspi listings aren't translated through Google — they're written natively in Russian, with natural phrasing that converts.", accent: "#CB11AB" },
-      { icon: "📊", t: "SEO that actually works",        d: "Not keyword stuffing. Natural keyword integration based on what real buyers search for on each platform.", accent: "#14B8A6" },
-    ],
-
-    priceTag: "PRICING", priceTitle: "Simple, transparent pricing", priceSub: "Start free. Scale as you grow.",
+    priceTag: "PRICING", priceTitle: "Simple, transparent pricing", priceSub: "Start free. Upgrade when you're ready.",
+    priceFeatureHeaders: ["CREATE", "ANALYZE", "IMPROVE"],
     plans: [
-      { name: "Starter", price: "Free", period: "",    desc: "Try it out",        features: ["10 descriptions/month","3 platforms","Basic SEO","Copy to clipboard"],           cta: "Start Free",    hl: false },
-      { name: "Growth",  price: "$9",   period: "/mo", desc: "For active sellers", features: ["100 descriptions/month","All 6 platforms","Advanced SEO","Export to CSV","Tone customization"], cta: "Start Growing", hl: true  },
-      { name: "Pro",     price: "$29",  period: "/mo", desc: "Power sellers",      features: ["500 descriptions/month","Brand Voice learning","Bulk CSV upload","Priority generation"],        cta: "Go Pro",        hl: false },
-      { name: "Agency",  price: "$79",  period: "/mo", desc: "Teams & agencies",   features: ["Unlimited","Multiple brand voices","API access","Priority support"],              cta: "Contact Us",    hl: false },
+      {
+        name: "Free", price: "Free", period: "", desc: "Try it out", hl: false, cta: "Start Free",
+        rows: [
+          { label: "Create Single", val: "10 / mo" },
+          { label: "Create Bulk", val: "—" },
+          { label: "You vs Competitors", val: "2 / mo" },
+          { label: "Review Intel", val: "—" },
+          { label: "Improve", val: "—" },
+          { label: "History", val: "✓" },
+          { label: "Platforms", val: "All 6" },
+        ],
+      },
+      {
+        name: "Growth", price: "$9", period: "/mo", desc: "For active sellers", hl: true, cta: "Start Growing",
+        rows: [
+          { label: "Create Single", val: "100 / mo" },
+          { label: "Create Bulk", val: "Up to 10 products" },
+          { label: "You vs Competitors", val: "20 / mo" },
+          { label: "Review Intel", val: "5 / mo" },
+          { label: "Improve", val: "—" },
+          { label: "History", val: "✓" },
+          { label: "Platforms", val: "All 6" },
+        ],
+      },
+      {
+        name: "Pro", price: "$29", period: "/mo", desc: "Power sellers", hl: false, cta: "Go Pro",
+        rows: [
+          { label: "Create Single", val: "500 / mo" },
+          { label: "Create Bulk", val: "Up to 50 products" },
+          { label: "You vs Competitors", val: "100 / mo" },
+          { label: "Review Intel", val: "50 / mo" },
+          { label: "Improve", val: "20 / mo" },
+          { label: "History", val: "✓" },
+          { label: "Platforms", val: "All 6" },
+        ],
+      },
+      {
+        name: "Agency", price: "$79", period: "/mo", desc: "Teams & agencies", hl: false, cta: "Get Agency",
+        rows: [
+          { label: "Create Single", val: "1000 / mo" },
+          { label: "Create Bulk", val: "Up to 200 products" },
+          { label: "You vs Competitors", val: "500 / mo" },
+          { label: "Review Intel", val: "200 / mo" },
+          { label: "Improve", val: "100 / mo" },
+          { label: "History", val: "✓" },
+          { label: "Platforms", val: "All 6" },
+        ],
+      },
+    ],
+
+    faqTag: "FAQ",
+    faqTitle: "Questions we get asked",
+    faqs: [
+      { q: "Which platforms does SellScribe support?", a: "Amazon, Shopify, Etsy, eBay, Wildberries and Kaspi — generate for any combination in one click. Need a different marketplace? Contact us and we'll make it happen." },
+      { q: "Do I need to know SEO to use it?", a: "No. SellScribe handles keyword density, title length, format rules and tone for each platform automatically. Just describe your product." },
+      { q: "Is the Russian for Wildberries and Kaspi actually good?", a: "Yes — it's written natively, not translated. We specifically trained prompts for CIS marketplace conventions. It's not Google Translate." },
+      { q: "What's the difference between Analyze and Improve?", a: "Analyze shows you the gap — how your listing scores vs competitors and where they're stronger. Improve gives you the full action plan to close that gap, based on your real analysis data." },
+      { q: "Can I upload multiple products at once?", a: "Yes. On Growth and above, you can upload a CSV, Excel, TXT or Word file with product names and features. SellScribe generates listings for all of them in sequence." },
+      { q: "What is Review Intel?", a: "You paste competitor reviews (from any platform), and SellScribe extracts what customers love, what they complain about, and gives you concrete ideas to make your product better. Available on Growth and above." },
     ],
 
     ctaTitle: "Stop writing listings manually",
-    ctaSub: "Join sellers who save hours every week with AI-powered multi-platform descriptions.",
-    ctaBtn: "Generate your first listing — free",
+    ctaSub: "Create better listings, analyze the competition, improve your product — all in one place.",
+    ctaBtn: "Start for free →",
     popularLabel: "POPULAR",
-    footerNote: "© 2026 SellScribe. Write once. Sell everywhere.",
+    footerNote: "© 2026 SellScribe. Create. Analyze. Dominate.",
   },
+
   ru: {
-    badge: "ИИ-листинги для всех маркетплейсов",
-    h1a: "Опишите один раз.", h1b: "Продавайте везде.",
-    sub: "Описывайте товар один раз. Получайте оптимизированные листинги для Amazon, Shopify, Etsy, eBay, Wildberries и Kaspi — каждый под свою платформу.",
+    badge: "✦ Инструментарий для маркетплейсов на базе ИИ",
+    h1a: "Создай. Анализируй.", h1b: "Доминируй.",
+    sub: "От первого листинга до победы над конкурентами — SellScribe даёт инструменты для создания, анализа и улучшения на 6 маркетплейсах.",
     cta: "Начать бесплатно →",
     navPlatforms: "Платформы", navFeatures: "Как работает", navPricing: "Тарифы", navContact: "Связаться", navTry: "Попробовать",
+
+    cycleTag: "ПОЛНЫЙ ЦИКЛ",
+    cycleTitle: "Не просто генератор. Полная система.",
+    cycleSub: "Большинство инструментов останавливаются на создании листинга. SellScribe ведёт вас от создания к анализу рынка и постоянному улучшению — всё в одном месте.",
+    cycle: [
+      {
+        tab: "СОЗДАТЬ",
+        color: V1,
+        icon: "✦",
+        title: "Листинги которые продают",
+        desc: "Опишите товар один раз. Получите идеальные листинги для Amazon, Shopify, Etsy, eBay, Wildberries и Kaspi — каждый под свой формат, тон и аудиторию. Одиночно или массово.",
+        features: ["Одиночная генерация листинга", "Массовая загрузка CSV/Excel", "6 платформ одновременно", "Несколько тонов", "Тех. характеристики для Amazon и eBay", "Нативный русский для WB и Kaspi"],
+      },
+      {
+        tab: "АНАЛИЗ",
+        color: "#14B8A6",
+        icon: "◉",
+        title: "Увидьте где вы стоите",
+        desc: "Вставьте ссылки на конкурентов и получите сравнение по баллам. Узнайте их ключевые слова, разрывы между вами и лидерами, и какие жалобы покупателей можно обратить в своё преимущество.",
+        features: ["Оценка Вы vs Конкуренты /100", "Анализ пробелов в ключевых словах", "Найдены недостающие слова", "Сильные стороны конкурентов", "Анализ отзывов с любой платформы", "Смешивайте отзывы из разных источников"],
+      },
+      {
+        tab: "УЛУЧШИТЬ",
+        color: "#F59E0B",
+        icon: "↑",
+        title: "Закройте разрыв. Вырвитесь вперёд.",
+        desc: "На основе ваших прошлых анализов SellScribe генерирует полный план действий — что исправить в листинге и как улучшить сам товар. Никаких общих советов. Конкретные шаги на основе данных.",
+        features: ["Улучшение листинга по данным анализа", "Улучшение товара по отзывам", "Полные рекомендации разблокированы", "Конкретные шаги на основе данных", "Честная оценка убить или оставить", "Доступно на Pro и выше"],
+      },
+    ],
 
     whyTag: "ПОЧЕМУ ЭТО ВАЖНО",
     whyTitle: "Каждая платформа говорит на своём языке",
@@ -181,59 +258,77 @@ const STRINGS = {
     sampleReady: "Оптимизировано под платформу · Готово к вставке",
     ruleLabels: { format: "Формат", lang: "Язык", limit: "Лимиты", tone: "Тон" },
 
-    mathTag: "ПРОСТАЯ МАТЕМАТИКА",
-    mathTitle: "100 товаров. Разница — 250 часов.",
-    manualLabel: "ВРУЧНУЮ — НА ОДИН ТОВАР",
-    ssLabel: "SELLSCRIBE — НА ОДИН ТОВАР",
-    manualItems: [
-      { plat: "Amazon",      color: "#FF9900", time: "45 мин", note: "Буллеты + исследование ключевых слов" },
-      { plat: "Etsy",        color: "#F1641E", time: "30 мин", note: "Сторителлинг + 13 тегов" },
-      { plat: "Shopify",     color: "#96BF48", time: "25 мин", note: "SEO-параграфы под Google" },
-      { plat: "Wildberries", color: "#CB11AB", time: "35 мин", note: "Перевод на русский + переформатирование" },
-      { plat: "Kaspi",       color: "#E31E24", time: "20 мин", note: "Таблица характеристик кириллицей" },
-    ],
-    totalManual: "Итого на товар", totalSS: "Итого на товар",
-    totalManualVal: "~2.5 часа", totalSSVal: "~30 сек",
-    ssSteps: [
-      { label: "Вставьте название товара", sub: "Или загрузите CSV для массовой обработки" },
-      { label: "Выберите платформы",       sub: "Любая комбинация из 6" },
-      { label: "Нажмите «Сгенерировать»",  sub: "Все форматы — мгновенно" },
-    ],
-    outputLabel: "РЕЗУЛЬТАТ — ВСЕ 6 ПЛАТФОРМ",
-    savingsLine: ["100 товаров вручную =", "250 часов", "с SellScribe =", "50 минут"],
-
-    howTag: "КАК ЭТО РАБОТАЕТ", howTitle: "Три шага. Все платформы.",
-    steps: [
-      { n: "01", t: "Описание",    d: "Введите название и ключевые характеристики товара. Или только название — ИИ сам выведет остальное.", icon: "✎" },
-      { n: "02", t: "Выбор",       d: "Выберите платформы: Amazon, Shopify, Etsy, eBay, Wildberries, Kaspi. Любая комбинация.", icon: "⎚" },
-      { n: "03", t: "Генерация",   d: "Получите уникальные SEO-оптимизированные листинги под формат и аудиторию каждого маркетплейса.", icon: "✦" },
-    ],
-
-    whySSTag: "ПОЧЕМУ SELLSCRIBE", whySSTitle: "Создан для мультиплатформенных продавцов",
-    features: [
-      { icon: "🌍", t: "6 платформ одним кликом",           d: "Все остальные инструменты привязывают вас к одной площадке. SellScribe генерирует для всех шести одновременно.", accent: "#FF9900" },
-      { icon: "🧠", t: "Интеллект, знающий платформы",       d: "Amazon хочет характеристики. Etsy хочет историю. Shopify нужен Google SEO. ИИ адаптирует саму подачу — не только формат.", accent: V1 },
-      { icon: "🇷🇺", t: "Нативный русский для СНГ",         d: "Wildberries и Kaspi — написано нативно по-русски, без машинного перевода. Естественный текст, который продаёт.", accent: "#CB11AB" },
-      { icon: "📊", t: "SEO, который работает",              d: "Не спам ключевыми словами. Органическая интеграция по реальным запросам покупателей на каждой конкретной платформе.", accent: "#14B8A6" },
-    ],
-
     priceTag: "ТАРИФЫ", priceTitle: "Понятные тарифы", priceSub: "Начните бесплатно. Растите без ограничений.",
+    priceFeatureHeaders: ["СОЗДАТЬ", "АНАЛИЗ", "УЛУЧШИТЬ"],
     plans: [
-      { name: "Старт",     price: "Free", period: "",      desc: "Попробуйте",            features: ["10 описаний в месяц","3 платформы","Базовый SEO","Копирование"],                                    cta: "Начать",            hl: false },
-      { name: "Рост",      price: "$9",   period: "/мес",  desc: "Для активных продавцов", features: ["100 описаний в месяц","Все 6 платформ","Расширенный SEO","Экспорт CSV","Настройка тона"],          cta: "Начать рост",       hl: true  },
-      { name: "Про",       price: "$29",  period: "/мес",  desc: "Опытным продавцам",      features: ["500 описаний в месяц","Brand Voice обучение","Bulk CSV загрузка","Приоритетная генерация"],         cta: "Перейти на Про",    hl: false },
-      { name: "Агентство", price: "$79",  period: "/мес",  desc: "Командам",               features: ["Без ограничений","Несколько голосов бренда","API доступ","Приоритетная поддержка"],                cta: "Написать нам",      hl: false },
+      {
+        name: "Бесплатно", price: "Free", period: "", desc: "Попробуйте", hl: false, cta: "Начать",
+        rows: [
+          { label: "Создать (одиночный)", val: "10 / мес" },
+          { label: "Создать (массово)", val: "—" },
+          { label: "Вы vs Конкуренты", val: "2 / мес" },
+          { label: "Анализ отзывов", val: "—" },
+          { label: "Улучшить", val: "—" },
+          { label: "История", val: "✓" },
+          { label: "Платформы", val: "Все 6" },
+        ],
+      },
+      {
+        name: "Рост", price: "$9", period: "/мес", desc: "Для активных продавцов", hl: true, cta: "Начать рост",
+        rows: [
+          { label: "Создать (одиночный)", val: "100 / мес" },
+          { label: "Создать (массово)", val: "До 10 товаров" },
+          { label: "Вы vs Конкуренты", val: "20 / мес" },
+          { label: "Анализ отзывов", val: "5 / мес" },
+          { label: "Улучшить", val: "—" },
+          { label: "История", val: "✓" },
+          { label: "Платформы", val: "Все 6" },
+        ],
+      },
+      {
+        name: "Про", price: "$29", period: "/мес", desc: "Опытным продавцам", hl: false, cta: "Перейти на Про",
+        rows: [
+          { label: "Создать (одиночный)", val: "500 / мес" },
+          { label: "Создать (массово)", val: "До 50 товаров" },
+          { label: "Вы vs Конкуренты", val: "100 / мес" },
+          { label: "Анализ отзывов", val: "50 / мес" },
+          { label: "Улучшить", val: "20 / мес" },
+          { label: "История", val: "✓" },
+          { label: "Платформы", val: "Все 6" },
+        ],
+      },
+      {
+        name: "Агентство", price: "$79", period: "/мес", desc: "Командам", hl: false, cta: "Агентство",
+        rows: [
+          { label: "Создать (одиночный)", val: "1000 / мес" },
+          { label: "Создать (массово)", val: "До 200 товаров" },
+          { label: "Вы vs Конкуренты", val: "500 / мес" },
+          { label: "Анализ отзывов", val: "200 / мес" },
+          { label: "Улучшить", val: "100 / мес" },
+          { label: "История", val: "✓" },
+          { label: "Платформы", val: "Все 6" },
+        ],
+      },
+    ],
+
+    faqTag: "ВОПРОСЫ",
+    faqTitle: "Часто задаваемые вопросы",
+    faqs: [
+      { q: "Какие платформы поддерживает SellScribe?", a: "Amazon, Shopify, Etsy, eBay, Wildberries и Kaspi — любая комбинация одним кликом. Нужен другой маркетплейс? Напишите нам — добавим." },
+      { q: "Нужно ли знать SEO чтобы пользоваться?", a: "Нет. SellScribe сам управляет плотностью ключевых слов, длиной заголовков, форматом и тоном для каждой платформы. Просто опишите товар." },
+      { q: "Русский для Wildberries и Kaspi действительно хороший?", a: "Да — пишется нативно, не переводится. Промпты специально заточены под конвенции СНГ-маркетплейсов. Это не Google Переводчик." },
+      { q: "В чём разница между Анализом и Улучшением?", a: "Анализ показывает разрыв — как ваш листинг оценивается по сравнению с конкурентами и где они сильнее. Улучшение даёт полный план действий как закрыть этот разрыв, на основе реальных данных анализа." },
+      { q: "Можно загрузить несколько товаров сразу?", a: "Да. На тарифе Рост и выше можно загрузить CSV, Excel, TXT или Word файл с названиями и характеристиками. SellScribe генерирует листинги для всех последовательно." },
+      { q: "Что такое Анализ отзывов?", a: "Вставляете отзывы конкурентов (с любой платформы), и SellScribe извлекает что покупатели любят, на что жалуются, и даёт идеи как сделать товар лучше. Доступно на тарифе Рост и выше." },
     ],
 
     ctaTitle: "Хватит писать листинги вручную",
-    ctaSub: "Присоединяйтесь к продавцам, которые экономят часы каждую неделю — с ИИ-листингами для всех платформ.",
-    ctaBtn: "Создать первый листинг — бесплатно",
+    ctaSub: "Создавайте лучшие листинги, анализируйте конкурентов, улучшайте товар — всё в одном месте.",
+    ctaBtn: "Начать бесплатно →",
     popularLabel: "ПОПУЛЯРНЫЙ",
-    footerNote: "© 2026 SellScribe. Описывай один раз. Продавай везде.",
+    footerNote: "© 2026 SellScribe. Создай. Анализируй. Доминируй.",
   },
 };
-
-const PRICING = STRINGS.en.plans; // fallback, not used directly
 
 function useInView(threshold = 0.12) {
   const ref = useRef(null);
@@ -264,7 +359,6 @@ function AnimDiv({ children, delay = 0, direction = "up", style = {}, ...props }
 }
 
 function Logo({ size = 1, light = false }) {
-  // fix #6: use dark background in footer on light bg so SVG is readable
   const bgFill = light ? "#E8E4F8" : CARD;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 * size }}>
@@ -296,9 +390,9 @@ function DemoCard() {
   const [step, setStep] = useState(0);
   useEffect(() => { const t = setInterval(() => setStep(s => (s + 1) % 4), 2600); return () => clearInterval(t); }, []);
   const demos = [
-    { id: "amazon",      color: "#FF9900", label: "AMAZON · BULLET POINTS · EN",       title: "Eco-Friendly Bamboo Wireless Charger — 15W",             body: "• Premium bamboo with anti-slip base\n• Qi-certified 15W — iPhone, Samsung, AirPods\n• Eco-packaged, plastic-free" },
-    { id: "etsy",        color: "#F1641E", label: "ETSY · STORYTELLING · EN",           title: "Handcrafted Bamboo Wireless Charger",                    body: "Every piece celebrates the natural grain of sustainably sourced bamboo. For the eco-conscious desk dweller who believes beautiful objects should do good..." },
-    { id: "wildberries", color: "#CB11AB", label: "WILDBERRIES · БУЛЛЕТЫ · 🇷🇺",       title: "Беспроводная зарядка из бамбука 15W",                    body: "• Материал: натуральный бамбук\n• Мощность: 15W Qi · iPhone и Samsung\n• Противоскользящее основание" },
+    { id: "amazon",      color: "#FF9900", label: "AMAZON · BULLET POINTS · EN",  title: "Eco-Friendly Bamboo Wireless Charger — 15W",  body: "• Premium bamboo with anti-slip base\n• Qi-certified 15W — iPhone, Samsung, AirPods\n• Eco-packaged, plastic-free" },
+    { id: "etsy",        color: "#F1641E", label: "ETSY · STORYTELLING · EN",     title: "Handcrafted Bamboo Wireless Charger",          body: "Every piece celebrates the natural grain of sustainably sourced bamboo. For the eco-conscious desk dweller who believes beautiful objects should do good..." },
+    { id: "wildberries", color: "#CB11AB", label: "WILDBERRIES · БУЛЛЕТЫ · 🇷🇺", title: "Беспроводная зарядка из бамбука 15W",          body: "• Материал: натуральный бамбук\n• Мощность: 15W Qi · iPhone и Samsung\n• Противоскользящее основание" },
   ];
   return (
     <div style={{ background: CARD, borderRadius: 20, padding: 28, border: `1px solid ${V1}12`, width: "100%", maxWidth: 440, position: "relative", overflow: "hidden" }}>
@@ -352,7 +446,7 @@ function PlatformRulesSection({ lang }) {
           <p style={{ color: "#6B647A", fontSize: 16, maxWidth: 520, margin: "0 auto", lineHeight: 1.68 }}>{t.whySub}</p>
         </AnimDiv>
         <AnimDiv delay={0.1}>
-          <div className="plat-tabs" style={{ marginBottom: 28 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
             {PLATFORM_RULES.map(r => (
               <button key={r.id} onClick={() => setActive(r.id)} style={{
                 display: "flex", alignItems: "center", gap: 8,
@@ -367,404 +461,258 @@ function PlatformRulesSection({ lang }) {
               </button>
             ))}
           </div>
-          <div key={active} className="plat-detail-card" style={{
-            background: "#fff", borderRadius: 20, overflow: "hidden",
-            border: `1px solid ${p.color}18`,
-            boxShadow: `0 4px 40px ${p.color}08`,
-            animation: "textReveal 0.3s ease-out",
-          }}>
-            <div style={{ padding: 36, borderRight: "1px solid rgba(0,0,0,0.06)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
-                <PlatIcon id={p.id} size={36} />
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: p.color }}>{p.name}</span>
+          {p && (
+            <div style={{ background: "#fff", borderRadius: 20, padding: 32, border: `1px solid ${p.color}18`, boxShadow: `0 4px 40px ${p.color}08` }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 20, marginBottom: 28 }}>
+                {Object.entries(t.ruleLabels).map(([k, label]) => (
+                  <div key={k}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: p.color, letterSpacing: "0.1em", marginBottom: 6 }}>{label.toUpperCase()}</div>
+                    <div style={{ fontSize: 14, color: "#2A2340", fontWeight: 500 }}>{p[k][lang]}</div>
+                  </div>
+                ))}
               </div>
-              {(["format", "lang", "limit", "tone"]).map(k => (
-                <div key={k} style={{ display: "flex", gap: 12, marginBottom: 14, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "#B0AACC", minWidth: 62, paddingTop: 2, textTransform: "uppercase" }}>{t.ruleLabels[k]}</span>
-                  <span style={{ fontSize: 13, color: "#2A2340", fontWeight: 500, lineHeight: 1.45 }}>{p[k][lang]}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{ padding: 36, background: `${p.color}03` }}>
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "#B0AACC", marginBottom: 14, textTransform: "uppercase" }}>{t.sampleLabel}</div>
-              <div style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#3A3350", lineHeight: 1.72, whiteSpace: "pre-line", padding: "16px 18px", background: "#fff", borderRadius: 12, border: `1px solid ${p.color}15` }}>
-                {p.sample}
-              </div>
-              <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 6, color: "#B0AACC", fontSize: 12 }}>
-                <span style={{ color: p.color }}>✓</span>
-                <span>{t.sampleReady}</span>
+              <div style={{ background: "#F7F5FF", borderRadius: 12, padding: 20 }}>
+                <div style={{ fontSize: 11, color: "#9B96B8", fontWeight: 600, letterSpacing: "0.06em", marginBottom: 10 }}>{t.sampleLabel}</div>
+                <pre style={{ fontSize: 13, color: "#2A2340", lineHeight: 1.7, whiteSpace: "pre-wrap", fontFamily: "var(--font-body)", margin: 0 }}>{p.sample}</pre>
+                <div style={{ fontSize: 11, color: p.color, marginTop: 10, fontWeight: 600 }}>{t.sampleReady}</div>
               </div>
             </div>
-          </div>
+          )}
         </AnimDiv>
       </div>
     </section>
   );
 }
 
-function BeforeAfterSection({ lang }) {
+function FaqSection({ lang }) {
   const t = STRINGS[lang];
+  const [open, setOpen] = useState(null);
   return (
-    <section style={{ background: "#0D0B1A", padding: "80px 24px" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        <AnimDiv style={{ textAlign: "center", marginBottom: 56 }}>
-          <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>{t.mathTag}</div>
-          <h2 style={{ fontSize: "clamp(26px, 3.5vw, 40px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>
-            {t.mathTitle}
+    <section style={{ padding: "80px 24px", background: LT }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <AnimDiv style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ color: V2, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>{t.faqTag}</div>
+          <h2 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, color: "#1A1330", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>
+            {t.faqTitle}
           </h2>
         </AnimDiv>
-        <div className="ba-grid" style={{ gap: 0, alignItems: "start" }}>
-          <AnimDiv direction="left" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.1)", borderRadius: 20, overflow: "hidden" }}>
-            <div style={{ padding: "16px 24px", borderBottom: "1px solid rgba(239,68,68,0.08)", display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: "#EF4444", fontSize: 11 }}>●</span>
-              <span style={{ color: "#F87171", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em" }}>{t.manualLabel}</span>
-            </div>
-            <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 8 }}>
-              {t.manualItems.map((item, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", borderRadius: 10, background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.07)" }}>
-                  <PlatIcon id={PLATFORMS.find(p => p.name === item.plat || p.id === item.plat.toLowerCase())?.id || item.plat.toLowerCase()} size={24} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: item.color }}>{item.plat}</div>
-                    <div style={{ fontSize: 11, color: "#6D628F", marginTop: 1 }}>{item.note}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {t.faqs.map((faq, i) => (
+            <AnimDiv key={i} delay={i * 0.05}>
+              <div
+                onClick={() => setOpen(open === i ? null : i)}
+                style={{ background: "#fff", borderRadius: 14, border: `1px solid ${open === i ? V1 + "30" : "rgba(139,92,246,0.08)"}`, overflow: "hidden", cursor: "pointer", transition: "border 0.2s" }}
+              >
+                <div style={{ padding: "18px 22px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1330", lineHeight: 1.4 }}>{faq.q}</span>
+                  <span style={{ color: V1, fontSize: 20, fontWeight: 700, flexShrink: 0, transition: "transform 0.2s", transform: open === i ? "rotate(45deg)" : "none" }}>+</span>
+                </div>
+                {open === i && (
+                  <div style={{ padding: "0 22px 20px", fontSize: 15, color: "#2A2340", lineHeight: 1.75, fontWeight: 500 }}>
+                    {faq.a}
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#F87171", flexShrink: 0 }}>{item.time}</div>
-                </div>
-              ))}
-              <div style={{ marginTop: 6, padding: "13px 16px", borderRadius: 10, background: "rgba(239,68,68,0.07)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#F87171", fontSize: 13, fontWeight: 600 }}>{t.totalManual}</span>
-                <span style={{ color: "#FCA5A5", fontSize: 20, fontWeight: 900, fontFamily: "var(--font-display)" }}>{t.totalManualVal}</span>
+                )}
               </div>
-            </div>
-          </AnimDiv>
-
-          <div className="ba-divider" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 18px", paddingTop: 72, gap: 8 }}>
-            <div className="ba-divider-line" style={{ width: 1, height: 36, background: `linear-gradient(to bottom, transparent, ${V1}30)` }} />
-            <div style={{ width: 42, height: 42, borderRadius: "50%", background: `linear-gradient(135deg, ${V1}, ${V2})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, color: "#fff", fontFamily: "var(--font-display)", boxShadow: `0 0 24px ${V1}40` }}>vs</div>
-            <div className="ba-divider-line" style={{ width: 1, height: 36, background: `linear-gradient(to bottom, ${V1}30, transparent)` }} />
-          </div>
-
-          <AnimDiv direction="right" style={{ background: `${V1}05`, border: `1px solid ${V1}12`, borderRadius: 20, overflow: "hidden" }}>
-            <div style={{ padding: "16px 24px", borderBottom: `1px solid ${V1}0A`, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: V3, fontSize: 11 }}>✦</span>
-              <span style={{ color: V3, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em" }}>{t.ssLabel}</span>
-            </div>
-            <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 8 }}>
-              {t.ssSteps.map((s, idx) => (
-                <div key={idx} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 16px", borderRadius: 10, background: `${V1}06`, border: `1px solid ${V1}0A` }}>
-                  <div style={{ width: 26, height: 26, borderRadius: "50%", background: `${V1}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: V3, flexShrink: 0 }}>0{idx + 1}</div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#E8E5F5" }}>{s.label}</div>
-                    <div style={{ fontSize: 11, color: "#6D628F", marginTop: 1 }}>{s.sub}</div>
-                  </div>
-                </div>
-              ))}
-              <div style={{ marginTop: 4, padding: "13px 16px", borderRadius: 10, background: `${V1}08`, border: `1px solid ${V1}12` }}>
-                <div style={{ fontSize: 10, color: V3, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 10 }}>{t.outputLabel}</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {PLATFORMS.map(p => (
-                    <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 5, padding: "3px 10px", borderRadius: 6, background: `${p.color}14`, border: `1px solid ${p.color}25`, fontSize: 11, fontWeight: 600, color: p.color }}>
-                      <PlatIcon id={p.id} size={14} /> {p.name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div style={{ marginTop: 6, padding: "13px 16px", borderRadius: 10, background: `${V1}0A`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: V3, fontSize: 13, fontWeight: 600 }}>{t.totalSS}</span>
-                <span style={{ color: "#C4B5FD", fontSize: 20, fontWeight: 900, fontFamily: "var(--font-display)" }}>{t.totalSSVal}</span>
-              </div>
-            </div>
-          </AnimDiv>
+            </AnimDiv>
+          ))}
         </div>
-
-        <AnimDiv delay={0.2} style={{ textAlign: "center", marginTop: 36 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "11px 24px", borderRadius: 100, background: `${V1}08`, border: `1px solid ${V1}14` }}>
-            <span style={{ color: V3, fontSize: 13 }}>⚡</span>
-            <span style={{ color: "#C4C0DA", fontSize: 14, fontWeight: 500 }}>
-              {t.savingsLine[0]} <strong style={{ color: "#F87171" }}>{t.savingsLine[1]}</strong>&nbsp;→&nbsp;{t.savingsLine[2]} <strong style={{ color: V3 }}>{t.savingsLine[3]}</strong>
-            </span>
-          </div>
-        </AnimDiv>
       </div>
     </section>
   );
 }
 
-export default function Landing() {
+export default function App() {
   const navigate = useNavigate();
-  const [navSolid, setNavSolid] = useState(false);
   const [lang, setLang] = useLang();
   const t = STRINGS[lang];
-
-  useEffect(() => {
-    const h = () => setNavSolid(window.scrollY > 60);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
-  }, []);
+  const [activeCycle, setActiveCycle] = useState(0);
+  const cycleColors = [V1, "#14B8A6", "#F59E0B"];
 
   return (
-    <div style={{ background: DK, fontFamily: "var(--font-body)", color: "#E8E5F5", overflowX: "hidden" }}>
+    <div style={{ fontFamily: "var(--font-body)", background: DK, color: "#E8E5F5", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800;12..96,900&family=DM+Sans:wght@300;400;500;700&display=swap');
         :root { --font-display:'Bricolage Grotesque',sans-serif; --font-body:'DM Sans',sans-serif; }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        @keyframes heroReveal { from{opacity:0;transform:translateY(36px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);} }
-        @keyframes gradientText { 0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;} }
-        @keyframes pulse { 0%,100%{opacity:0.15;}50%{opacity:0.35;} }
-        @keyframes textReveal { from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);} }
-        @keyframes sparkleRotate { from{transform:rotate(0deg);}to{transform:rotate(360deg);} }
-        @keyframes orbFloat { 0%,100%{transform:translate(0,0);}40%{transform:translate(24px,-16px);}70%{transform:translate(-16px,12px);} }
-        html, body { margin:0; padding:0; width:100%; overflow-x:hidden; scroll-behavior:smooth; }
-        body { background:#0A0814; }
-        #root { width:100%; }
-        button { cursor:pointer; transition: transform 0.18s, box-shadow 0.18s; }
-        button:hover { transform: translateY(-2px); }
-
-        /* ── MOBILE NAV ── */
-        .nav-links { display:flex; gap:16px; align-items:center; }
-        .nav-link { display:block; }
-        .nav-contact { display:inline-flex; }
-        .nav-lang { display:flex; }
-        @media (max-width:900px) {
-          .nav-link { display:none; }
-          .nav-links { gap:10px; }
-        }
-        @media (max-width:540px) {
-          .nav-inner { flex-wrap:wrap !important; height:auto !important; padding:10px 0 !important; }
-          .nav-links { width:100%; justify-content:center; gap:8px; }
-          .nav-lang { display:none !important; }
-          .nav-logo-wrap { display:flex !important; }
-        }
-        .nav-logo-wrap { display:none; align-items:center; gap:10px; }
-
-        /* ── HERO ── */
-        .hero-inner { display:flex; align-items:center; justify-content:space-between; gap:60px; flex-wrap:wrap; }
-        @media (max-width:768px) {
-          .hero-inner { flex-direction:column; gap:40px; text-align:center; }
-          .hero-inner h1 { font-size:clamp(32px,8vw,48px) !important; }
-          .hero-inner p { font-size:16px !important; max-width:100% !important; }
-          .hero-inner button { width:100%; }
-        }
-
-        /* ── PLATFORM RULES (split card) ── */
-        .plat-detail-card { display:grid; grid-template-columns:1fr 1fr; }
-        @media (max-width:700px) {
-          .plat-detail-card { grid-template-columns:1fr !important; }
-          .plat-detail-right { border-top:1px solid rgba(0,0,0,0.06); border-left:none !important; }
-        }
-
-        /* ── BEFORE/AFTER ── */
-        .ba-grid { display:grid; grid-template-columns:1fr auto 1fr; }
-        @media (max-width:700px) {
-          .ba-grid { grid-template-columns:1fr !important; }
-          .ba-divider { flex-direction:row !important; padding:16px 0 !important; }
-          .ba-divider-line { width:40px !important; height:1px !important; }
-        }
-
-        /* ── HOW IT WORKS ── */
-        .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-        @media (max-width:700px) {
-          .steps-grid { grid-template-columns:1fr !important; }
-          .step-card { padding:24px !important; }
-        }
-
-        /* ── PRICING ── */
-        @media (max-width:600px) {
-          .pricing-grid { grid-template-columns:1fr !important; }
-        }
-
-        /* ── PLATFORM TABS ── */
-        .plat-tabs { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
-        @media (max-width:480px) {
-          .plat-tabs button { padding:6px 12px !important; font-size:13px !important; }
-        }
-
-        /* ── GENERAL PADDING ── */
-        @media (max-width:480px) {
-          section { padding-left:16px !important; padding-right:16px !important; }
-          .inner-wrap { padding:0 16px !important; }
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        @keyframes pulse { 0%,100%{opacity:0.18;} 50%{opacity:0.45;} }
+        @keyframes textReveal { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+        @keyframes starPulse { 0%,100%{opacity:0.7;transform:scale(1) rotate(0deg);} 50%{opacity:1;transform:scale(1.3) rotate(20deg);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+        button { cursor: pointer; font-family: var(--font-body); transition: transform 0.18s, opacity 0.18s; }
+        button:hover { opacity: 0.88; transform: translateY(-1px); }
+        .nav-link:hover { color: #F5F3FF !important; }
+        .plat-tabs { display:flex; flex-wrap:wrap; gap:8px; }
+        .pricing-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        @media(max-width:900px){ .pricing-grid{grid-template-columns:repeat(2,1fr);} }
+        @media(max-width:540px){ .pricing-grid{grid-template-columns:1fr;} .hero-btns{flex-direction:column;} }
       `}</style>
 
       {/* NAV */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "0 36px",
-        background: navSolid ? `${DK}EC` : "transparent",
-        backdropFilter: navSolid ? "blur(20px)" : "none",
-        borderBottom: `1px solid ${navSolid ? V1 + "12" : "transparent"}`,
-        transition: "all 0.4s",
-      }}>
-        <div className="nav-inner" style={{ maxWidth: 1200, margin: "0 auto", height: 64, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ position: "relative" }}>
-            <Logo />
-            <div className="nav-logo-wrap" style={{ position: "absolute", left: "calc(100% + 10px)", top: "50%", transform: "translateY(-50%)" }}>
-              <div style={{ display: "flex", background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
-                {["en", "ru"].map(l => (
-                  <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 10px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 11, background: lang === l ? `${V1}25` : "transparent", color: lang === l ? V3 : "#6D628F", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
-                ))}
-              </div>
-            </div>
+      <nav style={{ position: "sticky", top: 0, zIndex: 100, padding: "0 32px", borderBottom: `1px solid ${V1}12`, background: `${DK}F0`, backdropFilter: "blur(20px)" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer" }}><Logo /></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+            <a href="#cycle"   className="nav-link" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navFeatures}</a>
+            <a href="#platforms" className="nav-link" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPlatforms}</a>
+            <a href="#pricing" className="nav-link" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPricing}</a>
+            <a href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navContact}</a>
           </div>
-          <div className="nav-links">
-            <a className="nav-link" href="#platforms" style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPlatforms}</a>
-            <a className="nav-link" href="#features"  style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navFeatures}</a>
-            <a className="nav-link" href="#pricing"   style={{ color: "#9B96B8", textDecoration: "none", fontSize: 14, fontWeight: 500 }}>{t.navPricing}</a>
-            <a className="nav-contact" href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer" style={{ padding: "8px 18px", borderRadius: 6, border: "1px solid rgba(139,92,246,0.35)", background: "rgba(139,92,246,0.08)", color: "#A78BFA", textDecoration: "none", fontSize: 14, fontWeight: 600, transition: "all 0.2s", letterSpacing: "0.01em" }}>{t.navContact}</a>
-            <div className="nav-lang" style={{ background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ background: `${V1}0A`, border: `1px solid ${V1}18`, borderRadius: 8, overflow: "hidden", display: "flex" }}>
               {["en", "ru"].map(l => (
-                <button key={l} onClick={() => setLang(l)} style={{
-                  padding: "5px 12px", border: "none", fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12,
-                  background: lang === l ? `${V1}25` : "transparent",
-                  color: lang === l ? V3 : "#6D628F",
-                  letterSpacing: "0.04em", transition: "all 0.2s",
-                }}>
-                  {l.toUpperCase()}
-                </button>
+                <button key={l} onClick={() => setLang(l)} style={{ padding: "5px 12px", border: "none", fontWeight: 700, fontSize: 12, background: lang === l ? `${V1}25` : "transparent", color: lang === l ? V3 : "#6D628F", letterSpacing: "0.04em", transition: "all 0.2s" }}>{l.toUpperCase()}</button>
               ))}
             </div>
-            <button onClick={() => navigate("/auth")} style={{ padding: "9px 22px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 14, fontFamily: "var(--font-body)", boxShadow: `0 2px 16px ${V1}30` }}>
+            <button onClick={() => navigate("/auth")} style={{ padding: "9px 20px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 14, boxShadow: `0 2px 16px ${V1}30` }}>
               {t.navTry}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* ═══ HERO ═══ */}
-      <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: "100px 24px 60px" }}>
-        <div style={{ position: "absolute", top: "15%", left: "10%", width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${V2}12 0%, transparent 70%)`, animation: "orbFloat 12s ease-in-out infinite", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: "20%", right: "8%", width: 250, height: 250, borderRadius: "50%", background: `radial-gradient(circle, ${V1}0A 0%, transparent 70%)`, animation: "orbFloat 10s ease-in-out 3s infinite", pointerEvents: "none" }} />
-        <div className="hero-inner" style={{ maxWidth: 1100, width: "100%", position: "relative", zIndex: 2 }}>
-          <div style={{ flex: "1 1 480px", animation: "heroReveal 1s cubic-bezier(0.16,1,0.3,1)" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px", borderRadius: 100, background: `${V1}10`, border: `1px solid ${V1}18`, marginBottom: 28 }}>
-              <span style={{ color: V3, fontSize: 14, animation: "sparkleRotate 4s linear infinite" }}>✦</span>
-              <span style={{ color: V3, fontSize: 13, fontWeight: 600 }}>{t.badge}</span>
-            </div>
-            <h1 style={{ fontSize: "clamp(40px, 5vw, 64px)", fontWeight: 900, lineHeight: 1.06, color: "#F5F3FF", marginBottom: 22, letterSpacing: "-0.04em", fontFamily: "var(--font-display)" }}>
-              {t.h1a}<br />
-              <span style={{ background: `linear-gradient(135deg, ${V3} 0%, ${V1} 40%, ${V3} 100%)`, backgroundSize: "200% auto", animation: "gradientText 4s ease infinite", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                {t.h1b}
-              </span>
-            </h1>
-            <p style={{ fontSize: 18, color: "#9B96B8", lineHeight: 1.7, maxWidth: 480, marginBottom: 36 }}>{t.sub}</p>
-            <button onClick={() => navigate("/auth")} style={{ padding: "15px 40px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30, 0 0 0 1px ${V1}40` }}>
-              {t.cta}
+      {/* HERO */}
+      <section style={{ padding: "100px 24px 80px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "10%", left: "50%", transform: "translateX(-50%)", width: 700, height: 400, background: `radial-gradient(ellipse, ${V1}18 0%, transparent 70%)`, pointerEvents: "none" }} />
+        <AnimDiv style={{ maxWidth: 820, margin: "0 auto", position: "relative" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 18px", borderRadius: 100, background: `${V1}12`, border: `1px solid ${V1}25`, color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", marginBottom: 28 }}>
+            <span style={{ animation: "starPulse 2.4s ease-in-out infinite", display: "inline-block" }}>✦</span>
+            <span>{lang === "ru" ? t.badge.replace("✦ ", "") : t.badge.replace("✦ ", "")}</span>
+          </div>
+          <h1 style={{ fontSize: "clamp(40px, 7vw, 80px)", fontWeight: 900, letterSpacing: "-0.04em", fontFamily: "var(--font-display)", lineHeight: 1.05, marginBottom: 24 }}>
+            <span style={{ color: "#F5F3FF" }}>{t.h1a}</span>{" "}
+            <span style={{ background: `linear-gradient(135deg, ${V1}, ${V3})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{t.h1b}</span>
+          </h1>
+          <p style={{ fontSize: "clamp(16px, 2vw, 20px)", color: "#9B96B8", lineHeight: 1.65, maxWidth: 620, margin: "0 auto 40px" }}>
+            {t.sub}
+          </p>
+          <div className="hero-btns" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <button onClick={() => navigate("/auth")} style={{ padding: "16px 40px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, boxShadow: `0 4px 32px ${V1}35` }}>
+  {t.cta}
             </button>
           </div>
-          <div style={{ flex: "1 1 400px", display: "flex", justifyContent: "center", animation: "heroReveal 1s cubic-bezier(0.16,1,0.3,1) 0.2s both" }}>
-            <DemoCard />
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 28, flexWrap: "wrap" }}>
+            {PLATFORMS.map(p => (
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 12px", borderRadius: 8, background: `${p.color}10`, border: `1px solid ${p.color}20`, fontSize: 12, fontWeight: 600, color: p.color }}>
+                <PlatIcon id={p.id} size={14} /> {p.name}
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
+        </AnimDiv>
 
-      {/* ── Platform logos bar (fix #2: static, readable) ── */}
-      <section style={{ padding: "0 24px 60px", background: DK }}>
-        <AnimDiv style={{ display: "flex", justifyContent: "center", gap: 36, flexWrap: "wrap" }}>
-          {PLATFORMS.map(p => (
-            <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <PlatIcon id={p.id} size={20} />
-              <span style={{ color: "#8A84A8", fontSize: 14, fontWeight: 600 }}>{p.name}</span>
-            </div>
-          ))}
+        {/* Demo Card */}
+        <AnimDiv delay={0.2} style={{ display: "flex", justifyContent: "center", marginTop: 60 }}>
+          <DemoCard />
         </AnimDiv>
       </section>
 
-      {/* ═══ PLATFORM RULES (light) ═══ */}
-      <PlatformRulesSection lang={lang} />
-
-      {/* ═══ BEFORE / AFTER (dark) ═══ */}
-      <BeforeAfterSection lang={lang} />
-
-      {/* ═══ HOW IT WORKS (light) ═══ */}
-      <section id="features" style={{ padding: "80px 24px", background: LT }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      {/* CYCLE SECTION */}
+      <section id="cycle" style={{ padding: "80px 24px", background: "#0D0B1A" }}>
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <AnimDiv style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ color: V2, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 12 }}>{t.howTag}</div>
-            <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, color: "#1A1330", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>
-              {t.howTitle}
+            <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>{t.cycleTag}</div>
+            <h2 style={{ fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)", marginBottom: 14 }}>
+              {t.cycleTitle}
             </h2>
+            <p style={{ color: "#6D628F", fontSize: 16, maxWidth: 560, margin: "0 auto", lineHeight: 1.65 }}>{t.cycleSub}</p>
           </AnimDiv>
-          <div className="steps-grid">
-            {t.steps.map((s, i) => (
-              <AnimDiv key={s.n} delay={i * 0.15} className="step-card" style={{
-                padding: 36, borderRadius: 20,
-                background: "#fff",
-                border: `1px solid rgba(139,92,246,0.1)`,
-                position: "relative", overflow: "hidden",
+
+          {/* Tab selector */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 40, background: `${V1}06`, borderRadius: 14, padding: 5, width: "fit-content", margin: "0 auto 40px" }}>
+            {t.cycle.map((c, i) => (
+              <button key={i} onClick={() => setActiveCycle(i)} style={{
+                padding: "10px 24px", borderRadius: 10, border: "none",
+                background: activeCycle === i ? `linear-gradient(135deg, ${cycleColors[i]}CC, ${cycleColors[i]})` : "transparent",
+                color: activeCycle === i ? "#fff" : "#6D628F",
+                fontWeight: 700, fontSize: 13, letterSpacing: "0.04em",
+                boxShadow: activeCycle === i ? `0 2px 16px ${cycleColors[i]}40` : "none",
+                transition: "all 0.2s",
               }}>
-                <div style={{ position: "absolute", top: 8, right: -4, fontSize: 90, fontWeight: 900, fontFamily: "var(--font-display)", color: "#EDE9FE", opacity: 1, lineHeight: 1, userSelect: "none" }}>{s.n}</div>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: `${V1}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: V1, marginBottom: 20, border: `1px solid ${V1}18` }}>
-                  {s.icon}
+                {c.tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Active cycle content */}
+          {t.cycle.map((c, i) => activeCycle === i && (
+            <AnimDiv key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
+              <div>
+                <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: 16, background: `${c.color}18`, border: `1px solid ${c.color}30`, fontSize: 24, color: c.color, marginBottom: 20 }}>{c.icon}</div>
+                <h3 style={{ fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 800, color: "#F5F3FF", fontFamily: "var(--font-display)", letterSpacing: "-0.02em", marginBottom: 14 }}>{c.title}</h3>
+                <p style={{ color: "#9B96B8", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>{c.desc}</p>
+                <button onClick={() => navigate("/auth")} style={{ padding: "12px 28px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${c.color}, ${c.color}CC)`, color: "#fff", fontWeight: 700, fontSize: 14 }}>
+                  {t.cta}
+                </button>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {c.features.map((f, fi) => (
+                  <div key={fi} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 16px", borderRadius: 10, background: `${c.color}06`, border: `1px solid ${c.color}14` }}>
+                    <span style={{ color: c.color, fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>✓</span>
+                    <span style={{ color: "#C4C0DA", fontSize: 14 }}>{f}</span>
+                  </div>
+                ))}
+              </div>
+            </AnimDiv>
+          ))}
+
+          {/* Cycle flow indicator */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 56 }}>
+            {t.cycle.map((c, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 100, background: `${cycleColors[i]}12`, border: `1px solid ${cycleColors[i]}25`, cursor: "pointer" }} onClick={() => setActiveCycle(i)}>
+                  <span style={{ fontSize: 14, color: cycleColors[i] }}>{c.icon}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: cycleColors[i], letterSpacing: "0.04em" }}>{c.tab}</span>
                 </div>
-                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#1A1330", marginBottom: 10, fontFamily: "var(--font-display)" }}>{s.t}</h3>
-                <p style={{ color: "#6B647A", fontSize: 15, lineHeight: 1.65 }}>{s.d}</p>
-              </AnimDiv>
+                {i < t.cycle.length - 1 && <span style={{ color: "#3D3960", fontSize: 18 }}>→</span>}
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══ FEATURES (dark) ═══ */}
-      <section style={{ padding: "80px 24px", background: DK }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <AnimDiv style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 12 }}>{t.whySSTag}</div>
-            <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>{t.whySSTitle}</h2>
-          </AnimDiv>
-          {t.features.map((f, i) => (
-            <AnimDiv key={i} delay={i * 0.1} style={{
-              display: "flex", gap: 24, padding: 28, borderRadius: 20, marginBottom: 14,
-              background: `linear-gradient(135deg, ${f.accent}06, transparent)`,
-              border: `1px solid ${f.accent}14`, alignItems: "flex-start",
-            }}>
-              {/* fix #5: stronger icon bg so it stands out on dark */}
-              <div style={{ width: 56, height: 56, borderRadius: 16, background: `${f.accent}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0, border: `1px solid ${f.accent}30` }}>
-                {f.icon}
-              </div>
-              <div>
-                <h4 style={{ fontSize: 18, fontWeight: 700, color: "#F5F3FF", marginBottom: 6, fontFamily: "var(--font-display)" }}>{f.t}</h4>
-                <p style={{ color: "#9B96B8", fontSize: 15, lineHeight: 1.65 }}>{f.d}</p>
-              </div>
-            </AnimDiv>
-          ))}
-        </div>
-      </section>
+      {/* PLATFORM RULES */}
+      <PlatformRulesSection lang={lang} />
 
-      {/* ═══ PRICING (dark) ═══ */}
+      {/* PRICING */}
       <section id="pricing" style={{ padding: "80px 24px", background: "#0D0B1A" }}>
-        <div style={{ maxWidth: 1020, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <AnimDiv style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 12 }}>{t.priceTag}</div>
             <h2 style={{ fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)", marginBottom: 10 }}>{t.priceTitle}</h2>
             <p style={{ color: "#6D628F", fontSize: 16 }}>{t.priceSub}</p>
           </AnimDiv>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+          <div className="pricing-grid">
             {t.plans.map((pl, i) => (
-              <AnimDiv key={i} delay={i * 0.1} direction="up" style={{
+              <AnimDiv key={i} delay={i * 0.1} style={{
                 background: pl.hl ? `linear-gradient(180deg, ${V1}0D, ${V1}04)` : `${V1}04`,
-                borderRadius: 22, padding: 28,
+                borderRadius: 22, padding: 24,
                 border: pl.hl ? `2px solid ${V1}28` : `1px solid ${V1}0A`,
                 position: "relative",
               }}>
                 {pl.hl && <div style={{ position: "absolute", top: -11, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${V1}, ${V2})`, padding: "4px 16px", borderRadius: 100, fontSize: 11, fontWeight: 700, color: "#fff" }}>{t.popularLabel}</div>}
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "#F5F3FF", marginBottom: 3, fontFamily: "var(--font-display)" }}>{pl.name}</h3>
-                <p style={{ color: "#6D628F", fontSize: 13, marginBottom: 16 }}>{pl.desc}</p>
+                <p style={{ color: "#6D628F", fontSize: 13, marginBottom: 14 }}>{pl.desc}</p>
                 <div style={{ marginBottom: 20 }}>
                   <span style={{ fontSize: 36, fontWeight: 900, color: pl.hl ? V3 : "#F5F3FF", fontFamily: "var(--font-display)" }}>{pl.price}</span>
                   <span style={{ color: "#6D628F", fontSize: 14 }}>{pl.period}</span>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
-                  {pl.features.map((f, fi) => (
-                    <div key={fi} style={{ display: "flex", gap: 8 }}>
-                      <span style={{ color: V3, fontSize: 13 }}>✓</span>
-                      <span style={{ color: "#C4C0DA", fontSize: 13 }}>{f}</span>
-                    </div>
-                  ))}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 20 }}>
+                  {pl.rows.map((row, ri) => {
+                    const isLocked = row.val === "—";
+                    return (
+                      <div key={ri} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: ri < pl.rows.length - 1 ? `1px solid ${V1}08` : "none" }}>
+                        <span style={{ color: isLocked ? "#3D3960" : "#8B87A8", fontSize: 12 }}>{row.label}</span>
+                        <span style={{ color: isLocked ? "#3D3960" : row.val === "✓" ? "#22C55E" : V3, fontSize: 12, fontWeight: 600 }}>{row.val}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <button style={{
+                <button onClick={() => navigate("/auth")} style={{
                   width: "100%", padding: "11px 0", borderRadius: 12,
                   border: pl.hl ? "none" : `1px solid ${V1}28`,
                   background: pl.hl ? `linear-gradient(135deg, ${V1}, ${V2})` : "transparent",
                   color: pl.hl ? "#fff" : "#A098C8",
-                  fontWeight: 700, fontSize: 14, fontFamily: "var(--font-body)",
+                  fontWeight: 700, fontSize: 14,
                 }}>
                   {pl.cta}
                 </button>
@@ -774,31 +722,34 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══ FINAL CTA (light) ═══ */}
-      <section style={{ padding: "80px 24px", background: LT }}>
+      {/* FAQ */}
+      <FaqSection lang={lang} />
+
+      {/* FINAL CTA */}
+      <section style={{ padding: "80px 24px", background: DK }}>
         <AnimDiv style={{
           maxWidth: 700, margin: "0 auto", textAlign: "center", padding: "64px 40px", borderRadius: 28,
-          background: "#fff", border: `1px solid ${V1}14`,
-          position: "relative", overflow: "hidden", boxShadow: `0 8px 60px ${V1}0A`,
+          background: `linear-gradient(135deg, ${V1}10, ${V2}06)`,
+          border: `1px solid ${V1}20`,
+          position: "relative", overflow: "hidden",
         }}>
-          <div style={{ position: "absolute", top: -60, right: -60, width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${V1}08, transparent)`, pointerEvents: "none" }} />
-          <div style={{ position: "absolute", bottom: -40, left: -40, width: 200, height: 200, borderRadius: "50%", background: `radial-gradient(circle, ${V2}06, transparent)`, pointerEvents: "none" }} />
-          <h2 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, color: "#1A1330", marginBottom: 16, fontFamily: "var(--font-display)", letterSpacing: "-0.03em", position: "relative" }}>
+          <div style={{ position: "absolute", top: -60, right: -60, width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${V1}15, transparent)`, pointerEvents: "none" }} />
+          <h2 style={{ fontSize: "clamp(26px, 3.5vw, 38px)", fontWeight: 800, color: "#F5F3FF", marginBottom: 16, fontFamily: "var(--font-display)", letterSpacing: "-0.03em", position: "relative" }}>
             {t.ctaTitle}
           </h2>
-          <p style={{ color: "#6B647A", fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 460, margin: "0 auto 32px", position: "relative" }}>
+          <p style={{ color: "#9B96B8", fontSize: 16, lineHeight: 1.65, marginBottom: 32, maxWidth: 460, margin: "0 auto 32px", position: "relative" }}>
             {t.ctaSub}
           </p>
-          <button onClick={() => navigate("/auth")} style={{ padding: "16px 44px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "var(--font-body)", boxShadow: `0 4px 32px ${V1}30`, position: "relative" }}>
+          <button onClick={() => navigate("/auth")} style={{ padding: "16px 44px", borderRadius: 14, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 16, boxShadow: `0 4px 32px ${V1}30`, position: "relative" }}>
             {t.ctaBtn}
           </button>
         </AnimDiv>
       </section>
 
-      {/* ═══ FOOTER (fix #6) ═══ */}
-      <footer style={{ padding: "32px 24px", background: LT, borderTop: `1px solid ${V1}12` }}>
+      {/* FOOTER */}
+      <footer style={{ padding: "32px 24px", background: DK, borderTop: `1px solid ${V1}12` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <Logo size={0.85} light />
+          <Logo size={0.85} />
           <p style={{ color: "#7A74A0", fontSize: 13, fontWeight: 500 }}>{t.footerNote}</p>
         </div>
       </footer>

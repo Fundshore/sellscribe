@@ -10,13 +10,20 @@ export default async function handler(req, res) {
   }
 
   const PLATFORM_INSTRUCTIONS = {
-    amazon: `Amazon listing: Write exactly 5 bullet points. Start each with "•". Title max 200 chars, each bullet max 80 chars. Focus on specs, keywords, benefits. Tone: professional, keyword-dense. Format:
+    amazon: `Amazon listing: Write exactly 5 bullet points. Start each with "•". Title max 200 chars, each bullet max 80 chars. Focus on specs, keywords, benefits. Tone: professional, keyword-dense.
+Then add a TECH SPECS section with 5-8 estimated technical specifications relevant to this product type. Mark with note: "(⚠ Estimated specs — please verify accuracy)".
+Format:
 TITLE: [title here]
 • [bullet 1]
 • [bullet 2]
 • [bullet 3]
 • [bullet 4]
-• [bullet 5]`,
+• [bullet 5]
+TECH SPECS (⚠ Estimated — please verify):
+[Spec name]: [value]
+[Spec name]: [value]
+[Spec name]: [value]
+[continue for 5-8 specs]`,
 
     shopify: `Shopify product description: Write 2-3 SEO paragraphs optimised for Google search. Conversational but persuasive. Include natural keywords. Title max 60 chars. Format:
 TITLE: [title here]
@@ -29,11 +36,14 @@ TITLE: [title here]
 [storytelling description 3-4 sentences]
 TAGS: tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10, tag11, tag12, tag13`,
 
-    ebay: `eBay listing: Write a factual, condition-focused description. Include a spec table format. Mention condition (NEW). Title max 80 chars. Format:
+    ebay: `eBay listing: Write a factual, condition-focused description. Title max 80 chars. Mention condition (NEW). Include 5-8 estimated technical specifications relevant to this product type. Mark with note about estimated specs. Format:
 TITLE: [title here]
 Condition: New
-[Key specs as: Spec: Value, one per line]
-[1-2 sentence description]`,
+[1-2 sentence description]
+SPECIFICATIONS (⚠ Estimated — please verify):
+[Spec name]: [value]
+[Spec name]: [value]
+[continue for 5-8 specs]`,
 
     wildberries: `Wildberries листинг: Пиши ТОЛЬКО на русском языке. 4-5 коротких буллетов с характеристиками. Заголовок максимум 100 знаков. Тон прямой, по функциям. Формат:
 ЗАГОЛОВОК: [заголовок здесь]
@@ -59,7 +69,9 @@ Condition: New
     casual: "casual and conversational",
   };
 
-  const toneDesc = TONES[tone] || TONES.professional;
+  const toneList = tone ? tone.split(",").map(t => t.trim()) : ["professional"];
+  const toneDesc = toneList.map(t => TONES[t] || t).join(", ");
+  const multiTone = toneList.length > 1;
 
   const platformInstructions = platforms
     .map((p) => `[PLATFORM: ${p.toUpperCase()}]\n${PLATFORM_INSTRUCTIONS[p]}\n[END: ${p.toUpperCase()}]`)
@@ -69,7 +81,7 @@ Condition: New
 
 Product: ${product}
 ${features ? `Key features/details: ${features}` : ""}
-Overall tone: ${toneDesc}
+${multiTone ? `Generate ${toneList.length} variations with these tones: ${toneDesc}. Label each variation with its tone.` : `Overall tone: ${toneDesc}`}
 
 Generate a listing for EACH platform below. Follow the exact format for each. Output them in the same order. Do not add commentary between listings.
 
