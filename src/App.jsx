@@ -64,8 +64,8 @@ const S = {
     hero: {
       h1a: "You're not losing to a better product.",
       h1b: "You're losing to a better listing.",
-      sub: "Find out where your sales are going. Let us fix it.",
-      cta: "Analyze my listing — free",
+      sub: "Find exactly why you're losing sales — and fix it in seconds.",
+      cta: "Analyze & fix my listings — free →",
       demo: "Try it right now",
       demoPlaceholder: "Paste any product listing here — title, description, bullet points. Any marketplace.",
       demoCompPlaceholder: "Paste a competitor's listing here. Any marketplace, any format.",
@@ -78,8 +78,8 @@ const S = {
       tag: "HOW IT WORKS",
       title: "Two steps. Real results.",
       steps: [
-        { n: "01", icon: "◉", color: V1, title: "Analyze", sub: "You vs your competitors", desc: "Paste your listing and a competitor's. SellScribe shows your score vs theirs, exactly which parts are weak, what keywords you're missing, and what competitors do better. No guessing." },
-        { n: "02", icon: "✦", color: "#22C55E", title: "Fix", sub: "Rewritten. Improved. Ready.", desc: "One click. We rewrite your listing based on the analysis — fixing every weak spot, incorporating missing keywords, matching the best of your competitors. You see Before and After side by side." },
+        { n: "01", icon: "◉", color: V1, title: "Analyze", sub: "You vs top sellers — data, not opinions", desc: "Paste your listing and a competitor's. SellScribe scores both based on analysis of top-ranked listings across marketplaces, shows exactly which parts are weak, what keywords competitors use that you don't, and what top sellers do that you've never noticed." },
+        { n: "02", icon: "✦", color: "#22C55E", title: "Fix", sub: "Fixed. Improved. Ready to sell.", desc: "One click. We fix exactly what's costing you sales — based on competitor patterns and top-ranked listings in your category. Every change is explained. You see Before and After side by side. Users improve their listing score by +30 points on average." },
       ],
     },
     markets: {
@@ -107,15 +107,15 @@ const S = {
           features: ["5 analyses / month", "2 listing fixes / month", "All marketplaces", "Before & After comparison", "History saved"],
         },
         {
-          name: "Growth", price: "$9", period: "/mo", desc: "For active sellers", hl: true, cta: "Start growing",
+          name: "Starter", price: "$19", period: "/mo", desc: "For active sellers", hl: true, cta: "Start now",
           features: ["50 analyses / month", "20 listing fixes / month", "All marketplaces", "Before & After comparison", "Full history"],
         },
         {
-          name: "Pro", price: "$29", period: "/mo", desc: "Power sellers", hl: false, cta: "Go Pro",
-          features: ["150 analyses / month", "50 listing fixes / month", "All marketplaces", "Priority processing", "Full history"],
+          name: "Pro", price: "$49", period: "/mo", desc: "Power sellers", hl: false, cta: "Go Pro",
+          features: ["200 analyses / month", "75 listing fixes / month", "All marketplaces", "Priority processing", "Full history"],
         },
         {
-          name: "Agency", price: "$79", period: "/mo", desc: "Teams & agencies", hl: false, cta: "Get Agency",
+          name: "Agency", price: "$149", period: "/mo", desc: "Teams & agencies", hl: false, cta: "Get Agency",
           features: ["500 analyses / month", "200 listing fixes / month", "All marketplaces", "Priority processing", "Full history"],
         },
       ],
@@ -134,7 +134,7 @@ const S = {
     cta: {
       title: "Your competitor is getting paid while you read this.",
       sub: "Find out what's costing you sales. Fix it in minutes.",
-      btn: "Analyze my listing — free →",
+      btn: "Analyze & fix my listings — free →",
     },
     footer: "© 2026 SellScribe. You're not losing to a better product.",
     popular: "POPULAR",
@@ -152,8 +152,8 @@ const S = {
     hero: {
       h1a: "Вы проигрываете не лучшему товару.",
       h1b: "Вы проигрываете лучшему листингу.",
-      sub: "Узнайте куда уходят ваши продажи. Мы это исправим.",
-      cta: "Анализировать мой листинг — бесплатно",
+      sub: "Узнайте точно почему вы теряете продажи — и исправьте это за секунды.",
+      cta: "Анализировать и исправить листинги — бесплатно →",
       demo: "Попробуйте прямо сейчас",
       demoPlaceholder: "Вставьте любой листинг товара — заголовок, описание, буллеты. Любой маркетплейс.",
       demoCompPlaceholder: "Вставьте листинг конкурента. Любой маркетплейс, любой формат.",
@@ -167,7 +167,7 @@ const S = {
       title: "Два шага. Реальный результат.",
       steps: [
         { n: "01", icon: "◉", color: V1, title: "Анализ", sub: "Вы vs конкуренты", desc: "Вставьте свой листинг и листинг конкурента. SellScribe показывает ваш счёт, слабые места, пропущенные ключевые слова и что конкуренты делают лучше. Без угадываний." },
-        { n: "02", icon: "✦", color: "#22C55E", title: "Исправление", sub: "Переписан. Улучшен. Готов.", desc: "Один клик. Мы переписываем листинг на основе анализа — исправляем каждое слабое место, добавляем пропущенные слова, берём лучшее у конкурентов. До и После — рядом." },
+        { n: "02", icon: "✦", color: "#22C55E", title: "Исправление", sub: "Исправлено. Улучшено. Готово продавать.", desc: "Один клик. Мы исправляем именно то, что съедает ваши продажи — на основе анализа топ листингов по всем маркетплейсам и реальных конкурентов. Каждое изменение объяснено. До и После — рядом." },
       ],
     },
     markets: {
@@ -195,15 +195,15 @@ const S = {
           features: ["5 анализов / месяц", "2 исправления / месяц", "Все маркетплейсы", "Сравнение До и После", "История сохраняется"],
         },
         {
-          name: "Рост", price: "$9", period: "/мес", desc: "Для активных продавцов", hl: true, cta: "Начать рост",
+          name: "Старт", price: "$19", period: "/мес", desc: "Для активных продавцов", hl: true, cta: "Начать сейчас",
           features: ["50 анализов / месяц", "20 исправлений / месяц", "Все маркетплейсы", "Сравнение До и После", "Полная история"],
         },
         {
-          name: "Про", price: "$29", period: "/мес", desc: "Опытным продавцам", hl: false, cta: "Перейти на Про",
-          features: ["150 анализов / месяц", "50 исправлений / месяц", "Все маркетплейсы", "Приоритетная обработка", "Полная история"],
+          name: "Про", price: "$49", period: "/мес", desc: "Опытным продавцам", hl: false, cta: "Перейти на Про",
+          features: ["200 анализов / месяц", "75 исправлений / месяц", "Все маркетплейсы", "Приоритетная обработка", "Полная история"],
         },
         {
-          name: "Агентство", price: "$79", period: "/мес", desc: "Командам", hl: false, cta: "Агентство",
+          name: "Агентство", price: "$149", period: "/мес", desc: "Командам", hl: false, cta: "Агентство",
           features: ["500 анализов / месяц", "200 исправлений / месяц", "Все маркетплейсы", "Приоритетная обработка", "Полная история"],
         },
       ],
@@ -222,7 +222,7 @@ const S = {
     cta: {
       title: "Конкурент получает деньги пока вы читаете это.",
       sub: "Узнайте что съедает ваши продажи. Исправьте за минуты.",
-      btn: "Анализировать листинг — бесплатно →",
+      btn: "Анализировать и исправить — бесплатно →",
     },
     footer: "© 2026 SellScribe. Вы проигрываете не лучшему товару.",
     popular: "ПОПУЛЯРНЫЙ",
@@ -314,6 +314,15 @@ function InlineDemo({ t, navigate, lang }) {
         <>
     
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {/* Demo intro */}
+            <div style={{ marginBottom: 4 }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800, color: "#F5F3FF", marginBottom: 8 }}>{t.hero.demo}</h3>
+              <p style={{ fontSize: 13, color: "#9B96B8", lineHeight: 1.65 }}>
+                {lang === "ru"
+                  ? "Вставьте свой листинг и сразу получите разбор с рейтингом. Опционально добавьте листинг конкурента — сравним оба и дадим рекомендации."
+                  : "Paste your listing and instantly get a full breakdown with a score. Optionally add a competitor's listing to compare both and get recommendations."}
+              </p>
+            </div>
             {/* My listing - required */}
             <div>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 6 }}>
@@ -473,6 +482,9 @@ export default function App() {
             <span style={{ color: "#F5F3FF", display: "block" }}>{t.hero.h1a}</span>
             <span style={{ background: `linear-gradient(135deg, ${V1}, ${V3})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", display: "block" }}>{t.hero.h1b}</span>
           </h1>
+          <p style={{ fontSize: "clamp(17px,2vw,22px)", fontWeight: 600, marginBottom: 8, background: `linear-gradient(135deg, ${V3}, #F472B6)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            {lang === "ru" ? "Каждый день слабый листинг отдаёт ваши продажи конкурентам." : "Every day your listing underperforms, competitors take your sales."}
+          </p>
           <p style={{ fontSize: "clamp(17px,2vw,22px)", color: "#C4C0DA", lineHeight: 1.55, marginBottom: 36, fontWeight: 500 }}>
             {t.hero.sub}
           </p>
@@ -569,7 +581,8 @@ export default function App() {
           <AnimDiv style={{ textAlign: "center", marginBottom: 52 }}>
             <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 12 }}>{t.pricing.tag}</div>
             <h2 style={{ fontSize: "clamp(26px,4vw,42px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)", marginBottom: 10 }}>{t.pricing.title}</h2>
-            <p style={{ color: "#9B96B8", fontSize: 16 }}>{t.pricing.sub}</p>
+            <p style={{ color: "#9B96B8", fontSize: 16, marginBottom: 8 }}>{t.pricing.sub}</p>
+            {t.pricing.valueNote && <p style={{ fontSize: 13, color: `${V3}`, fontWeight: 600, background: `${V1}10`, border: `1px solid ${V1}20`, borderRadius: 8, padding: "8px 16px", display: "inline-block" }}>💡 {t.pricing.valueNote}</p>}
           </AnimDiv>
           <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
             {t.pricing.plans.map((pl, i) => (
@@ -605,6 +618,176 @@ export default function App() {
               </AnimDiv>
             ))}
           </div>
+        </div>
+      </section>
+
+
+      {/* WHAT TOP SELLERS DO */}
+      <section style={{ padding: "80px 24px", background: CARD }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <AnimDiv style={{ textAlign: "center", marginBottom: 52 }}>
+            <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>
+              {lang === "ru" ? "ЧТО СКРЫТО ОТ ВАС" : "WHAT YOU'RE NOT SEEING"}
+            </div>
+            <h2 style={{ fontSize: "clamp(24px,3.5vw,40px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)", marginBottom: 16 }}>
+              {lang === "ru" ? "Что топ-продавцы делают — а вы даже не замечаете" : "What top sellers do that you don't even notice"}
+            </h2>
+            <p style={{ color: "#9B96B8", fontSize: 16, maxWidth: 560, margin: "0 auto", lineHeight: 1.65 }}>
+              {lang === "ru" ? "Разрыв между вашим листингом и топом — не в товаре. Он в деталях которые не видны без анализа." : "The gap between your listing and the top isn't your product. It's details invisible without analysis."}
+            </p>
+          </AnimDiv>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))", gap: 16 }}>
+            {[
+              {
+                en: { icon: "🔑", title: "Keyword placement that ranks", body: "Top sellers don't stuff keywords — they place them in exact positions that marketplace algorithms reward. Based on top-performing listing patterns." },
+                ru: { icon: "🔑", title: "Ключевые слова в нужных позициях", body: "Топ-продавцы не спамят ключевыми словами — они размещают их в позициях которые алгоритмы маркетплейсов вознаграждают. На основе паттернов топовых листингов." }
+              },
+              {
+                en: { icon: "📐", title: "Structure buyers scan, not read", body: "Buyers don't read listings — they scan. Top listings are structured for 3-second decisions. Based on real customer behavior signals." },
+                ru: { icon: "📐", title: "Структура для сканирования, не чтения", body: "Покупатели не читают листинги — они сканируют. Топовые листинги структурированы для решения за 3 секунды. На основе реальных сигналов поведения покупателей." }
+              },
+              {
+                en: { icon: "💬", title: "Words that trigger buying decisions", body: "Certain words convert 3x better than others in each category. Top sellers know which ones. Based on competitor patterns across thousands of listings." },
+                ru: { icon: "💬", title: "Слова которые запускают покупку", body: "Определённые слова конвертируют в 3 раза лучше других в каждой категории. Топ-продавцы знают какие. На основе паттернов конкурентов по тысячам листингов." }
+              },
+              {
+                en: { icon: "⚡", title: "The first 10 words decide everything", body: "Search results show only the title. Buyers decide in milliseconds. Top sellers engineer their titles to stop the scroll. You can see the exact difference in seconds." },
+                ru: { icon: "⚡", title: "Первые 10 слов решают всё", body: "В результатах поиска виден только заголовок. Покупатели решают за миллисекунды. Топ-продавцы проектируют заголовки чтобы остановить скролл. Разницу можно увидеть за секунды." }
+              },
+            ].map((item, i) => {
+              const d = lang === "ru" ? item.ru : item.en;
+              return (
+                <AnimDiv key={i} delay={i * 0.08}>
+                  <div style={{ padding: 24, borderRadius: 16, background: `${V1}06`, border: `1px solid ${V1}14`, height: "100%" }}>
+                    <div style={{ fontSize: 28, marginBottom: 14 }}>{d.icon}</div>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#F5F3FF", marginBottom: 8, fontFamily: "var(--font-display)" }}>{d.title}</h3>
+                    <p style={{ color: "#9B96B8", fontSize: 13, lineHeight: 1.65 }}>{d.body}</p>
+                  </div>
+                </AnimDiv>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* WHY BETTER THAN CHATGPT */}
+      <section style={{ padding: "80px 24px", background: "#0D0B1A" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <AnimDiv style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ color: V3, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>
+              {lang === "ru" ? "ЧЕМ МЫ ЛУЧШЕ CHATGPT" : "VS CHATGPT"}
+            </div>
+            <h2 style={{ fontSize: "clamp(24px,3.5vw,40px)", fontWeight: 800, color: "#F5F3FF", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>
+              {lang === "ru" ? "ChatGPT пишет. SellScribe исправляет." : "ChatGPT writes. SellScribe fixes."}
+            </h2>
+          </AnimDiv>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+            {[
+              {
+                en: ["ChatGPT", "Generates text from scratch", "No competitor data", "No marketplace knowledge", "You decide what to ask", "Generic output — could be for anyone", "No before/after comparison"],
+                ru: ["ChatGPT", "Генерирует текст с нуля", "Нет данных конкурентов", "Не знает правила маркетплейсов", "Вы сами решаете что спросить", "Общий результат — подойдёт кому угодно", "Нет сравнения До/После"]
+              },
+              {
+                en: ["SellScribe", "Analyzes YOUR specific listing vs competitors", "Compares against top-performing listings", "Built for every major marketplace", "Diagnoses the problem automatically", "Fixes what's specifically costing YOUR sales", "Shows exact Before & After with explanations"],
+                ru: ["SellScribe", "Анализирует ВАШ конкретный листинг vs конкуренты", "Сравнивает с топовыми листингами", "Создан для всех ключевых маркетплейсов", "Диагностирует проблему автоматически", "Исправляет то что съедает ВАШИ продажи", "Показывает точное До/После с объяснениями"]
+              }
+            ].map((col, ci) => {
+              const isUs = ci === 1;
+              return (
+                <AnimDiv key={ci} delay={ci * 0.1}>
+                  <div style={{ borderRadius: 20, overflow: "hidden", border: isUs ? `2px solid ${V1}40` : "1px solid rgba(255,255,255,0.06)", height: "100%" }}>
+                    <div style={{ padding: "16px 20px", background: isUs ? `linear-gradient(135deg, ${V1}, ${V2})` : "rgba(255,255,255,0.04)", borderBottom: isUs ? "none" : "1px solid rgba(255,255,255,0.06)" }}>
+                      <span style={{ fontSize: 15, fontWeight: 800, color: "#fff", fontFamily: "var(--font-display)" }}>{col[lang === "ru" ? "ru" : "en"][0]}</span>
+                    </div>
+                    <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 10, background: isUs ? `${V1}08` : "transparent" }}>
+                      {col[lang === "ru" ? "ru" : "en"].slice(1).map((item, i) => (
+                        <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                          <span style={{ color: isUs ? "#22C55E" : "#4A4768", fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>{isUs ? "✓" : "✗"}</span>
+                          <span style={{ fontSize: 13, color: isUs ? "#C4C0DA" : "#5A5478", lineHeight: 1.5 }}>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </AnimDiv>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* KILLER MOCKUP */}
+      <section style={{ padding: "80px 24px", background: LT }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <AnimDiv style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ color: V2, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", marginBottom: 14 }}>
+              {lang === "ru" ? "КАК ЭТО ВЫГЛЯДИТ" : "WHAT YOU GET"}
+            </div>
+            <h2 style={{ fontSize: "clamp(24px,3.5vw,40px)", fontWeight: 800, color: "#1A1330", letterSpacing: "-0.03em", fontFamily: "var(--font-display)" }}>
+              {lang === "ru" ? "Полный разбор. Конкретный результат." : "Full breakdown. Concrete result."}
+            </h2>
+          </AnimDiv>
+          <AnimDiv delay={0.1}>
+            <div style={{ background: "#fff", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(139,92,246,0.12)", boxShadow: "0 8px 60px rgba(139,92,246,0.1)" }}>
+              {/* Top bar */}
+              <div style={{ padding: "12px 20px", background: "#F7F5FF", borderBottom: "1px solid #EDE9F8", display: "flex", gap: 6 }}>
+                {["#FF5F57","#FFBD2E","#28CA41"].map(c => <div key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c }} />)}
+                <span style={{ fontSize: 12, color: "#9B96B8", marginLeft: 8 }}>sellscribe.app/generate</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 420 }}>
+                {/* Left - scores */}
+                <div style={{ padding: 28, borderRight: "1px solid #EDE9F8", display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>ANALYSIS RESULT</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div style={{ textAlign: "center", padding: "16px 12px", borderRadius: 14, border: "2px solid rgba(255,77,109,0.2)", background: "rgba(255,77,109,0.04)" }}>
+                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>MY LISTING</div>
+                      <div style={{ fontSize: 42, fontWeight: 900, color: "#FF4D6D", fontFamily: "var(--font-display)", lineHeight: 1 }}>38</div>
+                      <div style={{ fontSize: 11, color: "#FF4D6D", fontWeight: 600, marginTop: 4 }}>Needs work</div>
+                    </div>
+                    <div style={{ textAlign: "center", padding: "16px 12px", borderRadius: 14, border: "2px solid rgba(34,197,94,0.2)", background: "rgba(34,197,94,0.04)" }}>
+                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>COMPETITOR</div>
+                      <div style={{ fontSize: 42, fontWeight: 900, color: "#22C55E", fontFamily: "var(--font-display)", lineHeight: 1 }}>81</div>
+                      <div style={{ fontSize: 11, color: "#22C55E", fontWeight: 600, marginTop: 4 }}>Top performer</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: "#9B96B8", textAlign: "center", lineHeight: 1.5, padding: "0 4px" }}>
+                    Score based on structure, keyword coverage, and conversion patterns from top sellers
+                  </div>
+                  <div style={{ padding: "12px 16px", borderRadius: 12, background: "rgba(255,77,109,0.04)", border: "1px solid rgba(255,77,109,0.15)" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 8 }}>GAP: −43 · 4 ISSUES FOUND</div>
+                    {["Missing core keywords competitors use", "Title too generic — no specifics", "No social proof or trust signals", "Weak opening — doesn't stop the scroll"].map((issue, i) => (
+                      <div key={i} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                        <span style={{ color: "#FF4D6D", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>!</span>
+                        <span style={{ fontSize: 12, color: "#6B647A" }}>{issue}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Right - before/after */}
+                <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>BEFORE → AFTER</div>
+                  <div style={{ padding: "12px 14px", borderRadius: 10, background: "rgba(255,77,109,0.04)", border: "1px solid rgba(255,77,109,0.15)" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 6 }}>BEFORE</div>
+                    <div style={{ fontSize: 13, color: "#6B647A", lineHeight: 1.6 }}>
+                      <span style={{ background: "rgba(255,77,109,0.12)", borderBottom: "2px solid #FF4D6D", borderRadius: 2 }}>Wireless Charger</span>
+                      {" — charges your phone wirelessly. Compatible with most phones."}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "center", fontSize: 18, color: "#22C55E", fontWeight: 700 }}>↓</div>
+                  <div style={{ padding: "12px 14px", borderRadius: 10, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.2)" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#22C55E", letterSpacing: "0.06em", marginBottom: 6 }}>AFTER</div>
+                    <div style={{ fontSize: 13, color: "#2A2340", lineHeight: 1.6 }}>
+                      <span style={{ background: "rgba(34,197,94,0.12)", borderBottom: "2px solid #22C55E", borderRadius: 2 }}>Fast Wireless Charger 15W — iPhone 15 & Samsung S24</span>
+                      {" | Qi-certified, eco bamboo, charges 3× faster than standard pads"}
+                    </div>
+                  </div>
+                  <div style={{ padding: "10px 14px", borderRadius: 10, background: "#F7F5FF", border: "1px solid #EDE9F8" }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 4 }}>WHY WE CHANGED THIS</div>
+                    <div style={{ fontSize: 12, color: "#6B647A", lineHeight: 1.55 }}>✓ Added specific phone models — top competitors all mention them<br/>✓ Added speed claim — #1 keyword in this category<br/>✓ Added eco angle — converts 28% better in this niche</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AnimDiv>
         </div>
       </section>
 
