@@ -159,7 +159,7 @@ const S = {
       demoCompPlaceholder: "Вставьте листинг конкурента. Любой маркетплейс, любой формат.",
       demoBtn: "✦ Анализировать",
       demoLoading: "Анализируем...",
-      demoNote: "Регистрация не нужна для демо",
+      demoNote: "Регистрация для демо не нужна",
       demoAddComp: "+ Добавить листинг конкурента",
     },
     how: {
@@ -173,12 +173,12 @@ const S = {
     markets: {
       tag: "РАБОТАЕТ С ЛЮБЫМ МАРКЕТПЛЕЙСОМ",
       title: "Просто вставьте листинг. Остальное мы сделаем.",
-      sub: "SellScribe работает с любым маркетплейсом — Wildberries, Kaspi, Amazon, Etsy, eBay, Shopify и любой другой платформой. Просто вставьте текст листинга. Наш ИИ определяет формат автоматически.",
+      sub: "SellScribe работает с любым маркетплейсом — Wildberries, Kaspi, Amazon, Etsy, eBay, Shopify и любой другой платформой. Просто вставьте текст листинга — остальное сделаем мы.",
       any: "И с любым другим маркетплейсом — просто вставьте текст.",
     },
     proof: {
       tag: "РЕАЛЬНАЯ ПРОБЛЕМА",
-      title: "Конкурент продаёт больше. Тот же товар. Другой листинг.",
+      title: "Конкурент продаёт больше. Товар тот же. Листинг другой.",
       points: [
         { icon: "🔍", title: "Вы не видите что они делают лучше", desc: "Без сравнения с топовыми продавцами вы гадаете что улучшить. SellScribe делает разрыв видимым." },
         { icon: "📝", title: "Переписывать — это часы", desc: "Исследование ключевых слов, тон, форматирование. SellScribe делает это за секунды." },
@@ -191,7 +191,7 @@ const S = {
       sub: "Улучшайте план когда увидите результаты.",
       plans: [
         {
-          name: "Бесплатно", price: "Free", period: "", desc: "Посмотрите как работает", hl: false, cta: "Начать",
+          name: "Бесплатно", price: "Бесплатно", period: "", desc: "Посмотрите как работает", hl: false, cta: "Начать",
           features: ["5 анализов / месяц", "2 исправления / месяц", "Все маркетплейсы", "Сравнение До и После", "История сохраняется"],
         },
         {
@@ -437,8 +437,11 @@ export default function App() {
         @keyframes pulse{0%,100%{opacity:0.18;}50%{opacity:0.45;}}
         @keyframes starPulse{0%,100%{opacity:0.7;transform:scale(1);}50%{opacity:1;transform:scale(1.3);}}
         @keyframes pulseDot{0%,100%{box-shadow:0 0 4px #22C55E;opacity:0.8;}50%{box-shadow:0 0 12px #22C55E,0 0 4px #22C55E;opacity:1;}}
+        .step-sub{position:relative;z-index:1;}
         .pulse-dot{animation:pulseDot 1.8s ease-in-out infinite;}
         @keyframes spin{to{transform:rotate(360deg);}}
+        .mockup-grid{grid-template-columns:1fr 1fr;}
+        @media(max-width:640px){.mockup-grid{grid-template-columns:1fr!important;}}
         button,a{cursor:pointer;font-family:var(--font-body);transition:transform 0.18s,opacity 0.18s;}
         button:hover:not(:disabled),a:hover{opacity:0.88;transform:translateY(-1px);}
         .nav-link{transition:color 0.2s!important;transform:none!important;}
@@ -542,7 +545,7 @@ export default function App() {
                     {step.icon}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: step.color, letterSpacing: "0.08em", marginBottom: 4 }}>{step.sub}</div>
+                    <div className="step-sub" style={{ fontSize: 11, fontWeight: 700, color: step.color, letterSpacing: "0.08em", marginBottom: 4, maxWidth: "calc(100% - 60px)" }}>{step.sub}</div>
                     <h3 style={{ fontSize: 22, fontWeight: 800, color: "#1A1330", marginBottom: 10, fontFamily: "var(--font-display)" }}>{step.title}</h3>
                     <p style={{ color: "#6B647A", fontSize: 15, lineHeight: 1.68 }}>{step.desc}</p>
                   </div>
@@ -733,7 +736,7 @@ export default function App() {
                 {["#FF5F57","#FFBD2E","#28CA41"].map(c => <div key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c }} />)}
                 <span style={{ fontSize: 12, color: "#9B96B8", marginLeft: 8 }}>sellscribe.app/generate</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 420 }}>
+              <div className="mockup-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 420 }}>
                 {/* Left - scores */}
                 <div style={{ padding: 28, borderRight: "1px solid #EDE9F8", display: "flex", flexDirection: "column", gap: 16 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>ANALYSIS RESULT</div>
