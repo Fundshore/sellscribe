@@ -400,7 +400,9 @@ function InlineDemo({ t, navigate, lang }) {
                 </div>
               ))}
               {result.issues.length > 2 && (
-                <div style={{ fontSize: 12, color: "#5A5478", marginTop: 4 }}>+{result.issues.length - 2} more issues — sign up to see all</div>
+                <div style={{ fontSize: 13, color: "#EF4444", fontWeight: 600, marginTop: 6 }}>
+                  +{result.issues.length - 2} {lang === "ru" ? "ещё проблем — зарегистрируйтесь чтобы увидеть все" : "more issues — sign up to see all"}
+                </div>
               )}
             </div>
           )}
