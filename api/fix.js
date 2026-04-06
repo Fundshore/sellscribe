@@ -1,19 +1,16 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { myListing, myName, platform, analyzeResult, lang } = req.body;
-  if (!myListing || !analyzeResult) {
-    return res.status(400).json({ error: "Missing listing or analysis" });
-  }
+  const { myListing, myName, analyzeResult, lang } = req.body;
+  if (!myListing || !analyzeResult) return res.status(400).json({ error: "Missing listing or analysis" });
 
   const isRu = lang === "ru";
 
-  const prompt = `You are an expert e-commerce copywriter. Rewrite the listing to fix all identified issues and beat the competition.
+  const prompt = `You are an expert e-commerce copywriter. Rewrite and structure this listing to fix all identified issues.
 
-Platform: ${platform}
-${myName ? `Product: ${myName}` : ""}
+Product: ${myName || "unknown"}
 
-ORIGINAL LISTING:
+ORIGINAL LISTING (raw input):
 ${myListing}
 
 ISSUES TO FIX:
@@ -22,21 +19,28 @@ ${JSON.stringify(analyzeResult.issues || [])}
 COMPETITOR STRENGTHS TO INCORPORATE:
 ${JSON.stringify(analyzeResult.competitorStrengths || [])}
 
-Rewrite the listing. Make it significantly better. Be specific and concrete.
+Rewrite the listing into a clean, well-structured format. Separate the content into logical sections based on what you detect in the original (title, description, bullet points, specs/characteristics, etc).
 
-IMPORTANT: For each "fix", use "fragment" that is an EXACT substring from the FIXED listing (the new text you wrote). This is used to highlight what changed.
+IMPORTANT RULES:
+- "fragment" in fixes must be an EXACT substring from fixedBody or fixedTitle
+- Write all content in ${isRu ? "Russian" : "English"}
+- Make the structure clean and readable regardless of how messy the input was
+- For marketplaces like Wildberries/Kaspi include a proper characteristics section if specs are present
+- For Amazon-style listings use bullet points
 
 Respond ONLY in valid JSON, no markdown:
 {
-  "fixedTitle": "<improved product title for ${platform}>",
-  "fixedBody": "<improved full listing body text>",
-  "fixes": [
-    {
-      "fragment": "<exact substring from fixedBody or fixedTitle that was added/improved>",
-      "reason": "<why this specific change helps. ${isRu ? "In Russian." : "In English."}>"
-    }
+  "fixedTitle": "<clean optimized product title>",
+  "fixedSections": [
+    { "type": "bullets", "label": "${isRu ? "Ключевые преимущества" : "Key Features"}", "items": ["<bullet 1>", "<bullet 2>", "..."] },
+    { "type": "description", "label": "${isRu ? "Описание" : "Description"}", "content": "<paragraph text>" },
+    { "type": "specs", "label": "${isRu ? "Характеристики" : "Specifications"}", "items": ["<Param: Value>", "..."] }
   ],
-  "summary": "<2-3 sentences explaining the main improvements and why they will help sales. ${isRu ? "In Russian." : "In English."}>"
+  "fixedBody": "<full fixed listing as plain text, all sections combined, ready to paste>",
+  "fixes": [
+    { "fragment": "<exact substring from fixedBody or fixedTitle>", "reason": "<why this change helps. ${isRu ? "In Russian." : "In English."}>" }
+  ],
+  "summary": "<2-3 sentences: main improvements made and why they will help sales. ${isRu ? "In Russian." : "In English."}>"
 }`;
 
   try {
@@ -49,7 +53,7 @@ Respond ONLY in valid JSON, no markdown:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
+        max_tokens: 2500,
         messages: [{ role: "user", content: prompt }],
       }),
     });

@@ -29,6 +29,8 @@ const S = {
     myListingNamePlaceholder: "e.g. Bamboo Wireless Charging Pad",
     myListingTextLabel: "My current listing",
     myListingTextPlaceholder: "Paste your current product title and description here...",
+    competitorNameLabel: "Competitor product name",
+    competitorNamePlaceholder: "e.g. Eco Bamboo Wireless Charger 15W",
     competitorLabel: "Competitor listing",
     competitorPlaceholder: "Open your competitor's product page, copy their title and description — paste it here. Don't worry about formatting, we'll handle it.",
     addCompetitor: "+ Add another competitor",
@@ -65,6 +67,8 @@ const S = {
     myListingNamePlaceholder: "напр. Беспроводная зарядка из бамбука",
     myListingTextLabel: "Мой текущий листинг",
     myListingTextPlaceholder: "Вставьте сюда текущее название и описание вашего товара...",
+    competitorNameLabel: "Название товара конкурента",
+    competitorNamePlaceholder: "напр. Беспроводная зарядка из бамбука 15W",
     competitorLabel: "Листинг конкурента",
     competitorPlaceholder: "Откройте карточку товара конкурента, скопируйте название и описание — вставьте сюда. Не переживайте за форматирование, мы разберёмся.",
     addCompetitor: "+ Добавить ещё конкурента",
@@ -185,7 +189,7 @@ export default function Generator() {
 
   const [myName, setMyName] = useState("");
   const [myListing, setMyListing] = useState("");
-  const [competitors, setCompetitors] = useState([""]);
+  const [competitors, setCompetitors] = useState([{ name: "", text: "" }]);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeStatus, setAnalyzeStatus] = useState("");
   const [analyzeResult, setAnalyzeResult] = useState(null);
@@ -241,13 +245,14 @@ export default function Generator() {
     setPastAnalyses(data || []);
   };
 
-  const addCompetitor = () => { if (competitors.length < 3) setCompetitors([...competitors, ""]); };
+  const addCompetitor = () => { if (competitors.length < 3) setCompetitors([...competitors, { name: "", text: "" }]); };
   const removeCompetitor = (i) => setCompetitors(competitors.filter((_, idx) => idx !== i));
-  const updateCompetitor = (i, val) => setCompetitors(competitors.map((c, idx) => idx === i ? val : c));
+  const updateCompetitorName = (i, val) => setCompetitors(competitors.map((c, idx) => idx === i ? { ...c, name: val } : c));
+  const updateCompetitorText = (i, val) => setCompetitors(competitors.map((c, idx) => idx === i ? { ...c, text: val } : c));
 
   const runAnalyze = async () => {
     if (!myListing.trim()) { setAnalyzeError(T.errMyListing); return; }
-    const validComps = competitors.filter(c => c.trim());
+    const validComps = competitors.filter(c => c.text.trim()).map(c => c.name ? `${c.name}\n${c.text}` : c.text);
     if (validComps.length === 0) { setAnalyzeError(T.errCompetitor); return; }
     if (analyzeCount >= analyzeLimit) {
       const d = resetDate?.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "long" }) || "soon";
@@ -470,7 +475,9 @@ export default function Generator() {
                       </button>
                     )}
                   </div>
-                  <textarea value={comp} onChange={e => updateCompetitor(i, e.target.value)} placeholder={T.competitorPlaceholder} rows={4}
+                  <input value={comp.name || ""} onChange={e => updateCompetitorName(i, e.target.value)} placeholder={T.competitorNamePlaceholder}
+                    style={{ width:"100%", padding:"9px 14px", borderRadius:10, background:"#F7F5FF", border:"1px solid rgba(203,17,171,0.2)", color:"#1A1330", fontSize:13, marginBottom:8, fontFamily:"var(--font-body)" }} />
+                  <textarea value={comp.text || ""} onChange={e => updateCompetitorText(i, e.target.value)} placeholder={T.competitorPlaceholder} rows={4}
                     style={{ width:"100%", padding:"11px 14px", borderRadius:10, background:"#F7F5FF", border:"1px solid rgba(203,17,171,0.25)", color:"#1A1330", fontSize:13, resize:"vertical", lineHeight:1.6 }} />
                 </div>
               ))}
@@ -792,15 +799,55 @@ export default function Generator() {
                     {copied ? T.copied : T.copyFixed}
                   </button>
                 </div>
-                <div style={{ padding:20 }}>
+                <div style={{ padding:20, display:"flex", flexDirection:"column", gap:16 }}>
+                  {/* Title */}
                   {fixResult.fixedTitle && (
-                    <div style={{ fontWeight:700, fontSize:15, color:"#1A1330", marginBottom:12, paddingBottom:12, borderBottom:"1px solid #EDE9F8" }}>
-                      <HighlightedFixed text={fixResult.fixedTitle} fixes={fixResult.fixes||[]} />
+                    <div style={{ paddingBottom:14, borderBottom:"1px solid #EDE9F8" }}>
+                      <div style={{ fontSize:10, fontWeight:700, color:"#9B96B8", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:6 }}>{lang==="ru"?"ЗАГОЛОВОК":"TITLE"}</div>
+                      <div style={{ fontWeight:700, fontSize:15, color:"#1A1330", lineHeight:1.4 }}>
+                        <HighlightedFixed text={fixResult.fixedTitle} fixes={fixResult.fixes||[]} />
+                      </div>
                     </div>
                   )}
-                  <div style={{ fontSize:13, color:"#2A2340", lineHeight:1.8 }}>
-                    <HighlightedFixed text={fixResult.fixedBody||""} fixes={fixResult.fixes||[]} />
-                  </div>
+                  {/* Structured sections if available */}
+                  {fixResult.fixedSections && fixResult.fixedSections.length > 0 ? (
+                    fixResult.fixedSections.map((section, si) => (
+                      <div key={si} style={{ paddingBottom:14, borderBottom: si < fixResult.fixedSections.length-1 ? "1px solid #EDE9F8" : "none" }}>
+                        <div style={{ fontSize:10, fontWeight:700, color:"#9B96B8", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>{section.label}</div>
+                        {section.type === "bullets" && section.items && (
+                          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                            {section.items.map((item, ii) => (
+                              <div key={ii} style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+                                <span style={{ color:"#22C55E", fontWeight:700, flexShrink:0, marginTop:2 }}>•</span>
+                                <span style={{ fontSize:13, color:"#2A2340", lineHeight:1.6 }}>{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {section.type === "description" && (
+                          <p style={{ fontSize:13, color:"#2A2340", lineHeight:1.7 }}>{section.content}</p>
+                        )}
+                        {section.type === "specs" && section.items && (
+                          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"4px 16px" }}>
+                            {section.items.map((item, ii) => {
+                              const [key, ...val] = item.split(":");
+                              return (
+                                <div key={ii} style={{ fontSize:12, color:"#2A2340", padding:"4px 0", borderBottom:"1px solid #F0EDF8" }}>
+                                  <span style={{ fontWeight:600, color:"#6B647A" }}>{key}:</span>
+                                  <span style={{ marginLeft:4 }}>{val.join(":")}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    /* Fallback to plain text */
+                    <div style={{ fontSize:13, color:"#2A2340", lineHeight:1.8 }}>
+                      <HighlightedFixed text={fixResult.fixedBody||""} fixes={fixResult.fixes||[]} />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -870,7 +917,7 @@ export default function Generator() {
                       style={{ background:"none",border:"none",color:"#4A4768",fontSize:16,cursor:"pointer" }}>🗑</button>
                   </div>
                   {item.type==="gap" && item.input && (
-                    <button onClick={()=>{setMyListing(item.input.myListing||"");setCompetitors(item.input.competitors||[""]);setTab("analyze");setHistoryOpen(false);}}
+                    <button onClick={()=>{setMyListing(item.input.myListing||"");setCompetitors((item.input.competitors||[""]).map(c => typeof c === "string" ? { name: "", text: c } : c));setTab("analyze");setHistoryOpen(false);}}
                       style={{ marginTop:10, fontSize:12, color:V3, background:"none", border:`1px solid ${V1}25`, borderRadius:6, padding:"5px 12px", cursor:"pointer", fontWeight:600 }}>
                       ↩ {lang==="ru"?"Повторить":"Reuse"}
                     </button>
