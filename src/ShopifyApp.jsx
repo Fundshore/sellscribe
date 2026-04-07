@@ -60,6 +60,9 @@ export default function ShopifyApp() {
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem("ss_welcomed"));
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   useEffect(() => {
     if (!shop) return;
@@ -98,6 +101,7 @@ export default function ShopifyApp() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Analysis failed");
       setAnalyzeResult(data);
+      await saveToHistory("analyze", data);
     } catch (err) {
       setAnalyzeError(err.message);
     } finally {
@@ -120,6 +124,7 @@ export default function ShopifyApp() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Fix failed");
       setFixResult(data);
+      await saveToHistory("fix", data);
       setTab("fix");
     } catch (err) {
       setFixError(err.message);
@@ -167,6 +172,34 @@ export default function ShopifyApp() {
     navigator.clipboard.writeText(`${fixResult.fixedTitle || ""}\n\n${fixResult.fixedBody || ""}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const saveToHistory = async (type, result) => {
+    if (!shop) return;
+    try {
+      await fetch("/api/shopify/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          shop,
+          type,
+          product: myName || selectedProduct?.title || "Unknown",
+          productId: selectedProduct?.id || null,
+          output: result,
+        }),
+      });
+    } catch { /* silent fail */ }
+  };
+
+  const loadHistory = async () => {
+    if (!shop) return;
+    setHistoryLoading(true);
+    try {
+      const res = await fetch(`/api/shopify/history?shop=${shop}`);
+      const data = await res.json();
+      setHistory(data.items || []);
+    } catch { /* silent */ }
+    setHistoryLoading(false);
   };
 
   const filteredProducts = products.filter(p =>
@@ -231,12 +264,70 @@ export default function ShopifyApp() {
         </div>
       )}
 
+      {/* History panel */}
+      {showHistory && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 150, display: "flex" }}>
+          <div onClick={() => setShowHistory(false)} style={{ flex: 1, background: "rgba(0,0,0,0.3)" }} />
+          <div style={{ width: 420, background: "#fff", borderLeft: "1px solid #EDE9F8", display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: "18px 24px", borderBottom: "1px solid #EDE9F8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1A1330" }}>Analysis History</h3>
+              <button onClick={() => setShowHistory(false)} style={{ background: "none", border: "none", color: "#9B96B8", fontSize: 20 }}>×</button>
+            </div>
+            <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px" }}>
+              {historyLoading && <div style={{ padding: 20, textAlign: "center", color: "#9B96B8", fontSize: 13 }}>Loading...</div>}
+              {!historyLoading && history.length === 0 && (
+                <div style={{ padding: 40, textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>📭</div>
+                  <div style={{ color: "#1A1330", fontWeight: 600, fontSize: 15 }}>No history yet</div>
+                  <div style={{ color: "#6B6490", fontSize: 13, marginTop: 6 }}>Analyses and fixes will appear here</div>
+                </div>
+              )}
+              {history.map((item, i) => {
+                const isAnalyze = item.type === "analyze";
+                const score = item.output?.score;
+                const scoreCol = score >= 60 ? "#22C55E" : score >= 40 ? "#F59E0B" : "#FF4D6D";
+                return (
+                  <div key={i} style={{ padding: "14px 16px", borderRadius: 12, border: "1px solid #EDE9F8", marginBottom: 10, background: "#F7F5FF" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                      <div>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: isAnalyze ? V1 : "#22C55E", background: isAnalyze ? `${V1}12` : "rgba(34,197,94,0.1)", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.06em" }}>
+                          {isAnalyze ? "ANALYZE" : "FIX"}
+                        </span>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1330", marginTop: 6 }}>{item.product || "—"}</div>
+                        <div style={{ fontSize: 11, color: "#6B6490", marginTop: 2 }}>
+                          {new Date(item.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                        </div>
+                      </div>
+                      {score != null && (
+                        <div style={{ textAlign: "center" }}>
+                          <div style={{ fontSize: 26, fontWeight: 900, color: scoreCol, lineHeight: 1 }}>{score}</div>
+                          <div style={{ fontSize: 10, color: "#6B6490" }}>score</div>
+                        </div>
+                      )}
+                    </div>
+                    {item.output?.issues?.length > 0 && (
+                      <div style={{ fontSize: 12, color: "#EF4444" }}>{item.output.issues.length} issues found</div>
+                    )}
+                    {item.output?.summary && (
+                      <div style={{ fontSize: 12, color: "#1A1330", marginTop: 6, lineHeight: 1.5 }}>{item.output.summary.slice(0, 120)}...</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ background: "#fff", borderBottom: "1px solid #EDE9F8", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <Logo />
         <div style={{ fontSize: 12, color: "#2A2340" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {shop && <span>Connected to <strong style={{ color: "#1A1330" }}>{shop}</strong></span>}
+            <button onClick={() => { setShowHistory(!showHistory); if (!showHistory) loadHistory(); }} style={{ padding: "6px 14px", borderRadius: 8, border: `1px solid ${V1}25`, background: `${V1}06`, color: V1, fontSize: 12, fontWeight: 600 }}>
+              📋 History
+            </button>
             <a href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer" style={{ padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", background: "rgba(239,68,68,0.05)", color: "#EF4444", fontSize: 12, fontWeight: 600, textDecoration: "none" }}>Report an issue</a>
             <button onClick={() => setShowWelcome(true)} style={{ width: 28, height: 28, borderRadius: "50%", border: `1px solid ${V1}25`, background: `${V1}08`, color: V1, fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>?</button>
           </div>
