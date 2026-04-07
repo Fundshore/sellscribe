@@ -657,9 +657,25 @@ export default function Generator() {
                   </div>
                 </div>
 
-                <p style={{ fontSize:11, color:"#9B96B8", textAlign:"center", lineHeight:1.6 }}>
-                  {lang==="ru" ? "⚡ Оценка отражает насыщенность ключевыми словами и рыночный fit — не качество текста." : "⚡ Score reflects keyword density & marketplace fit — not writing quality."}
+                <p style={{ fontSize:11, color:"#9B96B8", textAlign:"center", lineHeight:1.6, padding:"0 8px" }}>
+                  {lang==="ru"
+                    ? "⚡ Рейтинг отражает только качество текста листинга — ключевые слова, структуру, убедительность. Продажи также зависят от цены, фото, отзывов и позиции в поиске."
+                    : "⚡ Score reflects listing text quality only — keywords, structure, persuasiveness. Sales also depend on price, photos, reviews, and search ranking."}
                 </p>
+
+                {/* Winning scenario — user beats competitor */}
+                {a.score > (a.competitorScore || 0) && (
+                  <div style={{ background:"rgba(34,197,94,0.06)", borderRadius:14, padding:"16px 18px", border:"1px solid rgba(34,197,94,0.2)" }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:"#22C55E", marginBottom:8 }}>
+                      {lang==="ru" ? "🏆 Ваш листинг сильнее — это хорошая новость" : "🏆 Your listing is stronger — that's good news"}
+                    </div>
+                    <p style={{ fontSize:12, color:"#2A2340", lineHeight:1.65 }}>
+                      {lang==="ru"
+                        ? "Если конкурент продаёт больше при более слабом листинге — проблема не в тексте. Скорее всего дело в фотографиях, количестве отзывов или цене. Хорошая новость: ваш текст уже конкурентоспособен. Теперь можно сфокусироваться на фото и сборе отзывов — именно там лежит следующий рост. Мы всё равно нашли несколько мест где листинг можно ещё усилить — посмотрите ниже."
+                        : "If your competitor outsells you with a weaker listing, the gap isn't in the text — it's likely in photos, review count, or price. The good news: your listing is already competitive. You can now focus on photos and collecting reviews — that's where your next growth is. We still found a few places to make your listing even stronger — see below."}
+                    </p>
+                  </div>
+                )}
 
                 {/* Summary */}
                 {(a.summary || a.gapSummary) && (

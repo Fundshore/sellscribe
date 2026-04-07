@@ -129,6 +129,7 @@ const S = {
         { q: "How is this different from ChatGPT?", a: "ChatGPT generates text from scratch. SellScribe analyzes your specific listing against real competitor listings and rewrites it based on that data. It's diagnosis + treatment, not just text generation." },
         { q: "How accurate is the Before/After comparison?", a: "The analysis is based on keyword density, structure, and competitive comparison — not subjective opinion. The fixes are specific and explained: you see exactly what changed and why." },
         { q: "Is the Russian for Wildberries and Kaspi good?", a: "Yes — written natively, not translated. Prompts are specifically tuned for CIS marketplace conventions. Not Google Translate." },
+        { q: "What if my competitor has a lower score but sells more?", a: "That's actually good news — it means your listing is already stronger. The gap isn't in the text, it's likely in photos, review count, or price. SellScribe tells you this directly and suggests where to focus next. Once your listing is strong, the next growth lever is usually visual content and social proof." },
       ],
     },
     cta: {
@@ -217,6 +218,7 @@ const S = {
         { q: "Чем это отличается от ChatGPT?", a: "ChatGPT генерирует текст с нуля. SellScribe анализирует ваш конкретный листинг в сравнении с реальными конкурентами и переписывает на основе этих данных. Это диагноз + лечение, а не просто генерация текста." },
         { q: "Насколько точен анализ?", a: "Анализ основан на плотности ключевых слов, структуре и конкурентном сравнении — не на субъективном мнении. Каждое изменение объясняется: вы видите что изменилось и почему." },
         { q: "Русский для Wildberries и Kaspi действительно хороший?", a: "Да — нативный, не переводной. Промпты специально настроены под стандарты СНГ-маркетплейсов. Не Google Переводчик." },
+        { q: "Что если у конкурента рейтинг ниже, а продаёт он больше?", a: "Это хорошая новость — ваш листинг уже сильнее. Проблема не в тексте, скорее всего дело в фотографиях, отзывах или цене. SellScribe скажет вам об этом прямо и подскажет где сосредоточиться дальше. Когда листинг уже сильный, следующий рычаг роста — это визуальный контент и социальные доказательства." },
       ],
     },
     cta: {
@@ -227,8 +229,8 @@ const S = {
     footer: "© 2026 SellScribe. Вы проигрываете не лучшему товару.",
     popular: "ПОПУЛЯРНЫЙ",
     demoResult: {
-      score: "Ваш счёт",
-      compScore: "Счёт конкурента",
+      score: "Ваш рейтинг",
+      compScore: "Рейтинг конкурента",
       gap: "РАЗРЫВ",
       issues: "проблем найдено",
       signupPrompt: "Полный анализ + исправление листинга",
@@ -741,25 +743,28 @@ export default function App() {
               <div className="mockup-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 420 }}>
                 {/* Left - scores */}
                 <div style={{ padding: 28, borderRight: "1px solid #EDE9F8", display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>ANALYSIS RESULT</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>{lang === "ru" ? "РЕЗУЛЬТАТ АНАЛИЗА" : "ANALYSIS RESULT"}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div style={{ textAlign: "center", padding: "16px 12px", borderRadius: 14, border: "2px solid rgba(255,77,109,0.2)", background: "rgba(255,77,109,0.04)" }}>
-                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>MY LISTING</div>
+                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>{lang === "ru" ? "МОЙ ЛИСТИНГ" : "MY LISTING"}</div>
                       <div style={{ fontSize: 42, fontWeight: 900, color: "#FF4D6D", fontFamily: "var(--font-display)", lineHeight: 1 }}>38</div>
-                      <div style={{ fontSize: 11, color: "#FF4D6D", fontWeight: 600, marginTop: 4 }}>Needs work</div>
+                      <div style={{ fontSize: 11, color: "#FF4D6D", fontWeight: 600, marginTop: 4 }}>{lang === "ru" ? "Нужна работа" : "Needs work"}</div>
                     </div>
                     <div style={{ textAlign: "center", padding: "16px 12px", borderRadius: 14, border: "2px solid rgba(34,197,94,0.2)", background: "rgba(34,197,94,0.04)" }}>
-                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>COMPETITOR</div>
+                      <div style={{ fontSize: 10, color: "#9B96B8", fontWeight: 700, letterSpacing: "0.06em", marginBottom: 6 }}>{lang === "ru" ? "КОНКУРЕНТ" : "COMPETITOR"}</div>
                       <div style={{ fontSize: 42, fontWeight: 900, color: "#22C55E", fontFamily: "var(--font-display)", lineHeight: 1 }}>81</div>
-                      <div style={{ fontSize: 11, color: "#22C55E", fontWeight: 600, marginTop: 4 }}>Top performer</div>
+                      <div style={{ fontSize: 11, color: "#22C55E", fontWeight: 600, marginTop: 4 }}>{lang === "ru" ? "Топ продавец" : "Top performer"}</div>
                     </div>
                   </div>
                   <div style={{ fontSize: 11, color: "#9B96B8", textAlign: "center", lineHeight: 1.5, padding: "0 4px" }}>
-                    Score based on structure, keyword coverage, and conversion patterns from top sellers
+                    {lang === "ru" ? "Оценка по структуре, ключевым словам и паттернам конверсии топ продавцов" : "Score based on structure, keyword coverage, and conversion patterns from top sellers"}
                   </div>
                   <div style={{ padding: "12px 16px", borderRadius: 12, background: "rgba(255,77,109,0.04)", border: "1px solid rgba(255,77,109,0.15)" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 8 }}>GAP: −43 · 4 ISSUES FOUND</div>
-                    {["Missing core keywords competitors use", "Title too generic — no specifics", "No social proof or trust signals", "Weak opening — doesn't stop the scroll"].map((issue, i) => (
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 8 }}>{lang === "ru" ? "РАЗРЫВ: −43 · 4 ПРОБЛЕМЫ" : "GAP: −43 · 4 ISSUES FOUND"}</div>
+                    {(lang === "ru"
+                      ? ["Нет ключевых слов которые используют конкуренты", "Заголовок слишком общий — нет конкретики", "Нет социальных доказательств", "Слабое начало — не останавливает скролл"]
+                      : ["Missing core keywords competitors use", "Title too generic — no specifics", "No social proof or trust signals", "Weak opening — doesn't stop the scroll"]
+                    ).map((issue, i) => (
                       <div key={i} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
                         <span style={{ color: "#FF4D6D", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>!</span>
                         <span style={{ fontSize: 12, color: "#6B647A" }}>{issue}</span>
@@ -769,25 +774,37 @@ export default function App() {
                 </div>
                 {/* Right - before/after */}
                 <div style={{ padding: 28, display: "flex", flexDirection: "column", gap: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>BEFORE → AFTER</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em" }}>{lang === "ru" ? "ДО → ПОСЛЕ" : "BEFORE → AFTER"}</div>
                   <div style={{ padding: "12px 14px", borderRadius: 10, background: "rgba(255,77,109,0.04)", border: "1px solid rgba(255,77,109,0.15)" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 6 }}>BEFORE</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#FF4D6D", letterSpacing: "0.06em", marginBottom: 6 }}>{lang === "ru" ? "ДО" : "BEFORE"}</div>
                     <div style={{ fontSize: 13, color: "#6B647A", lineHeight: 1.6 }}>
-                      <span style={{ background: "rgba(255,77,109,0.12)", borderBottom: "2px solid #FF4D6D", borderRadius: 2 }}>Wireless Charger</span>
-                      {" — charges your phone wirelessly. Compatible with most phones."}
+                      {lang === "ru" ? (
+                        <><span style={{ background: "rgba(255,77,109,0.12)", borderBottom: "2px solid #FF4D6D", borderRadius: 2 }}>Беспроводная зарядка</span>{" — заряжает телефон без провода. Подходит для большинства телефонов."}</>
+                      ) : (
+                        <><span style={{ background: "rgba(255,77,109,0.12)", borderBottom: "2px solid #FF4D6D", borderRadius: 2 }}>Wireless Charger</span>{" — charges your phone wirelessly. Compatible with most phones."}</>
+                      )}
                     </div>
                   </div>
                   <div style={{ textAlign: "center", fontSize: 18, color: "#22C55E", fontWeight: 700 }}>↓</div>
                   <div style={{ padding: "12px 14px", borderRadius: 10, background: "rgba(34,197,94,0.04)", border: "1px solid rgba(34,197,94,0.2)" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#22C55E", letterSpacing: "0.06em", marginBottom: 6 }}>AFTER</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#22C55E", letterSpacing: "0.06em", marginBottom: 6 }}>{lang === "ru" ? "ПОСЛЕ" : "AFTER"}</div>
                     <div style={{ fontSize: 13, color: "#2A2340", lineHeight: 1.6 }}>
-                      <span style={{ background: "rgba(34,197,94,0.12)", borderBottom: "2px solid #22C55E", borderRadius: 2 }}>Fast Wireless Charger 15W — iPhone 15 & Samsung S24</span>
-                      {" | Qi-certified, eco bamboo, charges 3× faster than standard pads"}
+                      {lang === "ru" ? (
+                        <><span style={{ background: "rgba(34,197,94,0.12)", borderBottom: "2px solid #22C55E", borderRadius: 2 }}>Быстрая беспроводная зарядка 15W — iPhone 15 и Samsung S24</span>{" | Qi-сертифицированная, бамбук, заряжает в 3× быстрее стандартных"}</>
+                      ) : (
+                        <><span style={{ background: "rgba(34,197,94,0.12)", borderBottom: "2px solid #22C55E", borderRadius: 2 }}>Fast Wireless Charger 15W — iPhone 15 & Samsung S24</span>{" | Qi-certified, eco bamboo, charges 3× faster than standard pads"}</>
+                      )}
                     </div>
                   </div>
                   <div style={{ padding: "10px 14px", borderRadius: 10, background: "#F7F5FF", border: "1px solid #EDE9F8" }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 4 }}>WHY WE CHANGED THIS</div>
-                    <div style={{ fontSize: 12, color: "#6B647A", lineHeight: 1.55 }}>✓ Added specific phone models — top competitors all mention them<br/>✓ Added speed claim — #1 keyword in this category<br/>✓ Added eco angle — converts 28% better in this niche</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 4 }}>{lang === "ru" ? "ПОЧЕМУ МЫ ЭТО ИЗМЕНИЛИ" : "WHY WE CHANGED THIS"}</div>
+                    <div style={{ fontSize: 12, color: "#6B647A", lineHeight: 1.55 }}>
+                      {lang === "ru" ? (
+                        <>✓ Добавили модели телефонов — все топ конкуренты их указывают<br/>✓ Добавили скорость зарядки — ключевое слово №1 в категории<br/>✓ Добавили эко-угол — конверсия выше на 28% в этой нише</>
+                      ) : (
+                        <>✓ Added specific phone models — top competitors all mention them<br/>✓ Added speed claim — #1 keyword in this category<br/>✓ Added eco angle — converts 28% better in this niche</>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
