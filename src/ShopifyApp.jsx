@@ -129,8 +129,18 @@ export default function ShopifyApp() {
   };
 
   const saveToShopify = async () => {
-    if (!fixResult || !selectedProduct) return;
-    setSaving(true);
+    if (!fixResult) return;
+    if (!selectedProduct) { setFixError("Select a product from the list on the left first."); return; }
+    setSaving(true); setFixError("");
+    // Build description from sections or fallback to fixedBody
+    let description = fixResult.fixedBody || "";
+    if (!description && fixResult.fixedSections?.length) {
+      description = fixResult.fixedSections.map(s => {
+        if (s.type === "bullets") return s.items?.map(i => `• ${i}`).join("\n") || "";
+        if (s.type === "specs") return s.items?.join("\n") || "";
+        return s.content || "";
+      }).join("\n\n");
+    }
     try {
       const res = await fetch("/api/shopify/save-listing", {
         method: "POST",
@@ -138,14 +148,15 @@ export default function ShopifyApp() {
         body: JSON.stringify({
           shop,
           productId: selectedProduct.id,
-          title: fixResult.fixedTitle,
-          description: fixResult.fixedBody,
+          title: fixResult.fixedTitle || selectedProduct.title,
+          description: description || myListing,
         }),
       });
+      const data = await res.json();
       if (res.ok) setSaved(true);
-      else throw new Error("Failed to save");
-    } catch {
-      setFixError("Failed to save to Shopify. Try copying manually.");
+      else throw new Error(data.error || "Failed to save");
+    } catch (err) {
+      setFixError("Save failed: " + err.message + ". Try copying manually.");
     } finally {
       setSaving(false);
     }
