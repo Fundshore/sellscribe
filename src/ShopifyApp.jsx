@@ -42,6 +42,7 @@ export default function ShopifyApp() {
   const [tab, setTab] = useState("analyze"); // analyze | fix
 
   // Analyze
+  const [myName, setMyName] = useState("");
   const [myListing, setMyListing] = useState("");
   const [competitorName, setCompetitorName] = useState("");
   const [competitorText, setCompetitorText] = useState("");
@@ -58,6 +59,7 @@ export default function ShopifyApp() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem("ss_welcomed"));
 
   useEffect(() => {
     if (!shop) return;
@@ -69,8 +71,9 @@ export default function ShopifyApp() {
 
   const selectProduct = (product) => {
     setSelectedProduct(product);
+    setMyName(product.title);
     const body = product.body_html?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "";
-    setMyListing(`${product.title}\n\n${body}`);
+    setMyListing(body);
     setAnalyzeResult(null);
     setFixResult(null);
     setSaved(false);
@@ -90,7 +93,7 @@ export default function ShopifyApp() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ myListing, competitors: comps, lang: "en" }),
+        body: JSON.stringify({ myListing, myName, competitors: comps, lang: "en" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Analysis failed");
@@ -112,7 +115,7 @@ export default function ShopifyApp() {
       const res = await fetch("/api/fix", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ myListing, analyzeResult, lang: "en" }),
+        body: JSON.stringify({ myListing, myName, analyzeResult, lang: "en" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Fix failed");
@@ -136,7 +139,7 @@ export default function ShopifyApp() {
           shop,
           productId: selectedProduct.id,
           title: fixResult.fixedTitle,
-          body: fixResult.fixedBody,
+          description: fixResult.fixedBody,
         }),
       });
       if (res.ok) setSaved(true);
@@ -176,11 +179,55 @@ export default function ShopifyApp() {
         ::-webkit-scrollbar-thumb { background: ${V1}25; border-radius: 2px; }
       `}</style>
 
+      {/* Welcome screen */}
+      {showWelcome && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(26,19,48,0.55)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div style={{ background: "#fff", borderRadius: 24, padding: 40, maxWidth: 520, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+            <div style={{ marginBottom: 24 }}><Logo /></div>
+            <h2 style={{ fontFamily: "system-ui", fontSize: 22, fontWeight: 800, color: "#1A1330", letterSpacing: "-0.02em", marginBottom: 10 }}>
+              Find out why your listings aren't converting — and fix them in one click.
+            </h2>
+            <p style={{ fontSize: 14, color: "#1A1330", lineHeight: 1.65, marginBottom: 28 }}>
+              SellScribe analyzes your Shopify listings against top competitors, shows you exactly what's costing you sales, and rewrites them to beat the competition.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
+              {[
+                { n: "1", icon: "◉", color: V1, title: "Select a product", desc: "Pick any product from your store — the listing loads automatically." },
+                { n: "2", icon: "⚡", color: "#CB11AB", title: "Add a competitor listing", desc: "Open a top competitor's page, copy their title and description — paste it in." },
+                { n: "3", icon: "✦", color: "#22C55E", title: "Analyze & Fix", desc: "See your score vs theirs, find weak spots, and get a rewritten listing in seconds." },
+              ].map(step => (
+                <div key={step.n} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${step.color}12`, border: `1px solid ${step.color}25`, display: "flex", alignItems: "center", justifyContent: "center", color: step.color, fontSize: 16, flexShrink: 0 }}>{step.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#1A1330", marginBottom: 2 }}>{step.title}</div>
+                    <div style={{ fontSize: 13, color: "#1A1330", lineHeight: 1.5 }}>{step.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "12px 16px", borderRadius: 12, background: "#F7F5FF", border: `1px solid ${V1}15`, fontSize: 12, color: "#2A2340", marginBottom: 24, lineHeight: 1.6 }}>
+              💡 <strong style={{ color: "#1A1330" }}>Tip:</strong> Open a competitor's product page, select all text, copy and paste into the Competitor listing field. That's it — no URLs needed.
+            </div>
+            <button onClick={() => { setShowWelcome(false); localStorage.setItem("ss_welcomed", "1"); }} style={{
+              width: "100%", padding: "14px", borderRadius: 14, border: "none",
+              background: `linear-gradient(135deg, ${V1}, ${V2})`,
+              color: "#fff", fontWeight: 700, fontSize: 16,
+              boxShadow: `0 4px 20px ${V1}35`,
+            }}>
+              Get started →
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ background: "#fff", borderBottom: "1px solid #EDE9F8", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <Logo />
-        <div style={{ fontSize: 12, color: "#9B96B8" }}>
-          {shop && <span>Connected to <strong style={{ color: "#1A1330" }}>{shop}</strong></span>}
+        <div style={{ fontSize: 12, color: "#2A2340" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {shop && <span>Connected to <strong style={{ color: "#1A1330" }}>{shop}</strong></span>}
+            <button onClick={() => setShowWelcome(true)} style={{ width: 28, height: 28, borderRadius: "50%", border: `1px solid ${V1}25`, background: `${V1}08`, color: V1, fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>?</button>
+          </div>
         </div>
       </div>
 
@@ -189,7 +236,7 @@ export default function ShopifyApp() {
         {/* LEFT — Product selector */}
         <div style={{ background: "#fff", borderRight: "1px solid #EDE9F8", display: "flex", flexDirection: "column", overflow: "hidden" }}>
           <div style={{ padding: "16px", borderBottom: "1px solid #EDE9F8" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em", marginBottom: 8 }}>YOUR PRODUCTS</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#2A2340", letterSpacing: "0.08em", marginBottom: 8 }}>YOUR PRODUCTS</div>
             <input
               value={productSearch}
               onChange={e => setProductSearch(e.target.value)}
@@ -199,13 +246,13 @@ export default function ShopifyApp() {
           </div>
           <div style={{ flex: 1, overflowY: "auto", padding: "8px" }}>
             {loadingProducts && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: 16, color: "#9B96B8", fontSize: 13 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: 16, color: "#2A2340", fontSize: 13 }}>
                 <div style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${V1}30`, borderTop: `2px solid ${V1}`, animation: "spin 0.8s linear infinite" }} />
                 Loading products...
               </div>
             )}
             {!loadingProducts && filteredProducts.length === 0 && (
-              <div style={{ padding: 16, color: "#9B96B8", fontSize: 13, textAlign: "center" }}>No products found</div>
+              <div style={{ padding: 16, color: "#2A2340", fontSize: 13, textAlign: "center" }}>No products found</div>
             )}
             {filteredProducts.map(product => {
               const isSelected = selectedProduct?.id === product.id;
@@ -218,7 +265,7 @@ export default function ShopifyApp() {
                 }}>
                   <div style={{ fontSize: 13, fontWeight: isSelected ? 600 : 400, color: isSelected ? V2 : "#1A1330", lineHeight: 1.4 }}>{product.title}</div>
                   {product.variants?.[0]?.price && (
-                    <div style={{ fontSize: 11, color: "#9B96B8", marginTop: 3 }}>${product.variants[0].price}</div>
+                    <div style={{ fontSize: 11, color: "#2A2340", marginTop: 3 }}>${product.variants[0].price}</div>
                   )}
                 </div>
               );
@@ -257,11 +304,13 @@ export default function ShopifyApp() {
               {tab === "analyze" && <>
                 {/* My listing */}
                 <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: "#9B96B8", display: "block", marginBottom: 6 }}>
-                    MY LISTING {selectedProduct && <span style={{ color: V1 }}>— {selectedProduct.title}</span>}
-                  </label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#2A2340", display: "block", marginBottom: 6 }}>MY PRODUCT NAME</label>
+                  <input value={myName} onChange={e => setMyName(e.target.value)}
+                    placeholder="e.g. Bamboo Wireless Charging Pad"
+                    style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${V1}20`, background: "#F7F5FF", color: "#1A1330", fontSize: 13, marginBottom: 10, fontFamily: "inherit" }} />
+                  <label style={{ fontSize: 12, fontWeight: 600, color: "#2A2340", display: "block", marginBottom: 6 }}>MY LISTING</label>
                   <textarea value={myListing} onChange={e => setMyListing(e.target.value)}
-                    placeholder={selectedProduct ? "Listing loaded from Shopify — edit if needed" : "Select a product or paste your listing here"}
+                    placeholder={selectedProduct ? "Description loaded from Shopify — edit if needed" : "Select a product or paste your listing here"}
                     rows={6}
                     style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "#F7F5FF", border: `1px solid ${V1}20`, color: "#1A1330", fontSize: 13, resize: "vertical", lineHeight: 1.6 }} />
                 </div>
@@ -269,7 +318,7 @@ export default function ShopifyApp() {
                 {/* Competitor */}
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: "#CB11AB", display: "block", marginBottom: 6 }}>
-                    COMPETITOR LISTING <span style={{ color: "#9B96B8", fontWeight: 400 }}>(optional)</span>
+                    COMPETITOR LISTING <span style={{ color: "#2A2340", fontWeight: 400 }}>(optional)</span>
                   </label>
                   <input value={competitorName} onChange={e => setCompetitorName(e.target.value)}
                     placeholder="Competitor product name"
@@ -278,7 +327,7 @@ export default function ShopifyApp() {
                     placeholder="Paste competitor's listing text here..."
                     rows={5}
                     style={{ width: "100%", padding: "10px 14px", borderRadius: 10, background: "#F7F5FF", border: "1px solid rgba(203,17,171,0.25)", color: "#1A1330", fontSize: 13, resize: "vertical", lineHeight: 1.6 }} />
-                  <div style={{ fontSize: 11, color: "#9B96B8", marginTop: 4 }}>
+                  <div style={{ fontSize: 11, color: "#2A2340", marginTop: 4 }}>
                     Add a competitor for score comparison and deeper analysis
                   </div>
                 </div>
@@ -303,15 +352,15 @@ export default function ShopifyApp() {
 
               {tab === "fix" && <>
                 {!analyzeResult ? (
-                  <div style={{ padding: 20, borderRadius: 12, background: `${V1}06`, border: `1px solid ${V1}15`, textAlign: "center", color: "#9B96B8", fontSize: 13, lineHeight: 1.6 }}>
+                  <div style={{ padding: 20, borderRadius: 12, background: `${V1}06`, border: `1px solid ${V1}15`, textAlign: "center", color: "#2A2340", fontSize: 13, lineHeight: 1.6 }}>
                     Run an analysis first, then come back here to fix your listing.
                   </div>
                 ) : (
                   <div style={{ background: `${V1}06`, borderRadius: 12, padding: "14px 16px", border: `1px solid ${V1}15` }}>
-                    <div style={{ fontSize: 12, color: "#9B96B8", marginBottom: 4 }}>
+                    <div style={{ fontSize: 12, color: "#2A2340", marginBottom: 4 }}>
                       Issues found: <strong style={{ color: "#1A1330" }}>{analyzeResult.issues?.length || 0}</strong>
                     </div>
-                    <div style={{ fontSize: 12, color: "#9B96B8" }}>
+                    <div style={{ fontSize: 12, color: "#2A2340" }}>
                       Your score: <strong style={{ color: myCol }}>{analyzeResult.score}/100</strong>
                     </div>
                   </div>
@@ -336,7 +385,7 @@ export default function ShopifyApp() {
 
                 {fixResult && (
                   <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={copyFixed} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "1px solid #EDE9F8", background: "#F7F5FF", color: "#6B647A", fontWeight: 600, fontSize: 13 }}>
+                    <button onClick={copyFixed} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "1px solid #EDE9F8", background: "#F7F5FF", color: "#1A1330", fontWeight: 600, fontSize: 13 }}>
                       {copied ? "✓ Copied" : "Copy text"}
                     </button>
                     <button onClick={saveToShopify} disabled={saving || saved} style={{
@@ -360,14 +409,14 @@ export default function ShopifyApp() {
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 14, textAlign: "center" }}>
                 <div style={{ width: 60, height: 60, borderRadius: 18, background: `${V1}10`, border: `1px solid ${V1}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: V1 }}>◉</div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1A1330" }}>Analysis will appear here</h3>
-                <p style={{ color: "#9B96B8", fontSize: 13, maxWidth: 260, lineHeight: 1.6 }}>Select a product, add a competitor listing, and click Analyze</p>
+                <p style={{ color: "#2A2340", fontSize: 13, maxWidth: 260, lineHeight: 1.6 }}>Select a product, add a competitor listing, and click Analyze</p>
               </div>
             )}
 
             {tab === "analyze" && analyzing && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 20 }}>
                 <div style={{ width: 56, height: 56, borderRadius: "50%", border: `4px solid ${V1}20`, borderTop: `4px solid ${V1}`, animation: "spin 1s linear infinite" }} />
-                <p style={{ color: "#9B96B8", fontSize: 13 }}>{analyzeStatus}</p>
+                <p style={{ color: "#2A2340", fontSize: 13 }}>{analyzeStatus}</p>
               </div>
             )}
 
@@ -379,17 +428,17 @@ export default function ShopifyApp() {
                   {/* Scores */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div style={{ background: "#fff", borderRadius: 14, padding: "18px 16px", border: `2px solid ${myCol}25`, textAlign: "center" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em", marginBottom: 8 }}>MY LISTING</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.08em", marginBottom: 8 }}>MY LISTING</div>
                       <div style={{ fontSize: 46, fontWeight: 900, color: myCol, lineHeight: 1, fontFamily: "system-ui" }}>{a.score ?? 0}</div>
                       <div style={{ fontSize: 11, color: myCol, fontWeight: 600, marginTop: 5 }}>{a.scoreLabel}</div>
                     </div>
                     <div style={{ background: "#fff", borderRadius: 14, padding: "18px 16px", border: `2px solid ${compCol}25`, textAlign: "center" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.08em", marginBottom: 8 }}>COMPETITOR</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.08em", marginBottom: 8 }}>COMPETITOR</div>
                       <div style={{ fontSize: 46, fontWeight: 900, color: compCol, lineHeight: 1, fontFamily: "system-ui" }}>{a.competitorScore ?? "—"}</div>
                     </div>
                   </div>
 
-                  <p style={{ fontSize: 11, color: "#9B96B8", textAlign: "center" }}>
+                  <p style={{ fontSize: 11, color: "#2A2340", textAlign: "center" }}>
                     Score reflects keyword density & marketplace fit — not writing quality
                   </p>
 
@@ -429,7 +478,7 @@ export default function ShopifyApp() {
                   {/* Competitor strengths */}
                   {a.competitorStrengths && a.competitorStrengths.length > 0 && (
                     <div style={{ background: "#fff", borderRadius: 14, padding: 16, border: "1px solid #EDE9F8" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 12 }}>WHAT COMPETITORS DO BETTER</div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 12 }}>WHAT COMPETITORS DO BETTER</div>
                       {a.competitorStrengths.map((s, i) => (
                         <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                           <span style={{ color: "#FF4D6D", fontWeight: 700, flexShrink: 0 }}>→</span>
@@ -442,7 +491,7 @@ export default function ShopifyApp() {
                   {/* CTA to Fix */}
                   <div style={{ background: `linear-gradient(135deg, ${V1}10, ${V2}06)`, borderRadius: 14, padding: 18, border: `1px solid ${V1}20`, textAlign: "center" }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: "#1A1330", marginBottom: 6 }}>Ready to fix this?</div>
-                    <div style={{ fontSize: 12, color: "#9B96B8", marginBottom: 14 }}>We'll rewrite your listing based on this analysis.</div>
+                    <div style={{ fontSize: 12, color: "#2A2340", marginBottom: 14 }}>We'll rewrite your listing based on this analysis.</div>
                     <button onClick={() => { setTab("fix"); runFix(); }} style={{ padding: "10px 24px", borderRadius: 10, border: "none", background: `linear-gradient(135deg, ${V1}, ${V2})`, color: "#fff", fontWeight: 700, fontSize: 14, boxShadow: `0 2px 12px ${V1}35` }}>
                       ✦ Fix my listing →
                     </button>
@@ -456,14 +505,14 @@ export default function ShopifyApp() {
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 14, textAlign: "center" }}>
                 <div style={{ width: 60, height: 60, borderRadius: 18, background: `${V1}10`, border: `1px solid ${V1}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: V1 }}>✦</div>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1A1330" }}>Fixed listing will appear here</h3>
-                <p style={{ color: "#9B96B8", fontSize: 13, maxWidth: 260, lineHeight: 1.6 }}>Run an analysis first, then click Fix my listing</p>
+                <p style={{ color: "#2A2340", fontSize: 13, maxWidth: 260, lineHeight: 1.6 }}>Run an analysis first, then click Fix my listing</p>
               </div>
             )}
 
             {tab === "fix" && fixing && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 20 }}>
                 <div style={{ width: 56, height: 56, borderRadius: "50%", border: `4px solid ${V1}20`, borderTop: `4px solid ${V1}`, animation: "spin 1s linear infinite" }} />
-                <p style={{ color: "#9B96B8", fontSize: 13 }}>{fixStatus}</p>
+                <p style={{ color: "#2A2340", fontSize: 13 }}>{fixStatus}</p>
               </div>
             )}
 
@@ -482,7 +531,7 @@ export default function ShopifyApp() {
                   <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.05)", borderBottom: "1px solid rgba(239,68,68,0.12)" }}>
                     <span style={{ fontSize: 10, fontWeight: 700, color: "#EF4444", letterSpacing: "0.08em" }}>BEFORE — YOUR LISTING</span>
                   </div>
-                  <div style={{ padding: 16, fontSize: 13, color: "#6B647A", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{myListing}</div>
+                  <div style={{ padding: 16, fontSize: 13, color: "#1A1330", lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{myListing}</div>
                 </div>
 
                 <div style={{ textAlign: "center", fontSize: 20, color: V1 }}>↓</div>
@@ -495,13 +544,13 @@ export default function ShopifyApp() {
                   <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
                     {fixResult.fixedTitle && (
                       <div style={{ paddingBottom: 12, borderBottom: "1px solid #EDE9F8" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 5 }}>TITLE</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 5 }}>TITLE</div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: "#1A1330", lineHeight: 1.4 }}>{fixResult.fixedTitle}</div>
                       </div>
                     )}
                     {fixResult.fixedSections?.map((section, si) => (
                       <div key={si} style={{ paddingBottom: 12, borderBottom: si < fixResult.fixedSections.length - 1 ? "1px solid #EDE9F8" : "none" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 8 }}>{section.label.toUpperCase()}</div>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 8 }}>{section.label.toUpperCase()}</div>
                         {section.type === "bullets" && section.items?.map((item, ii) => (
                           <div key={ii} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
                             <span style={{ color: "#22C55E", fontWeight: 700, flexShrink: 0 }}>•</span>
@@ -517,7 +566,7 @@ export default function ShopifyApp() {
                               const [key, ...val] = item.split(":");
                               return (
                                 <div key={ii} style={{ fontSize: 12, color: "#2A2340", padding: "3px 0", borderBottom: "1px solid #F0EDF8" }}>
-                                  <span style={{ fontWeight: 600, color: "#6B647A" }}>{key}:</span>
+                                  <span style={{ fontWeight: 600, color: "#1A1330" }}>{key}:</span>
                                   <span style={{ marginLeft: 4 }}>{val.join(":")}</span>
                                 </div>
                               );
@@ -538,7 +587,7 @@ export default function ShopifyApp() {
                 {/* Why we changed */}
                 {fixResult.fixes?.length > 0 && (
                   <div style={{ background: "#fff", borderRadius: 14, padding: 16, border: "1px solid #EDE9F8" }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: "#9B96B8", letterSpacing: "0.06em", marginBottom: 12 }}>WHY WE CHANGED THIS</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 12 }}>WHY WE CHANGED THIS</div>
                     {fixResult.fixes.map((fix, i) => (
                       <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                         <span style={{ color: "#22C55E", fontWeight: 700, flexShrink: 0 }}>✓</span>
