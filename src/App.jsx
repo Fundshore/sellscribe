@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLang } from "./useLang";
 import { useNavigate } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 
 const V1 = "#8B5CF6";
 const V2 = "#7C3AED";
@@ -836,6 +837,7 @@ export default function App() {
           <Logo />
           <p style={{ color: "#7A74A0", fontSize: 13 }}>{t.footer}</p>
         </div>
+        <Analytics />
       </footer>
     </div>
   );
