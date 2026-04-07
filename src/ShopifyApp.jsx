@@ -237,6 +237,7 @@ export default function ShopifyApp() {
         <div style={{ fontSize: 12, color: "#2A2340" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             {shop && <span>Connected to <strong style={{ color: "#1A1330" }}>{shop}</strong></span>}
+            <a href="https://tally.so/r/NpYqMl" target="_blank" rel="noopener noreferrer" style={{ padding: "6px 14px", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", background: "rgba(239,68,68,0.05)", color: "#EF4444", fontSize: 12, fontWeight: 600, textDecoration: "none" }}>Report an issue</a>
             <button onClick={() => setShowWelcome(true)} style={{ width: 28, height: 28, borderRadius: "50%", border: `1px solid ${V1}25`, background: `${V1}08`, color: V1, fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>?</button>
           </div>
         </div>
