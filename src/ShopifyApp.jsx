@@ -10,6 +10,23 @@ function getShopFromUrl() {
   return params.get("shop") || "";
 }
 
+function CopyIcon({ copied, onClick, label }) {
+  return (
+    <button onClick={onClick} title={`Copy ${label}`} style={{
+      background: "none", border: "none", cursor: "pointer", padding: "2px 6px",
+      color: copied ? "#22C55E" : "#9B96B8", fontSize: 12, display: "flex", alignItems: "center", gap: 4,
+      borderRadius: 4, transition: "color 0.2s",
+    }}>
+      {copied ? "✓" : (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+      )}
+      {label}
+    </button>
+  );
+}
+
 function Logo() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -59,6 +76,10 @@ export default function ShopifyApp() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedTitle, setCopiedTitle] = useState(false);
+  const [copiedBody, setCopiedBody] = useState(false);
+  const [copiedTitle, setCopiedTitle] = useState(false);
+  const [copiedBody, setCopiedBody] = useState(false);
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem("ss_welcomed"));
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -175,6 +196,35 @@ export default function ShopifyApp() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+  const copyTitle = () => {
+    if (!fixResult?.fixedTitle) return;
+    navigator.clipboard.writeText(fixResult.fixedTitle);
+    setCopiedTitle(true);
+    setTimeout(() => setCopiedTitle(false), 2000);
+  };
+  const copyBody = () => {
+    const body = fixResult?.fixedBody || fixResult?.fixedSections?.map(s => s.type === "bullets" ? s.items?.map(i => `• ${i}`).join("\n") : s.content || "").join("\n\n") || "";
+    if (!body) return;
+    navigator.clipboard.writeText(body);
+    setCopiedBody(true);
+    setTimeout(() => setCopiedBody(false), 2000);
+  };
+  const copyTitle = () => {
+    if (!fixResult?.fixedTitle) return;
+    navigator.clipboard.writeText(fixResult.fixedTitle);
+    setCopiedTitle(true);
+    setTimeout(() => setCopiedTitle(false), 2000);
+  };
+  const copyBody = () => {
+    const text = fixResult?.fixedBody || fixResult?.fixedSections?.map(s => {
+      if (s.type === "bullets") return s.items?.map(i => `• ${i}`).join("\n") || "";
+      if (s.type === "specs") return s.items?.join("\n") || "";
+      return s.content || "";
+    }).join("\n\n") || "";
+    navigator.clipboard.writeText(text);
+    setCopiedBody(true);
+    setTimeout(() => setCopiedBody(false), 2000);
+  };
 
   const saveToHistory = async (type, result) => {
     if (!shop) return;
@@ -232,6 +282,7 @@ export default function ShopifyApp() {
         @keyframes spin { to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: ${V1}25; border-radius: 2px; }
+        .ss-tooltip-wrap:hover .ss-tooltip { display: block !important; }
       `}</style>
 
       {/* Welcome screen */}
@@ -554,15 +605,23 @@ export default function ShopifyApp() {
                 {fixResult && (
                   <div style={{ display: "flex", gap: 8 }}>
                     <button onClick={copyFixed} style={{ flex: 1, padding: "10px", borderRadius: 8, border: "1px solid #EDE9F8", background: "#F7F5FF", color: "#1A1330", fontWeight: 600, fontSize: 13 }}>
-                      {copied ? "✓ Copied" : "Copy text"}
+                      {copied ? "✓ Copied" : "⎘ Copy all"}
                     </button>
-                    <button onClick={saveToShopify} disabled={saving || saved} style={{
-                      flex: 1, padding: "10px", borderRadius: 8, border: "none",
-                      background: saved ? "#22C55E" : `linear-gradient(135deg, ${V1}, ${V2})`,
-                      color: "#fff", fontWeight: 700, fontSize: 13,
-                    }}>
-                      {saved ? "✓ Saved!" : saving ? "Saving..." : "Save to Shopify"}
-                    </button>
+                    <div style={{ flex: 1, position: "relative", display: "flex", gap: 6, alignItems: "center" }}>
+                      <button onClick={saveToShopify} disabled={saving || saved} style={{
+                        flex: 1, padding: "10px", borderRadius: 8, border: "none",
+                        background: saved ? "#22C55E" : `linear-gradient(135deg, ${V1}, ${V2})`,
+                        color: "#fff", fontWeight: 700, fontSize: 13,
+                      }}>
+                        {saved ? "✓ Updated!" : saving ? "Updating..." : "Update listing in Shopify"}
+                      </button>
+                      <div className="ss-tooltip-wrap" style={{ position: "relative" }}>
+                        <div style={{ width: 20, height: 20, borderRadius: "50%", background: `${V1}12`, border: `1px solid ${V1}25`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "help", color: V1, fontSize: 12, fontWeight: 700, flexShrink: 0 }}>?</div>
+                        <div className="ss-tooltip" style={{ display: "none", position: "absolute", right: 0, bottom: 28, width: 240, background: "#1A1330", color: "#E8E5F5", fontSize: 11, lineHeight: 1.6, padding: "10px 12px", borderRadius: 10, zIndex: 10, boxShadow: "0 4px 20px rgba(0,0,0,0.3)" }}>
+                          Updates the title and description of the selected product in your Shopify store. Price, images, and inventory are not affected.
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </>}
@@ -714,6 +773,16 @@ export default function ShopifyApp() {
                       <div style={{ paddingBottom: 12, borderBottom: "1px solid #EDE9F8" }}>
                         <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 5 }}>TITLE</div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: "#1A1330", lineHeight: 1.4 }}>{fixResult.fixedTitle}</div>
+                      </div>
+                    )}
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+                      <CopyIcon copied={copiedBody} onClick={copyBody} label="description" />
+                    </div>
+                    {fixResult.fixedSections?.length > 0 && (
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+                        <button onClick={copyBody} style={{ fontSize: 11, color: copiedBody ? "#22C55E" : V1, background: "none", border: `1px solid ${copiedBody ? "#22C55E" : V1}25`, borderRadius: 5, padding: "2px 8px", fontWeight: 600 }}>
+                          {copiedBody ? "✓ Copied" : "⎘ Copy description"}
+                        </button>
                       </div>
                     )}
                     {fixResult.fixedSections?.map((section, si) => (
