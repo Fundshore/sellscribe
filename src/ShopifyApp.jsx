@@ -78,8 +78,6 @@ export default function ShopifyApp() {
   const [copied, setCopied] = useState(false);
   const [copiedTitle, setCopiedTitle] = useState(false);
   const [copiedBody, setCopiedBody] = useState(false);
-  const [copiedTitle, setCopiedTitle] = useState(false);
-  const [copiedBody, setCopiedBody] = useState(false);
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem("ss_welcomed"));
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
