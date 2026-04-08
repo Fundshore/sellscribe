@@ -222,6 +222,7 @@ export default function ShopifyApp() {
           type,
           product: myName || selectedProduct?.title || "Unknown",
           productId: selectedProduct?.id || null,
+          input: { myListing },
           output: result,
         }),
       });
@@ -394,6 +395,29 @@ export default function ShopifyApp() {
                                 <span style={{ fontSize: 12, color: "#1A1330", lineHeight: 1.5 }}>{typeof s === "string" ? s : s.point}</span>
                               </div>
                             ))}
+                          </div>
+                        )}
+                        {/* Before listing - from input */}
+                        {item.input?.myListing && (
+                          <div style={{ padding: "12px 0", borderBottom: "1px solid #EDE9F8" }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#EF4444", letterSpacing: "0.06em", marginBottom: 6 }}>BEFORE — ORIGINAL LISTING</div>
+                            <div style={{ fontSize: 12, color: "#1A1330", lineHeight: 1.6, whiteSpace: "pre-wrap", maxHeight: 120, overflowY: "auto", background: "rgba(239,68,68,0.03)", borderRadius: 8, padding: "8px 10px" }}>
+                              {item.input.myListing}
+                            </div>
+                          </div>
+                        )}
+                        {/* After listing - from fix output */}
+                        {item.type === "fix" && (item.output?.fixedTitle || item.output?.fixedBody) && (
+                          <div style={{ padding: "12px 0", borderBottom: "1px solid #EDE9F8" }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#22C55E", letterSpacing: "0.06em", marginBottom: 6 }}>AFTER — FIXED LISTING</div>
+                            {item.output.fixedTitle && (
+                              <div style={{ fontSize: 13, fontWeight: 700, color: "#1A1330", marginBottom: 8 }}>{item.output.fixedTitle}</div>
+                            )}
+                            {item.output.fixedBody && (
+                              <div style={{ fontSize: 12, color: "#1A1330", lineHeight: 1.6, whiteSpace: "pre-wrap", maxHeight: 140, overflowY: "auto", background: "rgba(34,197,94,0.04)", borderRadius: 8, padding: "8px 10px" }}>
+                                {item.output.fixedBody}
+                              </div>
+                            )}
                           </div>
                         )}
                         {/* Delete */}
