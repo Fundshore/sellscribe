@@ -780,15 +780,17 @@ export default function ShopifyApp() {
                   <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
                     {fixResult.fixedTitle && (
                       <div style={{ paddingBottom: 12, borderBottom: "1px solid #EDE9F8" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em", marginBottom: 5 }}>TITLE</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: "#2A2340", letterSpacing: "0.06em" }}>TITLE</div>
+                          <button onClick={copyTitle} style={{ fontSize: 11, color: copiedTitle ? "#22C55E" : V1, background: "none", border: `1px solid ${copiedTitle ? "#22C55E" : V1}25`, borderRadius: 5, padding: "2px 8px", fontWeight: 600 }}>
+                            {copiedTitle ? "✓ Copied" : "⎘ Copy title"}
+                          </button>
+                        </div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: "#1A1330", lineHeight: 1.4 }}>{fixResult.fixedTitle}</div>
                       </div>
                     )}
-                    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
-                      <CopyIcon copied={copiedBody} onClick={copyBody} label="description" />
-                    </div>
                     {fixResult.fixedSections?.length > 0 && (
-                      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
                         <button onClick={copyBody} style={{ fontSize: 11, color: copiedBody ? "#22C55E" : V1, background: "none", border: `1px solid ${copiedBody ? "#22C55E" : V1}25`, borderRadius: 5, padding: "2px 8px", fontWeight: 600 }}>
                           {copiedBody ? "✓ Copied" : "⎘ Copy description"}
                         </button>
