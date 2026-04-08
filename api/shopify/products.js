@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     }
 
     const productsRes = await fetch(
-      `https://${shop}/admin/api/2025-04/products.json?limit=50&fields=id,title`,
+      `https://${shop}/admin/api/2025-04/products.json?limit=50&fields=id,title,body_html,variants`,
       {
         headers: { "X-Shopify-Access-Token": store.access_token },
       }

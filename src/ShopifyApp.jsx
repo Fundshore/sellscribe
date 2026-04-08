@@ -63,6 +63,8 @@ export default function ShopifyApp() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [expandedHistory, setExpandedHistory] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
     if (!shop) return;
@@ -202,6 +204,15 @@ export default function ShopifyApp() {
     setHistoryLoading(false);
   };
 
+  const deleteHistoryItem = async (id) => {
+    try {
+      await fetch(`/api/shopify/history?id=${id}&shop=${shop}`, { method: "DELETE" });
+      setHistory(prev => prev.filter(h => h.id !== id));
+      setDeleteConfirm(null);
+      if (expandedHistory === id) setExpandedHistory(null);
+    } catch { /* silent */ }
+  };
+
   const filteredProducts = products.filter(p =>
     p.title.toLowerCase().includes(productSearch.toLowerCase())
   );
@@ -282,34 +293,88 @@ export default function ShopifyApp() {
                   <div style={{ color: "#6B6490", fontSize: 13, marginTop: 6 }}>Analyses and fixes will appear here</div>
                 </div>
               )}
-              {history.map((item, i) => {
+              {history.map((item) => {
                 const isAnalyze = item.type === "analyze";
                 const score = item.output?.score;
                 const scoreCol = score >= 60 ? "#22C55E" : score >= 40 ? "#F59E0B" : "#FF4D6D";
+                const isExpanded = expandedHistory === item.id;
+                const isConfirming = deleteConfirm === item.id;
                 return (
-                  <div key={i} style={{ padding: "14px 16px", borderRadius: 12, border: "1px solid #EDE9F8", marginBottom: 10, background: "#F7F5FF" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                      <div>
-                        <span style={{ fontSize: 10, fontWeight: 700, color: isAnalyze ? V1 : "#22C55E", background: isAnalyze ? `${V1}12` : "rgba(34,197,94,0.1)", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.06em" }}>
-                          {isAnalyze ? "ANALYZE" : "FIX"}
-                        </span>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1330", marginTop: 6 }}>{item.product || "—"}</div>
-                        <div style={{ fontSize: 11, color: "#6B6490", marginTop: 2 }}>
-                          {new Date(item.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  <div key={item.id} style={{ borderRadius: 12, border: `1px solid ${isExpanded ? V1+"30" : "#EDE9F8"}`, marginBottom: 10, background: "#F7F5FF", overflow: "hidden", transition: "border 0.2s" }}>
+                    {/* Header row - clickable */}
+                    <div onClick={() => setExpandedHistory(isExpanded ? null : item.id)}
+                      style={{ padding: "14px 16px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: isAnalyze ? V1 : "#22C55E", background: isAnalyze ? `${V1}12` : "rgba(34,197,94,0.1)", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.06em" }}>
+                            {isAnalyze ? "ANALYZE" : "FIX"}
+                          </span>
+                          <span style={{ fontSize: 11, color: "#6B6490" }}>
+                            {new Date(item.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#1A1330" }}>{item.product || "—"}</div>
+                        {!isExpanded && item.output?.issues?.length > 0 && (
+                          <div style={{ fontSize: 11, color: "#EF4444", marginTop: 3 }}>{item.output.issues.length} issues found</div>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        {score != null && (
+                          <div style={{ textAlign: "center" }}>
+                            <div style={{ fontSize: 24, fontWeight: 900, color: scoreCol, lineHeight: 1 }}>{score}</div>
+                            <div style={{ fontSize: 9, color: "#6B6490" }}>score</div>
+                          </div>
+                        )}
+                        <span style={{ color: "#9B96B8", fontSize: 14 }}>{isExpanded ? "▲" : "▼"}</span>
+                      </div>
+                    </div>
+
+                    {/* Expanded content */}
+                    {isExpanded && (
+                      <div style={{ padding: "0 16px 16px", borderTop: "1px solid #EDE9F8" }}>
+                        {item.output?.summary && (
+                          <div style={{ padding: "12px 0", borderBottom: "1px solid #EDE9F8" }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#6B6490", letterSpacing: "0.06em", marginBottom: 6 }}>SUMMARY</div>
+                            <p style={{ fontSize: 13, color: "#1A1330", lineHeight: 1.6 }}>{item.output.summary}</p>
+                          </div>
+                        )}
+                        {item.output?.issues?.length > 0 && (
+                          <div style={{ padding: "12px 0", borderBottom: "1px solid #EDE9F8" }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#EF4444", letterSpacing: "0.06em", marginBottom: 8 }}>{item.output.issues.length} ISSUES</div>
+                            {item.output.issues.map((issue, ii) => (
+                              <div key={ii} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                                <span style={{ color: "#EF4444", fontWeight: 700, flexShrink: 0, fontSize: 12 }}>!</span>
+                                <span style={{ fontSize: 12, color: "#1A1330", lineHeight: 1.5 }}>{issue.problem}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {item.output?.competitorStrengths?.length > 0 && (
+                          <div style={{ padding: "12px 0", borderBottom: "1px solid #EDE9F8" }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#6B6490", letterSpacing: "0.06em", marginBottom: 8 }}>COMPETITOR STRENGTHS</div>
+                            {item.output.competitorStrengths.map((s, si) => (
+                              <div key={si} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                                <span style={{ color: "#FF4D6D", fontWeight: 700, flexShrink: 0 }}>→</span>
+                                <span style={{ fontSize: 12, color: "#1A1330", lineHeight: 1.5 }}>{typeof s === "string" ? s : s.point}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {/* Delete */}
+                        <div style={{ paddingTop: 12 }}>
+                          {!isConfirming ? (
+                            <button onClick={() => setDeleteConfirm(item.id)} style={{ fontSize: 12, color: "#EF4444", background: "none", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 6, padding: "5px 12px", fontWeight: 600 }}>
+                              🗑 Delete
+                            </button>
+                          ) : (
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ fontSize: 12, color: "#1A1330" }}>Sure?</span>
+                              <button onClick={() => deleteHistoryItem(item.id)} style={{ fontSize: 12, color: "#fff", background: "#EF4444", border: "none", borderRadius: 6, padding: "5px 12px", fontWeight: 600 }}>Yes, delete</button>
+                              <button onClick={() => setDeleteConfirm(null)} style={{ fontSize: 12, color: "#6B6490", background: "none", border: "1px solid #EDE9F8", borderRadius: 6, padding: "5px 12px" }}>Cancel</button>
+                            </div>
+                          )}
                         </div>
                       </div>
-                      {score != null && (
-                        <div style={{ textAlign: "center" }}>
-                          <div style={{ fontSize: 26, fontWeight: 900, color: scoreCol, lineHeight: 1 }}>{score}</div>
-                          <div style={{ fontSize: 10, color: "#6B6490" }}>score</div>
-                        </div>
-                      )}
-                    </div>
-                    {item.output?.issues?.length > 0 && (
-                      <div style={{ fontSize: 12, color: "#EF4444" }}>{item.output.issues.length} issues found</div>
-                    )}
-                    {item.output?.summary && (
-                      <div style={{ fontSize: 12, color: "#1A1330", marginTop: 6, lineHeight: 1.5 }}>{item.output.summary.slice(0, 120)}...</div>
                     )}
                   </div>
                 );
