@@ -203,19 +203,6 @@ export default function ShopifyApp() {
     setTimeout(() => setCopiedTitle(false), 2000);
   };
   const copyBody = () => {
-    const body = fixResult?.fixedBody || fixResult?.fixedSections?.map(s => s.type === "bullets" ? s.items?.map(i => `• ${i}`).join("\n") : s.content || "").join("\n\n") || "";
-    if (!body) return;
-    navigator.clipboard.writeText(body);
-    setCopiedBody(true);
-    setTimeout(() => setCopiedBody(false), 2000);
-  };
-  const copyTitle = () => {
-    if (!fixResult?.fixedTitle) return;
-    navigator.clipboard.writeText(fixResult.fixedTitle);
-    setCopiedTitle(true);
-    setTimeout(() => setCopiedTitle(false), 2000);
-  };
-  const copyBody = () => {
     const text = fixResult?.fixedBody || fixResult?.fixedSections?.map(s => {
       if (s.type === "bullets") return s.items?.map(i => `• ${i}`).join("\n") || "";
       if (s.type === "specs") return s.items?.join("\n") || "";
