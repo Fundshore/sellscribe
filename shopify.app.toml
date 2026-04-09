@@ -1,0 +1,25 @@
+name = "SellScribe"
+client_id = "c5949cf4630f322124b67aab92a29589"
+application_url = "https://sellscribe.app/api/shopify/install"
+embedded = false
+
+[access_scopes]
+scopes = "read_products,write_products"
+
+[auth]
+redirect_urls = ["https://sellscribe.app/api/shopify/callback"]
+
+[webhooks]
+api_version = "2025-04"
+
+  [[webhooks.subscriptions]]
+  topics = ["customers/data_request"]
+  uri = "https://sellscribe.app/api/shopify/gdpr"
+
+  [[webhooks.subscriptions]]
+  topics = ["customers/redact"]
+  uri = "https://sellscribe.app/api/shopify/gdpr"
+
+  [[webhooks.subscriptions]]
+  topics = ["shop/redact"]
+  uri = "https://sellscribe.app/api/shopify/gdpr"
