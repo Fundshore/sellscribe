@@ -1,7 +1,3 @@
-// api/shopify/callback.js
-// Step 2: Shopify redirects back with ?code=...&shop=...
-// We exchange code for access_token and save it
-
 import { createClient } from "@supabase/supabase-js";
 
 export default async function handler(req, res) {
@@ -11,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing code or shop" });
   }
 
-try {
+  try {
     const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,10 +36,32 @@ try {
       installed_at: new Date().toISOString(),
     });
 
-    console.log("DB error:", dbError);
-
     if (dbError) {
       return res.status(500).json({ error: "DB error", details: dbError });
+    }
+
+    // Register mandatory GDPR webhooks
+    const gdprTopics = [
+      "customers/data_request",
+      "customers/redact",
+      "shop/redact",
+    ];
+
+    for (const topic of gdprTopics) {
+      await fetch(`https://${shop}/admin/api/2025-04/webhooks.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": tokenData.access_token,
+        },
+        body: JSON.stringify({
+          webhook: {
+            topic,
+            address: "https://sellscribe.app/api/shopify/gdpr",
+            format: "json",
+          },
+        }),
+      });
     }
 
     res.redirect(`https://${shop}/admin/apps/${process.env.SHOPIFY_CLIENT_ID}`);
