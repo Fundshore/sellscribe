@@ -1,31 +1,34 @@
-// Shopify GDPR mandatory webhooks
-// https://shopify.dev/docs/apps/build/privacy-law-compliance
+import crypto from "crypto";
+
+function verifyHmac(req) {
+  const hmacHeader = req.headers["x-shopify-hmac-sha256"];
+  if (!hmacHeader || !process.env.SHOPIFY_CLIENT_SECRET) return false;
+  const body = JSON.stringify(req.body);
+  const digest = crypto
+    .createHmac("sha256", process.env.SHOPIFY_CLIENT_SECRET)
+    .update(body, "utf8")
+    .digest("base64");
+  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(hmacHeader));
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
+  if (!verifyHmac(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const topic = req.headers["x-shopify-topic"];
 
-  // All three GDPR webhooks:
-  // customers/data_request - customer asks merchant for their data
-  // customers/redact - customer asks merchant to delete their data  
-  // shop/redact - merchant uninstalls app, delete their data
-
   if (topic === "customers/data_request") {
-    // SellScribe does not store end-customer data
-    // We only store merchant product listing data
-    // Nothing to return
     return res.status(200).json({ acknowledged: true });
   }
 
   if (topic === "customers/redact") {
-    // SellScribe does not store end-customer data
-    // Nothing to delete
     return res.status(200).json({ acknowledged: true });
   }
 
   if (topic === "shop/redact") {
-    // Merchant uninstalled — delete their data from Supabase
     const shop = req.body?.shop_domain;
     if (shop) {
       try {
