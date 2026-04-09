@@ -64,7 +64,7 @@ export default async function handler(req, res) {
       });
     }
 
-    res.redirect(`https://${shop}/admin/apps/${process.env.SHOPIFY_CLIENT_ID}`);
+    res.redirect(`https://sellscribe.app/shopify?shop=${shop}`);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
