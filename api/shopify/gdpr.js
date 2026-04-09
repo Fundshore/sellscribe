@@ -1,35 +1,58 @@
 import crypto from "crypto";
 
-function verifyHmac(req) {
-  const hmacHeader = req.headers["x-shopify-hmac-sha256"];
-  if (!hmacHeader || !process.env.SHOPIFY_CLIENT_SECRET) return false;
-  const body = JSON.stringify(req.body);
-  const digest = crypto
-    .createHmac("sha256", process.env.SHOPIFY_CLIENT_SECRET)
-    .update(body, "utf8")
-    .digest("base64");
-  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(hmacHeader));
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+async function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
 }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  if (!verifyHmac(req)) {
+  const rawBody = await getRawBody(req);
+  const hmacHeader = req.headers["x-shopify-hmac-sha256"];
+
+  if (!hmacHeader || !process.env.SHOPIFY_CLIENT_SECRET) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const topic = req.headers["x-shopify-topic"];
+  const digest = crypto
+    .createHmac("sha256", process.env.SHOPIFY_CLIENT_SECRET)
+    .update(rawBody)
+    .digest("base64");
 
-  if (topic === "customers/data_request") {
-    return res.status(200).json({ acknowledged: true });
+  let valid = false;
+  try {
+    valid = crypto.timingSafeEqual(
+      Buffer.from(digest, "base64"),
+      Buffer.from(hmacHeader, "base64")
+    );
+  } catch {
+    valid = false;
   }
 
-  if (topic === "customers/redact") {
+  if (!valid) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const body = JSON.parse(rawBody.toString());
+  const topic = req.headers["x-shopify-topic"];
+
+  if (topic === "customers/data_request" || topic === "customers/redact") {
     return res.status(200).json({ acknowledged: true });
   }
 
   if (topic === "shop/redact") {
-    const shop = req.body?.shop_domain;
+    const shop = body?.shop_domain;
     if (shop) {
       try {
         const { createClient } = await import("@supabase/supabase-js");

@@ -13,13 +13,5 @@ redirect_urls = ["https://sellscribe.app/api/shopify/callback"]
 api_version = "2025-04"
 
   [[webhooks.subscriptions]]
-  topics = ["customers/data_request"]
-  uri = "https://sellscribe.app/api/shopify/gdpr"
-
-  [[webhooks.subscriptions]]
-  topics = ["customers/redact"]
-  uri = "https://sellscribe.app/api/shopify/gdpr"
-
-  [[webhooks.subscriptions]]
-  topics = ["shop/redact"]
+  compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
   uri = "https://sellscribe.app/api/shopify/gdpr"
