@@ -201,7 +201,7 @@ export default function Generator() {
   const [fixError, setFixError] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null); // analysis picked for fixing
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [pastAnalyses, setPastAnalyses] = useState([]);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyItems, setHistoryItems] = useState([]);
@@ -212,12 +212,14 @@ export default function Generator() {
       if (!data.session) { navigate("/auth"); return; }
       const u = data.session.user;
       setUser(u);
+      // ✅ ИСПРАВЛЕНО: audits_used → analyze_used
       const { data: profile } = await supabase
         .from("profiles")
-        .select("audits_used, analyze_limit, generations_used, generations_limit, reset_date")
+        .select("analyze_used, analyze_limit, generations_used, generations_limit, reset_date")
         .eq("id", u.id).single();
       if (profile) {
-        setAnalyzeCount(profile.audits_used || 0);
+        // ✅ ИСПРАВЛЕНО: profile.audits_used → profile.analyze_used
+        setAnalyzeCount(profile.analyze_used || 0);
         setAnalyzeLimit(profile.analyze_limit || 5);
         setFixCount(profile.generations_used || 0);
         setFixLimit(profile.generations_limit || 2);
@@ -278,7 +280,8 @@ export default function Generator() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Analysis failed");
       const newCount = analyzeCount + 1;
-      await supabase.from("profiles").update({ audits_used: newCount }).eq("id", user.id);
+      // ✅ ИСПРАВЛЕНО: audits_used → analyze_used
+      await supabase.from("profiles").update({ analyze_used: newCount }).eq("id", user.id);
       setAnalyzeCount(newCount);
       setAnalyzeResult(data);
       if (user) await supabase.from("history").insert({ user_id: user.id, type: "gap", product: myName, input: { myListing, competitors: validComps }, output: data });
@@ -574,7 +577,6 @@ export default function Generator() {
             <button onClick={() => {
               if (selectedAnalysis?.isCurrentSession) runFix();
               else if (selectedAnalysis?.data) {
-                // Load from history and run fix with that analysis
                 const prevListing = selectedAnalysis.input?.myListing || myListing;
                 setMyListing(prevListing);
                 setMyName(selectedAnalysis.product || myName);
@@ -663,7 +665,7 @@ export default function Generator() {
                     : "⚡ Score reflects listing text quality only — keywords, structure, persuasiveness. Sales also depend on price, photos, reviews, and search ranking."}
                 </p>
 
-                {/* Winning scenario — user beats competitor */}
+                {/* Winning scenario */}
                 {a.score > (a.competitorScore || 0) && (
                   <div style={{ background:"rgba(34,197,94,0.06)", borderRadius:14, padding:"16px 18px", border:"1px solid rgba(34,197,94,0.2)" }}>
                     <div style={{ fontSize:12, fontWeight:700, color:"#22C55E", marginBottom:8 }}>
@@ -859,7 +861,6 @@ export default function Generator() {
                       </div>
                     ))
                   ) : (
-                    /* Fallback to plain text */
                     <div style={{ fontSize:13, color:"#2A2340", lineHeight:1.8 }}>
                       <HighlightedFixed text={fixResult.fixedBody||""} fixes={fixResult.fixes||[]} />
                     </div>
